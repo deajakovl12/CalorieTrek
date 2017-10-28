@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="foi.hr.calorietrek.ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:background="@drawable/iconback"
+            tools:layout_editor_absoluteX="34dp"
+            tools:layout_editor_absoluteY="16dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="30dp">
+
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/iconprofile" />
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Olivia Holdens"
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/profileImage" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtKg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Kilogrami" />
+
+        <SeekBar
+            android:id="@+id/sbKg"
+            style="@android:style/Widget.DeviceDefault.SeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
+            android:max="120"
+            android:progress="55" />
+
+        <Button
+            android:id="@+id/btnAllTrainings"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="All your trainings"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnLogOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log out"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</RelativeLayout>
