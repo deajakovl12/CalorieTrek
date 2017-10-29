@@ -24,7 +24,7 @@ public class ProfileActivity extends AppCompatActivity {
     //Toolbar
     public void initToolbar(){
         ButterKnife.bind(this);
-        toolbar.setTitle("Profile");
+        toolbar.setTitle(R.string.menu_action_profile);
 
         setSupportActionBar(toolbar);
 
