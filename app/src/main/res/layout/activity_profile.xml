@@ -5,26 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="foi.hr.calorietrek.ProfileActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:titleTextColor="#ffffff">
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="15dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_marginLeft="@dimen/layout_margin"
+        android:layout_marginRight="@dimen/layout_margin"
+        android:layout_marginBottom="@dimen/layout_margin"
+        android:layout_below="@+id/toolbar">
 
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="20dp"
-            android:layout_height="30dp"
-            android:background="@drawable/iconback"
-            tools:layout_editor_absoluteX="34dp"
-            tools:layout_editor_absoluteY="16dp" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp">
 
             <ImageView
@@ -32,7 +34,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/iconprofile" />
+                android:background="@drawable/largeiconprofile" />
 
             <TextView
                 android:id="@+id/txtName"

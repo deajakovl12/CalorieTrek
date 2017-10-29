@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CalorieTrek</string>
+    <string name="menu_action_profile">Profile</string>
 </resources>
