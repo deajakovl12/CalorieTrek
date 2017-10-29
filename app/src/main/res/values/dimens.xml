@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="layout_margin">15dp</dimen>
+    <dimen name="menubar_height">58dp</dimen>
+
+    <dimen name="logo_width">216dp</dimen>
+    <dimen name="logo_height">64dp</dimen>
+    <dimen name="logo_topmargin">40dp</dimen>
+
+    <dimen name="profile_det_margin">30dp</dimen>
+    <dimen name="profile_image">100dp</dimen>
+    <dimen name="profile_image_margin">10dp</dimen>
+
+    <dimen name="seekbar_margin">60dp</dimen>
+</resources>
