@@ -31,54 +31,47 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity implements
-        View.OnClickListener,
         GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = ProfileActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 007;
 
+    String personName;
+    String personPhotoUrl;
+    String email;
+
     private GoogleApiClient mGoogleApiClient;
     private ProgressDialog mProgressDialog;
 
-    private SignInButton btnSignIn;
-    private Button btnSignOut, btnRevokeAccess;
-    private LinearLayout llProfileLayout;
-    private ImageView imgProfilePic;
-    private TextView txtName, txtEmail;
 
-    public Button buttonTest;
 
-    public void init() {
-        buttonTest = (Button) findViewById(R.id.btnTest);
-        buttonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+    @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
+    @BindView(R.id.btn_sign_out) Button btnSignOut;
+    @BindView(R.id.btn_revoke_access) Button btnRevokeAccess;
+    @BindView(R.id.llProfile) LinearLayout llProfileLayout;
+    @BindView(R.id.imgProfilePic) ImageView imgProfilePic;
+    @BindView(R.id.txtName) TextView txtName;
+    @BindView(R.id.txtEmail) TextView txtEmail;
+    @BindView(R.id.btnTest) public Button buttonTest;
+    @BindView(R.id.txtPrijava) public TextView tekstPrijava;
 
-                startActivity(intent);
-            }
-        });
+    @OnClick(R.id.btnTest)
+    public void onClickHome(){
+        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        init();
+        //init();
+        ButterKnife.bind(this);
 
-        btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-        btnSignOut = (Button) findViewById(R.id.btn_sign_out);
-        btnRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
-        llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
-        imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
-        txtName = (TextView) findViewById(R.id.txtName);
-        txtEmail = (TextView) findViewById(R.id.txtEmail);
-
-        btnSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
-        btnRevokeAccess.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -91,6 +84,23 @@ public class LoginActivity extends AppCompatActivity implements
 
         btnSignIn.setSize(SignInButton.SIZE_STANDARD);
         btnSignIn.setScopes(gso.getScopeArray());
+
+
+    }
+
+    @OnClick(R.id.btn_sign_in)
+    public void onClick(){
+        signIn();
+    }
+
+    @OnClick(R.id.btn_sign_out)
+    public void onClickBtnSignOut(){
+        signOut();
+    }
+
+    @OnClick(R.id.btn_revoke_access)
+    public void onClickBtnRevokeAccess(){
+        revokeAccess();
     }
 
 
@@ -127,9 +137,28 @@ public class LoginActivity extends AppCompatActivity implements
 
             Log.e(TAG, "display name: " + acct.getDisplayName());
 
-            String personName = acct.getDisplayName();
-            String personPhotoUrl = acct.getPhotoUrl().toString();
-            String email = acct.getEmail();
+
+            if((acct.getDisplayName())!=null){
+                personName=acct.getDisplayName();
+            }
+            else{
+                personName="";
+            }
+
+            if((acct.getPhotoUrl())!=null) {
+                personPhotoUrl= acct.getPhotoUrl().toString();
+            }
+            else{
+                personPhotoUrl="";
+            }
+
+
+            if((acct.getEmail())!=null){
+                email=acct.getEmail();
+            }
+            else{
+                email="";
+            }
 
             Log.e(TAG, "Name: " + personName + ", email: " + email
                     + ", Image: " + personPhotoUrl);
@@ -144,29 +173,12 @@ public class LoginActivity extends AppCompatActivity implements
 
             updateUI(true);
         } else {
-            // Signed out, show unauthenticated UI.
             updateUI(false);
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
 
-        switch (id) {
-            case R.id.btn_sign_in:
-                signIn();
-                break;
 
-            case R.id.btn_sign_out:
-                signOut();
-                break;
-
-            case R.id.btn_revoke_access:
-                revokeAccess();
-                break;
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,6 +193,8 @@ public class LoginActivity extends AppCompatActivity implements
     public void onStart() {
         super.onStart();
 
+
+
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
 
@@ -188,6 +202,7 @@ public class LoginActivity extends AppCompatActivity implements
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
+
 
             showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
@@ -227,11 +242,23 @@ public class LoginActivity extends AppCompatActivity implements
             btnSignOut.setVisibility(View.VISIBLE);
             btnRevokeAccess.setVisibility(View.VISIBLE);
             llProfileLayout.setVisibility(View.VISIBLE);
+            buttonTest.setVisibility(View.VISIBLE);
+            tekstPrijava.setVisibility(View.GONE);
+
+        /*  Intent sendData=new Intent(LoginActivity.this,ProfileActivity.class);
+            sendData.putExtra("pName",personName);
+            sendData.putExtra("pPhotoUrl",personPhotoUrl);
+            sendData.putExtra("pEmail",email);
+            startActivity(sendData);
+          */
+
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
             btnRevokeAccess.setVisibility(View.GONE);
             llProfileLayout.setVisibility(View.GONE);
+            buttonTest.setVisibility(View.GONE);
+            tekstPrijava.setVisibility(View.VISIBLE);
         }
     }
 }
