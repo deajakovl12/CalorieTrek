@@ -103,13 +103,6 @@
             android:text="@string/btn_logout_from_google"
             android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/btn_revoke_access"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_revoke_access"
-            android:layout_marginTop="@dimen/btn_revoke_access_margin_top"
-            android:visibility="gone"/>
 
     </LinearLayout>
 </RelativeLayout>

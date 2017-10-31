@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
     @BindView(R.id.btn_sign_out) Button btnSignOut;
-    @BindView(R.id.btn_revoke_access) Button btnRevokeAccess;
+
     @BindView(R.id.llProfile) LinearLayout llProfileLayout;
     @BindView(R.id.imgProfilePic) ImageView imgProfilePic;
     @BindView(R.id.txtName) TextView txtName;
@@ -98,10 +98,6 @@ public class LoginActivity extends AppCompatActivity implements
         signOut();
     }
 
-    @OnClick(R.id.btn_revoke_access)
-    public void onClickBtnRevokeAccess(){
-        revokeAccess();
-    }
 
 
     private void signIn() {
@@ -120,15 +116,7 @@ public class LoginActivity extends AppCompatActivity implements
                 });
     }
 
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        updateUI(false);
-                    }
-                });
-    }
+
 
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
@@ -240,7 +228,6 @@ public class LoginActivity extends AppCompatActivity implements
         if (isSignedIn) {
             btnSignIn.setVisibility(View.GONE);
             btnSignOut.setVisibility(View.VISIBLE);
-            btnRevokeAccess.setVisibility(View.VISIBLE);
             llProfileLayout.setVisibility(View.VISIBLE);
             buttonTest.setVisibility(View.VISIBLE);
             tekstPrijava.setVisibility(View.GONE);
@@ -255,7 +242,6 @@ public class LoginActivity extends AppCompatActivity implements
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
-            btnRevokeAccess.setVisibility(View.GONE);
             llProfileLayout.setVisibility(View.GONE);
             buttonTest.setVisibility(View.GONE);
             tekstPrijava.setVisibility(View.VISIBLE);
