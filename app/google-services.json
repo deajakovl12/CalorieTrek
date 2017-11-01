@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "467756057334",
+    "project_id": "calorietrek"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:467756057334:android:cbfc19559274ae17",
+        "android_client_info": {
+          "package_name": "foi.hr.calorietrek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "467756057334-1jf60366n3fut0f8ben7mtupd4la26vo.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "467756057334-3p899k9qsr98a3e3d3gspjtf6km3dk69.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "foi.hr.calorietrek",
+            "certificate_hash": "ae033502cd4cf872fb38d85ddcabbdd2d48ffbf0"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnfimhdZwQlIo4XMdao49zzB6ZLN8CGFQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
