@@ -19,7 +19,6 @@
 
         <activity android:name=".LoginActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>
