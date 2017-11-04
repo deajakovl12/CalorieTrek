@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="foi.hr.calorietrek.LoginActivity">
+    tools:context="foi.hr.calorietrek.ui.login.view.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,14 +26,6 @@
             tools:layout_editor_absoluteX="@dimen/txt_prijava_x"
             tools:layout_editor_absoluteY="@dimen/txt_prijava_y" />
 
-        <Button
-            android:id="@+id/btnTest"
-            android:layout_width="@dimen/btn_test_layout_width"
-            android:layout_height="@dimen/btn_test_layout_height"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/btn_test_margin_top"
-            android:text="Home page"
-            />
     </LinearLayout>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -47,61 +39,12 @@
         android:layout_alignParentStart="true"
         android:weightSum="1">
 
-        <LinearLayout
-            android:id="@+id/llProfile"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/llprofile_margin_bottom"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            >
-
-            <ImageView
-                android:id="@+id/imgProfilePic"
-                android:layout_width="@dimen/img_profile_pic_width"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/img_profile_pic_margin_top"
-                android:layout_weight="0.96"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:orientation="vertical"
-                android:layout_weight="2" >
-
-                <TextView
-                    android:id="@+id/txtName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/txt_name_padding"
-                    android:layout_marginTop="@dimen/txt_name_margin_top"
-                    android:textSize="@dimen/txt_name_text_size" />
-
-                <TextView
-                    android:id="@+id/txtEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/txt_email_padding"
-                    android:textSize="@dimen/txt_email_text_size" />
-            </LinearLayout>
-        </LinearLayout>
-
         <com.google.android.gms.common.SignInButton
             android:id="@+id/btn_sign_in"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"
             android:layout_marginTop="@dimen/btn_sign_in_margin_top" />
-
-        <Button
-            android:id="@+id/btn_sign_out"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/btn_sign_out_margin_bottom"
-            android:layout_marginTop="@dimen/btn_sign_out_margin_top"
-            android:text="@string/btn_logout_from_google"
-            android:visibility="gone"/>
 
 
     </LinearLayout>

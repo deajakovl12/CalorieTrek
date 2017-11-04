@@ -1,10 +1,12 @@
-package foi.hr.calorietrek;
+package foi.hr.calorietrek.ui.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import foi.hr.calorietrek.ui.login.view.LoginActivity;
 
 /**
  * Created by Andrea on 29.10.2017..
