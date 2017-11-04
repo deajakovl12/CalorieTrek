@@ -1,4 +1,4 @@
-package foi.hr.calorietrek;
+package foi.hr.calorietrek.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

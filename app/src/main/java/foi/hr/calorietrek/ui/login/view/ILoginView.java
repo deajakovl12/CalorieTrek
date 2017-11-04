@@ -1,4 +1,4 @@
-package foi.hr.calorietrek;
+package foi.hr.calorietrek.ui.login.view;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 

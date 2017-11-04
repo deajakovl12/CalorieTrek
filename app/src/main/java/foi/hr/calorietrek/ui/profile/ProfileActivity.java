@@ -1,4 +1,4 @@
-package foi.hr.calorietrek;
+package foi.hr.calorietrek.ui.profile;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,18 +16,21 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import foi.hr.calorietrek.R;
+import foi.hr.calorietrek.model.UserModel;
+import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
 
 public class ProfileActivity extends AppCompatActivity{
 
     LoginControllerImpl loginController = null;
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.txtKg) TextView showKg;
-    @BindView(R.id.sbKg) SeekBar seekBarKg;
+    public @BindView(R.id.toolbar) Toolbar toolbar;
+    public @BindView(R.id.txtKg) TextView showKg;
+    public @BindView(R.id.sbKg) SeekBar seekBarKg;
 
-    @BindView(R.id.profileImage) ImageView profilePic;
-    @BindView(R.id.txtName) TextView name;
-    @BindView(R.id.btnLogOut) Button btnLogOff;
+    public @BindView(R.id.profileImage) ImageView profilePic;
+    public @BindView(R.id.txtName) TextView name;
+    public @BindView(R.id.btnLogOut) Button btnLogOff;
 
     String personName;
     String personEmail;
@@ -76,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity{
             }
         });
     }
+
     @OnClick(R.id.btnLogOut)
     public void onClickLogOut()
     {
@@ -83,15 +87,37 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
 
         UserModel userModel = getIntent().getParcelableExtra("userModel");
-        personName = userModel.getPersonName();
-        personEmail = userModel.getPersonEmail();
-        personPhotoUrl = userModel.getPersonPhotoUrl().toString();
+        if(userModel.getPersonName() != null)
+        {
+            personName = userModel.getPersonName();
+        }
+        else
+        {
+            personName = "";
+        }
+        if(userModel.getPersonEmail() != null)
+        {
+            personEmail = userModel.getPersonEmail();
+        }
+        else
+        {
+            personEmail = "";
+        }
+        if(userModel.getPersonPhotoUrl() != null)
+        {
+            personPhotoUrl = userModel.getPersonPhotoUrl().toString();
+        }
+        else
+        {
+            personPhotoUrl = "";
+        }
 
         name.setText(personName);
         Glide.with(getApplicationContext()).load(personPhotoUrl)
