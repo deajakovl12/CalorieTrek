@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import android.support.annotation.NonNull;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,8 +21,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import foi.hr.calorietrek.database.DbHelperUser;
 import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
-import foi.hr.calorietrek.ui.profile.ProfileActivity;
+import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.model.UserModel;
 
@@ -32,8 +34,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     LoginControllerImpl loginController = null;
     UserModel userModel = null;
 
-    private GoogleApiClient mGoogleApiClient;
+    public static GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
+
+    DbHelperUser dbUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +127,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void LoginSuccessful(GoogleSignInResult result)
     {
         GoogleSignInAccount accountData = result.getSignInAccount();
+
+        DbUser(accountData.getDisplayName());
+
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), accountData.getPhotoUrl().toString());
         Intent sendData = new Intent(LoginActivity.this, ProfileActivity.class);
+        sendData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         sendData.putExtra("userModel", userModel);
         startActivity(sendData);
     }
@@ -133,6 +141,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void LoginFailed()
     {
 
+    }
+
+    public void DbUser(String nameSurname){
+        dbUser = new DbHelperUser(this);
+
+        boolean isInserted = dbUser.existingUser(nameSurname);
+        if (isInserted == true){
+            Toast.makeText(LoginActivity.this, "New user inserted", Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(LoginActivity.this, "Existing user", Toast.LENGTH_LONG).show();
+        }
     }
 }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="foi.hr.calorietrek.ui.profile.ProfileActivity">
+    tools:context="foi.hr.calorietrek.ui.profile.view.ProfileActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/profile_image"
                 android:layout_height="@dimen/profile_image"
-                android:layout_marginRight="@dimen/profile_image_margin"
+                android:layout_marginEnd="@dimen/profile_image_margin"
                 android:background="@drawable/largeiconprofile" />
 
             <TextView
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Kilogrami" />
+            android:text="Weight" />
 
         <SeekBar
             android:id="@+id/sbKg"
@@ -68,14 +68,14 @@
             style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="All your trainings"
+            android:text="@string/all_your_trainings"
             android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btnLogOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out"
+            android:text="@string/log_out"
             android:textAllCaps="false" />
 
     </LinearLayout>
