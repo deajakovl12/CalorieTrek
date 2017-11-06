@@ -1,5 +1,7 @@
 package foi.hr.calorietrek.ui.profile.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -25,9 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
-import foi.hr.calorietrek.database.DbHelperUser;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.UserModel;
-import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 
 public class ProfileActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, IProfileView {
@@ -46,9 +47,9 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     String personEmail;
     String personPhotoUrl;
 
-    DbHelperUser dbUser;
+    DbHelper instance;
 
-    int min = 0, max = 120, current = 55;
+    int min = 20, max = 200, current = 55;
 
     //Toolbar
     public void initToolbar(){
@@ -62,14 +63,12 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             @Override
             public void onClick(View view) {
                 finish();
-                //Toast.makeText(ProfileActivity.this, "Click on toolbar!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void loadWeight() {
-        dbUser = new DbHelperUser(this);
-        String result = dbUser.returnWeight(personName);
+        String result = instance.returnWeight(personName);
         current = Integer.parseInt(result);
     }
 
@@ -100,9 +99,9 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         });
     }
 
+    // Rad s bazom u controller
     private void changeWeight(String newWeight) {
-        dbUser = new DbHelperUser(this);
-        boolean isUpdated = dbUser.updateWeight(personName, newWeight);
+        boolean isUpdated = instance.updateWeight(personName, newWeight);
         if (isUpdated == true){
             Toast.makeText(getApplicationContext(), "Weight updated!", Toast.LENGTH_SHORT).show();
         }
@@ -125,46 +124,29 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         ButterKnife.bind(this);
 
         getAccount();
-
+        instance = DbHelper.getInstance(this);
         loadWeight();
         initToolbar();
         showWeight();
     }
 
+    // Prebaciti u controller
     public void getAccount(){
         UserModel userModel = getIntent().getParcelableExtra("userModel");
-        if(userModel.getPersonName() != null)
-        {
-            personName = userModel.getPersonName();
-        }
-        else
-        {
-            personName = "";
-        }
-        if(userModel.getPersonEmail() != null)
-        {
-            personEmail = userModel.getPersonEmail();
-        }
-        else
-        {
-            personEmail = "";
-        }
-        if(userModel.getPersonPhotoUrl() != null)
-        {
-            personPhotoUrl = userModel.getPersonPhotoUrl().toString();
-        }
-        else
-        {
-            personPhotoUrl = "";
-        }
+
+        personName = userModel.getPersonName();
+        personEmail = userModel.getPersonEmail();
+        personPhotoUrl = userModel.getPersonPhotoUrl();
 
         name.setText(personName);
-        Glide.with(getApplicationContext()).load(personPhotoUrl)
-                .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(profilePic);
 
+        if (personPhotoUrl != "noImage") {
+            Glide.with(getApplicationContext()).load(personPhotoUrl)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(profilePic);
+        }
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -175,6 +157,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
                 .build();
     }
 
+    // Prebaciti u controller
     public void LogOut()
     {
         Auth.GoogleSignInApi.signOut(googleClient).setResultCallback(

@@ -6,28 +6,38 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DbHelperUser extends SQLiteOpenHelper{
-    public static final String DATABASE_NAME = "User.db";
-    public static final String TABLE_NAME = "user";
-    public static final String COL_1 = "id_user";
-    public static final String COL_2 = "name_surname";
-    public static final String COL_3 = "weight";
+public class DbHelper extends SQLiteOpenHelper{
+    private static DbHelper sInstance;
 
-    public DbHelperUser(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+    public static final String DATABASE_NAME = "CalorieTrek.db";
+    private static final int DATABASE_VERSION = 1;
+    public static final String TABLE_USER = "user";
+    public static final String COL_ID_USER = "id_user";
+    public static final String COL_NAME = "name_surname";
+    public static final String COL_WEIGHT = "weight";
+
+    public static synchronized DbHelper getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new DbHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private DbHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + "(" +
-                COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_2 + " VARCHAR(100) NOT NULL, " +
-                COL_3 + " INTEGER NOT NULL);");
+        db.execSQL("CREATE TABLE " + TABLE_USER + "(" +
+                COL_ID_USER + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_NAME + " VARCHAR(100) NOT NULL, " +
+                COL_WEIGHT + " INTEGER NOT NULL);");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS" + TABLE_USER);
         onCreate(db);
     }
 
@@ -35,10 +45,10 @@ public class DbHelperUser extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(COL_2, nameSurname);
-        values.put(COL_3, weight);
+        values.put(COL_NAME, nameSurname);
+        values.put(COL_WEIGHT, weight);
 
-        long result = db.insert(TABLE_NAME, null, values);
+        long result = db.insert(TABLE_USER, null, values);
     }
 
     public boolean existingUser(String nameSurname){
@@ -82,4 +92,7 @@ public class DbHelperUser extends SQLiteOpenHelper{
         db.execSQL(query);
         return true;
     }
+
+
+
 }

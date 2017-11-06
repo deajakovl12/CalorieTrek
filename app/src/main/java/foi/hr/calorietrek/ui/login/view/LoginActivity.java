@@ -1,5 +1,6 @@
 package foi.hr.calorietrek.ui.login.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import foi.hr.calorietrek.database.DbHelperUser;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.R;
@@ -37,7 +38,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public static GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 007;
 
-    DbHelperUser dbUser;
+    DbHelper instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginController = new LoginControllerImpl();
         GoogleSignInOptions gso = loginController.GmailLogin(this);
         mGoogleApiClient = GetGoogleApiClient(gso);
+
+        instance = DbHelper.getInstance(this);
     }
 
     private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
@@ -127,10 +130,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void LoginSuccessful(GoogleSignInResult result)
     {
         GoogleSignInAccount accountData = result.getSignInAccount();
-
+        String personPhoto;
         DbUser(accountData.getDisplayName());
 
-        userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), accountData.getPhotoUrl().toString());
+        if (accountData.getPhotoUrl() != null){
+            personPhoto = accountData.getPhotoUrl().toString();
+        }
+        else{
+            personPhoto = "noImage";
+        }
+
+        userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, ProfileActivity.class);
         sendData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         sendData.putExtra("userModel", userModel);
@@ -144,9 +154,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void DbUser(String nameSurname){
-        dbUser = new DbHelperUser(this);
-
-        boolean isInserted = dbUser.existingUser(nameSurname);
+        boolean isInserted = instance.existingUser(nameSurname);
         if (isInserted == true){
             Toast.makeText(LoginActivity.this, "New user inserted", Toast.LENGTH_LONG).show();
         }
