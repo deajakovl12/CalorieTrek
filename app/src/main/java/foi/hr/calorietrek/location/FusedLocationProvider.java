@@ -12,6 +12,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationCallback;
+import org.greenrobot.eventbus.EventBus;
+
+import foi.hr.calorietrek.message.LocationEventMessage;
 
 import static android.content.ContentValues.TAG;
 
@@ -35,6 +38,7 @@ public class FusedLocationProvider {
         this.context=context;
     }
     public void setLocation(Location location){
+        EventBus.getDefault().post(new LocationEventMessage(this.location,location));
         this.location=location;
     }
     public Location GetLocation(){
