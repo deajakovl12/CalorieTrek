@@ -41,8 +41,7 @@
 
     <dimen name="btn_sign_out_margin_bottom">2dp</dimen>
     <dimen name="btn_sign_out_margin_top">20dp</dimen>
-
-
+    <dimen name="training_text">16sp</dimen>
 
 
 </resources>

@@ -4,15 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class UserModel implements Parcelable {
-    private String personName;
-    private String personEmail;
-    private String personPhotoUrl;
+    private static String personName;
+    private static String personEmail;
+    private static String personPhotoUrl;
 
     public UserModel(String personName, String personEmail, String personPhotoUrl)
     {
-        this.personName = personName;
-        this.personEmail = personEmail;
-        this.personPhotoUrl = personPhotoUrl;
+        UserModel.personName = personName;
+        UserModel.personEmail = personEmail;
+        UserModel.personPhotoUrl = personPhotoUrl;
     }
 
     public String getPersonName()

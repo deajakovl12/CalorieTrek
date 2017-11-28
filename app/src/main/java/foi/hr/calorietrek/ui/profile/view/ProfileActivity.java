@@ -3,10 +3,13 @@ package foi.hr.calorietrek.ui.profile.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
+import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 public class ProfileActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, IProfileView {
 
@@ -43,9 +47,9 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     public @BindView(R.id.txtName) TextView name;
     public @BindView(R.id.btnLogOut) Button btnLogOff;
 
-    String personName;
-    String personEmail;
-    String personPhotoUrl;
+    static String personName;
+    static String personEmail;
+    static String personPhotoUrl;
 
     DbHelper instance;
 
@@ -54,22 +58,39 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     //Toolbar
     public void initToolbar(){
         ButterKnife.bind(this);
-        toolbar.setTitle(R.string.menu_action_profile);
+        toolbar.setTitle("");
 
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationIcon(R.drawable.iconback);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent intent = new Intent(ProfileActivity.this, TrainingActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        /*toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+        */
     }
 
     private void loadWeight() {
+
         String result = instance.returnWeight(personName);
-        current = Integer.parseInt(result);
+        try {
+            current = Integer.parseInt(result);
+        }
+        catch (NumberFormatException e){
+            current = 55;
+        }
+
     }
 
     //Prikaz tezine u kg
@@ -104,6 +125,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         boolean isUpdated = instance.updateWeight(personName, newWeight);
         if (isUpdated == true){
             Toast.makeText(getApplicationContext(), "Weight updated!", Toast.LENGTH_SHORT).show();
+            instance.updateWeight(personName,newWeight);
         }
         else{
             Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
@@ -132,14 +154,33 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
     // Prebaciti u controller
     public void getAccount(){
-        UserModel userModel = getIntent().getParcelableExtra("userModel");
+        //changed
+        if(getIntent().hasExtra("userModel")) {
+            UserModel userModel = getIntent().getParcelableExtra("userModel");
 
-        personName = userModel.getPersonName();
-        personEmail = userModel.getPersonEmail();
-        personPhotoUrl = userModel.getPersonPhotoUrl();
+            personName = userModel.getPersonName();
+            personEmail = userModel.getPersonEmail();
+            personPhotoUrl = userModel.getPersonPhotoUrl();
 
-        name.setText(personName);
+            name.setText(personName);
 
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("personName", personName);
+            editor.putString("personEmail", personEmail);
+            editor.putString("personPhotoUrl", personPhotoUrl);
+            editor.apply();
+            Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
+        }
+        else{
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            personName=sharedPref.getString("personName","not Available");
+            personEmail=sharedPref.getString("personEmail","not Available");
+            personPhotoUrl= sharedPref.getString("personPhotoUrl","noImage");
+            name.setText(personName);
+            Log.e("tusamPA2",sharedPref.getString("personName","not Available"));
+        }
+        //-changed
         if (personPhotoUrl != "noImage") {
             Glide.with(getApplicationContext()).load(personPhotoUrl)
                     .thumbnail(0.5f)

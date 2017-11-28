@@ -27,6 +27,7 @@ import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.model.UserModel;
+import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ILoginView {
 
