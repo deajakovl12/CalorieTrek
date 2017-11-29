@@ -40,6 +40,9 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'javax.inject:javax.inject:1'
+
+    debugCompile 'im.dino:dbinspector:3.4.1@aar'
 }
 
 apply plugin: 'com.google.gms.google-services'

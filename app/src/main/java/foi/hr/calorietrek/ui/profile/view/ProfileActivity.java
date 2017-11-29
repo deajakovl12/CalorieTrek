@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
+import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
@@ -62,23 +64,10 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
         setSupportActionBar(toolbar);
 
-        toolbar.setNavigationIcon(R.drawable.iconback);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(ProfileActivity.this, TrainingActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
-
-        /*toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-        */
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     private void loadWeight() {
@@ -162,8 +151,10 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             personEmail = userModel.getPersonEmail();
             personPhotoUrl = userModel.getPersonPhotoUrl();
 
-            name.setText(personName);
+            CurrentUser loggedUser = new CurrentUser(personName, personEmail, personPhotoUrl);
+            name.setText(CurrentUser.personName);
 
+            /*
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("personName", personName);
@@ -171,17 +162,22 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             editor.putString("personPhotoUrl", personPhotoUrl);
             editor.apply();
             Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
+            */
         }
         else{
+            name.setText(CurrentUser.personName);
+            /*
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             personName=sharedPref.getString("personName","not Available");
             personEmail=sharedPref.getString("personEmail","not Available");
             personPhotoUrl= sharedPref.getString("personPhotoUrl","noImage");
             name.setText(personName);
             Log.e("tusamPA2",sharedPref.getString("personName","not Available"));
+            */
         }
+
         //-changed
-        if (personPhotoUrl != "noImage") {
+        if (CurrentUser.profilePic != "noImage") {
             Glide.with(getApplicationContext()).load(personPhotoUrl)
                     .thumbnail(0.5f)
                     .crossFade()
@@ -221,5 +217,16 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            Intent intent = new Intent(ProfileActivity.this, TrainingActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
