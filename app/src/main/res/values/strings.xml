@@ -7,4 +7,14 @@
     <string name="loading" />
     <string name="all_your_trainings">All your trainings</string>
     <string name="log_out">Log out</string>
+    <string name="time_format_zero">00:00:00</string>
+    <string name="s">seconds</string>
+    <string name="m">minutes</string>
+    <string name="h">hours</string>
+    <string name="ongoing_training">Ongoing Training</string>
+    <string name="training_started">Your training has started</string>
+    <string name="pause_training">P A U S E</string>
+    <string name="start_training">S T A R T</string>
+    <string name="stop_training">S T O P</string>
+    <string name="resume_training">R E S U M E</string>
 </resources>

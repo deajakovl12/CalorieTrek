@@ -43,5 +43,9 @@
     <dimen name="btn_sign_out_margin_top">20dp</dimen>
     <dimen name="training_text">16sp</dimen>
 
+    <dimen name="margin_bottom_elements">15dp</dimen>
+    <dimen name="padding_screen">10dp</dimen>
+
+
 
 </resources>

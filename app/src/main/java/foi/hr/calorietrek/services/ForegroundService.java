@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
@@ -21,7 +22,9 @@ import foi.hr.calorietrek.constants.Constants;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 public class ForegroundService extends Service {
-    private static final String LOG_TAG = "ForegroundService";
+    private int seconds = 0;
+    private int minutes = 0;
+    private int hours = 0;
 
     @Override
     public void onCreate() {
@@ -31,26 +34,24 @@ public class ForegroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION))
+        if(intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION))
         {
-            Log.i(LOG_TAG, "Received Start Foreground Intent");
             Intent notificationIntent = new Intent(this, TrainingActivity.class);
-            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-                    notificationIntent, 0);
 
-            Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                    R.drawable.cklogo);
+            notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
+
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+            Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.cklogo);
 
             Notification notification = new NotificationCompat.Builder(this)
-                    .setContentTitle("CalorieTrek")
-                    .setTicker("CalorieTrek")
-                    .setContentText("Your training has started")
+                    .setContentTitle(getString(R.string.app_name))
+                    .setTicker(getString(R.string.app_name))
+                    .setContentText(getString(R.string.training_started))
                     .setSmallIcon(R.drawable.cklogo)
-                    .setLargeIcon(
-                            Bitmap.createScaledBitmap(icon, 128, 128, false))
+                    .setLargeIcon(Bitmap.createScaledBitmap(icon, 128, 128, false))
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .build();
@@ -58,9 +59,17 @@ public class ForegroundService extends Service {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
         }
-        else if (intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION))
+        else if(intent.getAction().equals(Constants.ACTION.PLAY_ACTION))
         {
-            Log.i(LOG_TAG, "Received Stop Foreground Intent");
+
+
+        }
+        else if(intent.getAction().equals(Constants.ACTION.PAUSE_ACTION))
+        {
+
+        }
+        else if(intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION))
+        {
             stopForeground(true);
             stopSelf();
         }
@@ -70,12 +79,10 @@ public class ForegroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i(LOG_TAG, "In onDestroy");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // Used only in case of bound services.
         return null;
     }
 }

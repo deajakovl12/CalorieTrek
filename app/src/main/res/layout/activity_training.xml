@@ -20,11 +20,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:weightSum="1"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_screen"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:baselineAligned="false">
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -41,13 +42,13 @@
                 android:id="@+id/txtKcal"
                 android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
                 android:text="0"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="50sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
         </RelativeLayout>
 
         <TextView
@@ -72,52 +73,88 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="15dp">
-            <LinearLayout
+            android:gravity="center">
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_blue_button_with_gradient"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_screen">
 
-                <TextView
-                    android:id="@+id/txtDistance"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="0 m"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_blue_button_with_gradient">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bg_blue_button_with_gradient"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true" />
 
                 <TextView
                     android:id="@+id/txtGain"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="0 m"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSmallText"
+                    android:text="Distance"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_screen">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/bg_blue_button_with_gradient" />
+
+                <TextView
+                    android:id="@+id/txtDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0 m"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorSmallText"
+                    android:text="Elevation gain"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+            </RelativeLayout>
         </LinearLayout>
+
 
         <Button
             android:id="@+id/btnTrain"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_button_green"
+            android:layout_marginBottom="@dimen/margin_bottom_elements"
             android:text="S T A R T" />
 
         <Button
@@ -125,8 +162,36 @@
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
+            android:background="@drawable/bg_light_blue_button"
+            android:layout_marginBottom="@dimen/margin_bottom_elements"
             android:text="S T O P" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorSmallText"
+                android:textSize="@dimen/training_text"
+                android:text="Cargo weight (kg)"/>
+
+            <TextView
+                android:id="@+id/cargoKg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="0 kg"
+                android:textAlignment="center"
+                android:textColor="@color/colorSmallText"
+                android:textSize="@dimen/training_text"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <SeekBar
+            android:id="@+id/sbCargoWeight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
@@ -134,11 +199,12 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="98dp"
+        android:layout_marginTop="97dp"
         android:text="Kcal"
         android:textColor="@color/colorSmallText"
-        android:textSize="@dimen/training_text" />
+        android:textSize="@dimen/training_text"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
+
