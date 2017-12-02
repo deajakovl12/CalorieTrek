@@ -151,7 +151,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             personEmail = userModel.getPersonEmail();
             personPhotoUrl = userModel.getPersonPhotoUrl();
 
-            CurrentUser loggedUser = new CurrentUser(personName, personEmail, personPhotoUrl);
+            //CurrentUser loggedUser = new CurrentUser(personName, personEmail, personPhotoUrl);
             name.setText(CurrentUser.personName);
 
             /*
@@ -178,7 +178,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
         //-changed
         if (CurrentUser.profilePic != "noImage") {
-            Glide.with(getApplicationContext()).load(personPhotoUrl)
+            Glide.with(getApplicationContext()).load(CurrentUser.profilePic)
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

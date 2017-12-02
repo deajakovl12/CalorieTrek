@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.database.DbHelper;
+import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.R;
@@ -142,7 +143,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
-        Intent sendData = new Intent(LoginActivity.this, ProfileActivity.class);
+        CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
+        Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
         sendData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         sendData.putExtra("userModel", userModel);
         startActivity(sendData);
