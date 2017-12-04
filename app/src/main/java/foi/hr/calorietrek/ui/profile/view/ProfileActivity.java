@@ -114,7 +114,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         boolean isUpdated = instance.updateWeight(CurrentUser.personName, newWeight);
         if (isUpdated == true){
             Toast.makeText(getApplicationContext(), "Weight updated!", Toast.LENGTH_SHORT).show();
-            instance.updateWeight(CurrentUser.personName,newWeight);
+            instance.updateWeight(CurrentUser.personName, newWeight);
         }
         else{
             Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();

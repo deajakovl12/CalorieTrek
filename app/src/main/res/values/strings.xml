@@ -20,4 +20,8 @@
     <string name="training_stopped">Do you want to finish the training and see the results?</string>
     <string name="positive_answer">Yes</string>
     <string name="negative_answer">Cancel</string>
+    <string name="login_with">Login with ...</string>
+    <string name="facebook">Facebook</string>
+    <string name="dialog_welcome">Welcome!</string>
+    <string name="dialog_message">CalorieTrek calculates only the calories that you burn doing physical, non-sedentary, activity. This does not include your resting calories, also known as your Resting Metabolic Rate (RMR).</string>
 </resources>

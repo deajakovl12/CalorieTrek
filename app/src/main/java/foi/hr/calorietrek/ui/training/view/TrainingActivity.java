@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,9 +28,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.dialog.DialogInputWeight;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.services.ForegroundService;
 import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
+import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 
 public class TrainingActivity extends AppCompatActivity {
@@ -56,6 +59,14 @@ public class TrainingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
+
+        Intent intentDialog = getIntent();
+        String response = intentDialog.getExtras().getString("newUser");
+
+        if (response.equals("Yes")){
+            DialogWelcome();
+        }
+
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
@@ -233,5 +244,24 @@ public class TrainingActivity extends AppCompatActivity {
             stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
             startService(stopIntent);
         }
+    }
+
+    private void DialogWelcome(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        mBuilder.setTitle(R.string.dialog_welcome);
+        mBuilder.setMessage(R.string.dialog_message).setPositiveButton("CONTINUE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                DialogInput();
+            }
+        });
+
+        mBuilder.show();
+    }
+
+    private void DialogInput(){
+        DialogInputWeight dialogInput = new DialogInputWeight();
+        dialogInput.show(getSupportFragmentManager(), "dialog");
     }
 }
