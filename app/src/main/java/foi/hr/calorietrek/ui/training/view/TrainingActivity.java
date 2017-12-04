@@ -7,21 +7,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +45,8 @@ public class TrainingActivity extends AppCompatActivity {
     public @BindView(R.id.toolbar) Toolbar toolbar;
     public @BindView(R.id.btnTrain) Button btnTrain;
     public @BindView(R.id.txtTime) TextView txtTime;
+    public @BindView(R.id.txtDistance) TextView txtDistance;
+    public @BindView(R.id.txtElevation) TextView txtElevation;
     public @BindView(R.id.btnStop) Button btnStop;
 
     UserModel userModel;
@@ -64,27 +63,30 @@ public class TrainingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         seekbarCargoProgress();
         btnStop.setVisibility(btnStop.INVISIBLE);
-
     }
 
-    public void startCounting() {
-        Intent startIntent = new Intent(TrainingActivity.this, ForegroundService.class);
-        startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-        startService(startIntent);
+    public void startMeasuring()
+    {
+        Intent startIntentTimer = new Intent(TrainingActivity.this, ForegroundService.class);
+        startIntentTimer.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+        startService(startIntentTimer);
+
         registerBroadCastReceiver();
+
+        training = true;
     }
 
-    private void registerBroadCastReceiver() {
-        broadcastReceiver = new BroadcastReceiver() {
+    private void registerBroadCastReceiver()
+    {
+        broadcastReceiver = new BroadcastReceiver()
+        {
             @Override
-            public void onReceive(Context context, Intent intent) {
-
+            public void onReceive(Context context, Intent intent)
+            {
                 long timeInMilliseconds = intent.getLongExtra("timeInMilliseconds", 0);
                 txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(timeInMilliseconds),
                                                                 TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeInMilliseconds)),
                                                                 TimeUnit.MILLISECONDS.toSeconds(timeInMilliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds))));
-
-
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter(Constants.ACTION.BROADCAST_ACTION));
@@ -132,7 +134,9 @@ public class TrainingActivity extends AppCompatActivity {
         Intent stopIntent = new Intent(TrainingActivity.this, ForegroundService.class);
         stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
         startService(stopIntent);
+
         ResetData();
+
         training = false;
     }
 
@@ -141,8 +145,7 @@ public class TrainingActivity extends AppCompatActivity {
     {
         if(training == false)
         {
-            startCounting();
-            training = true;
+            startMeasuring();
         }
         if(timer == false)
         {
@@ -158,8 +161,8 @@ public class TrainingActivity extends AppCompatActivity {
     {
         Pause();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to finish the training and see the results?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("Cancel", dialogClickListener).show();
+        builder.setMessage(R.string.training_stopped).setPositiveButton(R.string.positive_answer, dialogClickListener)
+                .setNegativeButton(R.string.negative_answer, dialogClickListener).show();
     }
 
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()

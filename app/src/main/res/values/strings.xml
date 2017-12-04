@@ -17,4 +17,7 @@
     <string name="start_training">S T A R T</string>
     <string name="stop_training">S T O P</string>
     <string name="resume_training">R E S U M E</string>
+    <string name="training_stopped">Do you want to finish the training and see the results?</string>
+    <string name="positive_answer">Yes</string>
+    <string name="negative_answer">Cancel</string>
 </resources>

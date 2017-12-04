@@ -88,17 +88,17 @@
                     android:layout_alignParentStart="true" />
 
                 <TextView
-                    android:id="@+id/txtGain"
+                    android:id="@+id/txtDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="0 m"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -123,17 +123,17 @@
                     android:src="@drawable/bg_blue_button_with_gradient" />
 
                 <TextView
-                    android:id="@+id/txtDistance"
+                    android:id="@+id/txtElevation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:gravity="center"
                     android:text="0 m"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textView3"
