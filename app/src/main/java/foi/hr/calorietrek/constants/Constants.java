@@ -9,6 +9,7 @@ public class Constants {
         public static String MAIN_ACTION = "foi.hr.calorietrek.action.main";
         public static String PLAY_ACTION = "foi.hr.calorietrek.action.play";
         public static String PAUSE_ACTION = "foi.hr.calorietrek.action.pause";
+        public static String BROADCAST_ACTION = "foi.hr.calorietrek.action.broadcast";
         public static String STARTFOREGROUND_ACTION = "foi.hr.calorietrek.action.startforeground";
         public static String STOPFOREGROUND_ACTION = "foi.hr.calorietrek.action.stopforeground";
     }

@@ -1,25 +1,26 @@
 package foi.hr.calorietrek.ui.training.view;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,11 +34,8 @@ import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 
 public class TrainingActivity extends AppCompatActivity {
 
-    private Handler mHandler = new Handler();
-    private int seconds = 0;
-    private int minutes = 0;
-    private int hours = 0;
     private boolean training = false;
+    private boolean timer = false;
     private int minCargo = 0;
     private int maxCargo = 100;
     private int currentCargo = 20;
@@ -47,23 +45,51 @@ public class TrainingActivity extends AppCompatActivity {
     public @BindView(R.id.toolbar) Toolbar toolbar;
     public @BindView(R.id.btnTrain) Button btnTrain;
     public @BindView(R.id.txtTime) TextView txtTime;
+    public @BindView(R.id.txtDistance) TextView txtDistance;
+    public @BindView(R.id.txtElevation) TextView txtElevation;
     public @BindView(R.id.btnStop) Button btnStop;
 
     UserModel userModel;
+    BroadcastReceiver broadcastReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
-
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
-
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         seekbarCargoProgress();
         btnStop.setVisibility(btnStop.INVISIBLE);
+    }
+
+    public void startMeasuring()
+    {
+        Intent startIntentTimer = new Intent(TrainingActivity.this, ForegroundService.class);
+        startIntentTimer.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+        startService(startIntentTimer);
+
+        registerBroadCastReceiver();
+
+        training = true;
+    }
+
+    private void registerBroadCastReceiver()
+    {
+        broadcastReceiver = new BroadcastReceiver()
+        {
+            @Override
+            public void onReceive(Context context, Intent intent)
+            {
+                long timeInMilliseconds = intent.getLongExtra("timeInMilliseconds", 0);
+                txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(timeInMilliseconds),
+                                                                TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeInMilliseconds)),
+                                                                TimeUnit.MILLISECONDS.toSeconds(timeInMilliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds))));
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter(Constants.ACTION.BROADCAST_ACTION));
     }
 
     @Override
@@ -77,41 +103,41 @@ public class TrainingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_profile){
             Intent intent = new Intent(TrainingActivity.this, ProfileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             startActivity(intent);
             //Toast.makeText(TrainingActivity.this, "PROFIL!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    Runnable runnable = new Runnable()
+    private void Pause()
     {
-        @Override
-        public void run()
-        {
-            seconds++;
-            if(seconds > 59)
-            {
-                seconds = 0;
-                minutes++;
-                if(minutes > 59)
-                {
-                    minutes = 0;
-                    hours++;
-                }
-            }
-            txtTime.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-            StartTimer();
-        }
-    };
-
-    public void StartTimer()
-    {
-        mHandler.postDelayed(runnable, 1000); //ms
+        btnTrain.setText(getString(R.string.resume_training));
+        timer = false;
+        Intent pauseIntent = new Intent(TrainingActivity.this, ForegroundService.class);
+        pauseIntent.setAction(Constants.ACTION.PAUSE_ACTION);
+        startService(pauseIntent);
     }
 
-    public void StopTimer()
+    private void Resume()
     {
-        mHandler.removeCallbacks(runnable);
+        btnTrain.setText(getString(R.string.pause_training));
+        btnStop.setVisibility(btnStop.VISIBLE);
+        timer = true;
+        Intent playIntent = new Intent(TrainingActivity.this, ForegroundService.class);
+        playIntent.setAction(Constants.ACTION.PLAY_ACTION);
+        startService(playIntent);
+    }
+
+    private void Stop()
+    {
+        Intent stopIntent = new Intent(TrainingActivity.this, ForegroundService.class);
+        stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+        startService(stopIntent);
+
+        ResetData();
+
+        training = false;
     }
 
     @OnClick(R.id.btnTrain)
@@ -119,100 +145,49 @@ public class TrainingActivity extends AppCompatActivity {
     {
         if(training == false)
         {
-            StartTimer();
-            btnTrain.setText(getString(R.string.pause_training));
-            btnStop.setVisibility(btnStop.VISIBLE);
-
-            Intent startIntent = new Intent(TrainingActivity.this, ForegroundService.class);
-            startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-            startService(startIntent);
-            training = true;
+            startMeasuring();
+        }
+        if(timer == false)
+        {
+            Resume();
         }
         else
         {
-            StopTimer();
-            btnTrain.setText(getString(R.string.resume_training));
-            btnStop.setVisibility(btnStop.VISIBLE);
-            training = false;
+            Pause();
         }
     }
     @OnClick(R.id.btnStop)
     public void onClickBtnStop()
     {
-        mHandler.removeCallbacks(runnable);
-        btnTrain.setText(getString(R.string.resume_training));
-        training = false;
-
+        Pause();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to finish the training and see the results?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("Cancel", dialogClickListener).show();
+        builder.setMessage(R.string.training_stopped).setPositiveButton(R.string.positive_answer, dialogClickListener)
+                .setNegativeButton(R.string.negative_answer, dialogClickListener).show();
     }
 
-    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+    {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
+        switch(which)
+        {
+            case DialogInterface.BUTTON_POSITIVE:
+                Stop();
+                Intent intent = new Intent(TrainingActivity.this, FinishedTraining.class);
+                startActivity(intent);
+                break;
 
-                    ResetData();
-
-                    Intent stopIntent = new Intent(TrainingActivity.this, ForegroundService.class);
-                    stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-                    startService(stopIntent);
-
-                    Intent intent = new Intent(TrainingActivity.this, FinishedTraining.class);
-                    startActivity(intent);
-
-                    break;
-
-                case DialogInterface.BUTTON_NEGATIVE:
-                    dialog.dismiss();
-                    break;
-            }
+            case DialogInterface.BUTTON_NEGATIVE:
+                dialog.dismiss();
+                break;
+        }
         }
     };
 
     @Override
-    public void onPause()
+    public void onBackPressed()
     {
-        super.onPause();
-
-        SharedPreferences sharedpref = this.getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedpref.edit();
-        editor.putInt(getString(R.string.s), seconds);
-        editor.putInt(getString(R.string.m), minutes);
-        editor.putInt(getString(R.string.h), hours);
-        editor.putBoolean(getString(R.string.ongoing_training), training);
-        editor.commit();
-
-        Intent playIntent = new Intent(TrainingActivity.this, ForegroundService.class);
-        playIntent.setAction(Constants.ACTION.PLAY_ACTION);
-        startService(playIntent);
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        /*
-        SharedPreferences sp = this.getPreferences(Context.MODE_PRIVATE);
-        seconds = sp.getInt(getString(R.string.s), seconds);
-        minutes = sp.getInt(getString(R.string.m), minutes);
-        hours = sp.getInt(getString(R.string.h), hours);
-        training = sp.getBoolean(getString(R.string.ongoing_training), training);
-        if(training == true)
-        {
-            mHandler.postDelayed(runnable, 20);
-            btnStop.setVisibility(btnStop.VISIBLE);
-            btnTrain.setText(getString(R.string.pause_training));
-        }
-        else
-        {
-            txtTime.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-            btnTrain.setText(getString(R.string.resume_training));
-            btnStop.setVisibility(btnStop.VISIBLE);
-        }
-        */
+        moveTaskToBack(true);
     }
 
     private void ResetData()
@@ -220,10 +195,7 @@ public class TrainingActivity extends AppCompatActivity {
         btnTrain.setText(getString(R.string.start_training));
         btnStop.setVisibility(btnStop.INVISIBLE);
         txtTime.setText(getString(R.string.time_format_zero));
-        seconds = 0;
-        minutes = 0;
-        hours = 0;
-        training = false;
+        timer = false;
     }
 
     public void seekbarCargoProgress (){
@@ -248,5 +220,18 @@ public class TrainingActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if(broadcastReceiver != null)
+        {
+            unregisterReceiver(broadcastReceiver);
+            Intent stopIntent = new Intent(TrainingActivity.this, ForegroundService.class);
+            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
+            startService(stopIntent);
+        }
     }
 }
