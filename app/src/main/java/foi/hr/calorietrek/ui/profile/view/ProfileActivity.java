@@ -72,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
     private void loadWeight() {
 
-        String result = instance.returnWeight(personName);
+        String result = instance.returnWeight(CurrentUser.personName);
         try {
             current = Integer.parseInt(result);
         }
@@ -111,10 +111,10 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
     // Rad s bazom u controller
     private void changeWeight(String newWeight) {
-        boolean isUpdated = instance.updateWeight(personName, newWeight);
+        boolean isUpdated = instance.updateWeight(CurrentUser.personName, newWeight);
         if (isUpdated == true){
             Toast.makeText(getApplicationContext(), "Weight updated!", Toast.LENGTH_SHORT).show();
-            instance.updateWeight(personName,newWeight);
+            instance.updateWeight(CurrentUser.personName,newWeight);
         }
         else{
             Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
@@ -147,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         if(getIntent().hasExtra("userModel")) {
             UserModel userModel = getIntent().getParcelableExtra("userModel");
 
-            personName = userModel.getPersonName();
+            CurrentUser.personName = userModel.getPersonName();
             personEmail = userModel.getPersonEmail();
             personPhotoUrl = userModel.getPersonPhotoUrl();
 
