@@ -17,4 +17,12 @@ public class Constants {
     public interface NOTIFICATION_ID {
         public static int FOREGROUND_SERVICE = 101;
     }
+    public interface GPSPARAMETERS {
+        //regularni interval u milisekundama u kojem će fused location provider client zahtijevati novu lokaciju
+        public static int UPDATE_INTERVAL = 5000;
+        //ukoliko se "ispravna" lokacija ukaže i prije regularnog intervala aplikacija fused location provider client će postaviti novu lokaciju i prije regularnog intervala
+        public static int FASTEST_UPDATE_INTERVAL = 2500;
+        //točnost gps lokacija koje uređaj dobiva, o čemu ovisi i potrošnja baterije  high-100, balanced-102,  low-104, noPower-105
+        public  static  int ACCURACY = 100;
+    }
 }

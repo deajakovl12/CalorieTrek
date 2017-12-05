@@ -5,10 +5,8 @@ package foi.hr.calorietrek.services;
  */
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,22 +16,17 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
-import java.util.concurrent.TimeUnit;
 
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
 import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
-import static android.content.ContentValues.TAG;
-
 public class ForegroundService extends Service {
 
     private Handler trainingHandler = new Handler();
     private Handler locationHandler = new Handler();
-    private int delay = 2500; //2.5 seconds
+    private int delay = 2500;
     private Runnable locationRunnable;
     private Intent intent;
     private long startTime = 0L;
@@ -59,7 +52,7 @@ public class ForegroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
-            fusedLocationProvider = new FusedLocationProvider(5000,2500,100,this);
+            fusedLocationProvider = new FusedLocationProvider(Constants.GPSPARAMETERS.UPDATE_INTERVAL,Constants.GPSPARAMETERS.FASTEST_UPDATE_INTERVAL,Constants.GPSPARAMETERS.ACCURACY,this);
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
             locationHandler.postDelayed(updateLocation, delay);
@@ -85,12 +78,12 @@ public class ForegroundService extends Service {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
-            fusedLocationProvider.startLocationUpdates();
+            if(fusedLocationProvider!=null) fusedLocationProvider.startLocationUpdates();
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
             locationHandler.postDelayed(locationRunnable,delay);
         } else if (intent.getAction().equals(Constants.ACTION.PAUSE_ACTION)) {
-            fusedLocationProvider.stopLocationUpdates();
+            if(fusedLocationProvider!=null)fusedLocationProvider.stopLocationUpdates();
             pausedTime += timeInMilliseconds;
             trainingHandler.removeCallbacks(updateTimerThread);
             locationHandler.removeCallbacks(locationRunnable);

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -26,7 +27,6 @@ public class FusedLocationProvider {
     private Context context;
     private LocationCallback locationCallback;
     private boolean isRegistered;
-    // Accuracy  high-100, balanced-102,  low-104, noPower-105
     public FusedLocationProvider(long UpdateInterval,long FastestUpdateInterval,int Accuracy, Context context) {
         locationRequest = new LocationRequest();
         locationRequest.setInterval(UpdateInterval);
@@ -72,7 +72,8 @@ public class FusedLocationProvider {
             isRegistered=false;
         }
     }
-    public void destroy(){
-        stopLocationUpdates();
+    public static boolean isLocationEnabled(Context context){
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }
