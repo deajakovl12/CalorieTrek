@@ -114,15 +114,15 @@ public class TrainingActivity extends AppCompatActivity {
     }
     private void turnOnLocation(){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-        builder.setTitle("GPS is Disabled");
-        builder.setMessage("Please enable GPS because this app calculates calorie consumption and distance traveled based on GPS.");
-        builder.setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.gps_dialog_title));
+        builder.setMessage(getString(R.string.gps_dialog_message));
+        builder.setPositiveButton(getString(R.string.gps_positive_answer), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivityForResult(intent,1);
             }
-        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.gps_negative_answer), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
