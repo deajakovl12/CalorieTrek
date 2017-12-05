@@ -1,7 +1,9 @@
 package foi.hr.calorietrek.ui.login.view;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -133,6 +135,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     {
         GoogleSignInAccount accountData = result.getSignInAccount();
         String personPhoto;
+
         DbUser(accountData.getDisplayName());
 
         if (accountData.getPhotoUrl() != null){
@@ -159,10 +162,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void DbUser(String nameSurname){
         boolean isInserted = instance.existingUser(nameSurname);
         if (isInserted == true){
-            Toast.makeText(LoginActivity.this, "New user inserted", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(LoginActivity.this, "Existing user", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, R.string.existing_user, Toast.LENGTH_LONG).show();
         }
     }
 }

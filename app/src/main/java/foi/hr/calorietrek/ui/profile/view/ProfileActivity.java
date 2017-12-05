@@ -113,11 +113,11 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     private void changeWeight(String newWeight) {
         boolean isUpdated = instance.updateWeight(CurrentUser.personName, newWeight);
         if (isUpdated == true){
-            Toast.makeText(getApplicationContext(), "Weight updated!", Toast.LENGTH_SHORT).show();
-            instance.updateWeight(CurrentUser.personName,newWeight);
+            Toast.makeText(getApplicationContext(), R.string.weight_updated, Toast.LENGTH_SHORT).show();
+            instance.updateWeight(CurrentUser.personName, newWeight);
         }
         else{
-            Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.weight_not_updated, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -223,7 +223,6 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             Intent intent = new Intent(ProfileActivity.this, TrainingActivity.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
 

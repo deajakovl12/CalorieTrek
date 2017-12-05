@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/txtInputWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/input_your_weight"
+        android:textSize="@dimen/textsize_input_weight_large"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/dialog_margin_bottom"/>
+    <EditText
+        android:id="@+id/inputWeight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_weight"
+        android:inputType="number"
+        android:layout_below="@+id/txtInputWeight"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="@dimen/dialog_margin_bottom"/>
+
+    <TextView
+        android:id="@+id/txtSelectCargo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/select_cargo"
+        android:textSize="@dimen/textsize_input_weight_large"
+        android:textStyle="bold"
+        android:layout_below="@+id/inputWeight"
+        android:layout_marginBottom="@dimen/dialog_margin_bottom"/>
+    <TextView
+        android:id="@+id/txtMessageCargo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cargo_weight_message"
+        android:textSize="@dimen/fontsize_dialog_message"
+        android:layout_marginBottom="@dimen/dialog_margin_bottom"
+        android:layout_below="@+id/txtSelectCargo"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/txtCargoProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/current_cargo"
+        android:textSize="@dimen/fontsize_dialog_message"
+        android:layout_marginBottom="@dimen/dialog_margin_bottom"
+        android:layout_below="@+id/txtMessageCargo"
+        android:gravity="center"/>
+    <SeekBar
+        android:id="@+id/seekbarCargo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtCargoProgress"
+        android:progress="@string/current_cargo"/>
+
+</RelativeLayout>

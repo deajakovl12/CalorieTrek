@@ -17,9 +17,6 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -27,18 +24,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.dialog.dialog_input_weight.view.DialogInputWeight;
+import foi.hr.calorietrek.dialog.dialog_input_weight.view.IDialogInputWeight;
+import foi.hr.calorietrek.dialog.dialog_welcome.DialogWelcome;
+import foi.hr.calorietrek.dialog.dialog_welcome.IDialogWelcome;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.services.ForegroundService;
 import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 
-public class TrainingActivity extends AppCompatActivity {
+public class TrainingActivity extends AppCompatActivity implements DialogInputWeight.DialogInputWeightListener{
 
     private boolean training = false;
     private boolean timer = false;
     private int minCargo = 0;
     private int maxCargo = 100;
-    private int currentCargo = 20;
+    public int currentCargo = 20;
 
     public @BindView(R.id.sbCargoWeight) SeekBar seekBarCargo;
     public @BindView(R.id.cargoKg) TextView cargoKg;
@@ -56,6 +57,10 @@ public class TrainingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
+
+        dialogInput();
+        dialogWelcome();
+
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
@@ -161,7 +166,8 @@ public class TrainingActivity extends AppCompatActivity {
     {
         Pause();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.training_stopped).setPositiveButton(R.string.positive_answer, dialogClickListener)
+        builder.setMessage(R.string.training_stopped)
+                .setPositiveButton(R.string.positive_answer, dialogClickListener)
                 .setNegativeButton(R.string.negative_answer, dialogClickListener).show();
     }
 
@@ -233,5 +239,22 @@ public class TrainingActivity extends AppCompatActivity {
             stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
             startService(stopIntent);
         }
+    }
+
+    private void dialogWelcome(){
+        DialogWelcome dialogWelcome = IDialogWelcome.dialogWelcome;
+        dialogWelcome.show(getSupportFragmentManager(), "dialogWelcome");
+    }
+
+    private void dialogInput(){
+        DialogInputWeight dialogInputWeight = IDialogInputWeight.dialogInputWeight;
+        dialogInputWeight.show(getSupportFragmentManager(), "dialogWeight");
+    }
+
+    @Override
+    public void applyCargo(int cargo) {
+        currentCargo = cargo;
+        cargoKg.setText(String.format("%2d kg", currentCargo));
+        seekBarCargo.setProgress(currentCargo);
     }
 }
