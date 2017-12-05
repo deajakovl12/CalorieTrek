@@ -10,16 +10,12 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,20 +24,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
-import foi.hr.calorietrek.dialog.DialogInputWeight;
+import foi.hr.calorietrek.dialog.dialog_input_weight.view.DialogInputWeight;
+import foi.hr.calorietrek.dialog.dialog_input_weight.view.IDialogInputWeight;
+import foi.hr.calorietrek.dialog.dialog_welcome.DialogWelcome;
+import foi.hr.calorietrek.dialog.dialog_welcome.IDialogWelcome;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.services.ForegroundService;
 import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
-import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 
-public class TrainingActivity extends AppCompatActivity {
+public class TrainingActivity extends AppCompatActivity implements DialogInputWeight.DialogInputWeightListener{
 
     private boolean training = false;
     private boolean timer = false;
     private int minCargo = 0;
     private int maxCargo = 100;
-    private int currentCargo = 20;
+    public int currentCargo = 20;
 
     public @BindView(R.id.sbCargoWeight) SeekBar seekBarCargo;
     public @BindView(R.id.cargoKg) TextView cargoKg;
@@ -60,12 +58,8 @@ public class TrainingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
 
-        Intent intentDialog = getIntent();
-        String response = intentDialog.getExtras().getString("newUser");
-
-        if (response.equals("Yes")){
-            DialogWelcome();
-        }
+        dialogInput();
+        dialogWelcome();
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
@@ -172,7 +166,8 @@ public class TrainingActivity extends AppCompatActivity {
     {
         Pause();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.training_stopped).setPositiveButton(R.string.positive_answer, dialogClickListener)
+        builder.setMessage(R.string.training_stopped)
+                .setPositiveButton(R.string.positive_answer, dialogClickListener)
                 .setNegativeButton(R.string.negative_answer, dialogClickListener).show();
     }
 
@@ -246,22 +241,20 @@ public class TrainingActivity extends AppCompatActivity {
         }
     }
 
-    private void DialogWelcome(){
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setTitle(R.string.dialog_welcome);
-        mBuilder.setMessage(R.string.dialog_message).setPositiveButton("CONTINUE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                DialogInput();
-            }
-        });
-
-        mBuilder.show();
+    private void dialogWelcome(){
+        DialogWelcome dialogWelcome = IDialogWelcome.dialogWelcome;
+        dialogWelcome.show(getSupportFragmentManager(), "dialogWelcome");
     }
 
-    private void DialogInput(){
-        DialogInputWeight dialogInput = new DialogInputWeight();
-        dialogInput.show(getSupportFragmentManager(), "dialog");
+    private void dialogInput(){
+        DialogInputWeight dialogInputWeight = IDialogInputWeight.dialogInputWeight;
+        dialogInputWeight.show(getSupportFragmentManager(), "dialogWeight");
+    }
+
+    @Override
+    public void applyCargo(int cargo) {
+        currentCargo = cargo;
+        cargoKg.setText(String.format("%2d kg", currentCargo));
+        seekBarCargo.setProgress(currentCargo);
     }
 }

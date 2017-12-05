@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInAccount accountData = result.getSignInAccount();
         String personPhoto;
 
-        boolean newUser = DbUser(accountData.getDisplayName());
+        DbUser(accountData.getDisplayName());
 
         if (accountData.getPhotoUrl() != null){
             personPhoto = accountData.getPhotoUrl().toString();
@@ -148,12 +148,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
-        if (newUser){
-            sendData.putExtra("newUser", "Yes");
-        }
-        else{
-            sendData.putExtra("newUser", "No");
-        }
         sendData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         sendData.putExtra("userModel", userModel);
         startActivity(sendData);
@@ -165,19 +159,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    public boolean DbUser(String nameSurname){
-        boolean newUser = false;
-
+    public void DbUser(String nameSurname){
         boolean isInserted = instance.existingUser(nameSurname);
         if (isInserted == true){
-            Toast.makeText(LoginActivity.this, "New user inserted", Toast.LENGTH_LONG).show();
-            newUser = true;
+            Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
         }
         else{
-            Toast.makeText(LoginActivity.this, "Existing user", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, R.string.existing_user, Toast.LENGTH_LONG).show();
         }
-
-        return newUser;
     }
 }
 
