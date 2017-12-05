@@ -24,4 +24,19 @@
     <string name="gps_dialog_message">Please enable GPS because this app calculates calorie consumption and distance traveled based on GPS.</string>
     <string name="gps_positive_answer">Enable GPS</string>
     <string name="gps_negative_answer">No</string>
+    <string name="login_with">Login with ...</string>
+    <string name="facebook">Facebook</string>
+    <string name="dialog_welcome">Welcome!</string>
+    <string name="dialog_message">CalorieTrek calculates only the calories that you burn doing physical, non-sedentary, activity. This does not include your resting calories, also known as your Resting Metabolic Rate (RMR).</string>
+    <string name="new_user_inserted">New user inserted</string>
+    <string name="existing_user">Existing user</string>
+    <string name="cargo_weight_message">You can change the Cargo Weight during tracking.</string>
+    <string name="select_cargo">Select Cargo Weight (kg)</string>
+    <string name="current_cargo">20</string>
+    <string name="hint_weight">Weight</string>
+    <string name="weight_updated">Weight updated!</string>
+    <string name="weight_not_updated">Weight not updated!</string>
+    <string name="saved">Saved</string>
+    <string name="not_saved">Not saved</string>
+    <string name="input_your_weight">Input Your Weight (kg)</string>
 </resources>

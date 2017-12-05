@@ -119,8 +119,9 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:src="@drawable/bg_blue_button_with_gradient" />
+                    android:src="@drawable/bg_blue_button_with_gradient"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"/>
 
                 <TextView
                     android:id="@+id/txtElevation"

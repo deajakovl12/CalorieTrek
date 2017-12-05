@@ -45,7 +45,12 @@
 
     <dimen name="margin_bottom_elements">15dp</dimen>
     <dimen name="padding_screen">10dp</dimen>
-
+    <dimen name="img_welcome_height">130dp</dimen>
+    <dimen name="padding_welcome_dialog">20dp</dimen>
+    <dimen name="fontsize_dialog_welcome">25sp</dimen>
+    <dimen name="fontsize_dialog_message">17sp</dimen>
+    <dimen name="textsize_input_weight_large">20sp</dimen>
+    <dimen name="dialog_margin_bottom">10dp</dimen>
 
 
 </resources>
