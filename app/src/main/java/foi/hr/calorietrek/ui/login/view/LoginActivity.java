@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import foi.hr.calorietrek.constants.Constants;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
@@ -298,8 +299,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if(profile != null){
             DbUser(profile.getName());
 
-            if ( profile.getProfilePictureUri(200,200).toString() != null){
-                personPhoto = profile.getProfilePictureUri(200,200).toString();
+            if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
+                personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
             }
             else{
                 personPhoto = "noImage";
@@ -307,7 +308,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
             //userModel = new UserModel(profile.getName(), "", personPhoto);
             userModel = new UserModel(profile.getName(), personEmail, personPhoto);
-            Intent main = new Intent(LoginActivity.this, ProfileActivity.class);
+            Intent main = new Intent(LoginActivity.this, TrainingActivity.class);
             CurrentUser loggedUser = new CurrentUser(profile.getName(),personEmail, personPhoto);
 
             main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
