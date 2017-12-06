@@ -30,7 +30,6 @@
             android:launchMode="singleTask" />
 
         <service android:name=".services.ForegroundService"></service>
-        <service android:name=".services.LocationService"></service>
 
         <activity android:name=".ui.finished_training.FinishedTraining"></activity>
     </application>

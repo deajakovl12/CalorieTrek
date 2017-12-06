@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,14 +17,13 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.dialog.dialog_input_weight.view.DialogInputWeight;
 import foi.hr.calorietrek.dialog.dialog_input_weight.view.IDialogInputWeight;
 import foi.hr.calorietrek.dialog.dialog_welcome.DialogWelcome;
@@ -64,6 +64,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
+
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         seekbarCargoProgress();
@@ -72,6 +73,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     public void startMeasuring()
     {
+
         Intent startIntentTimer = new Intent(TrainingActivity.this, ForegroundService.class);
         startIntentTimer.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
         startService(startIntentTimer);
@@ -92,6 +94,10 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
                 txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(timeInMilliseconds),
                                                                 TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeInMilliseconds)),
                                                                 TimeUnit.MILLISECONDS.toSeconds(timeInMilliseconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeInMilliseconds))));
+                float distance= intent.getFloatExtra("distanceInMeters",0);
+                txtDistance.setText(String.format("%.2f", distance)+"m");
+                double elevationGain = intent.getDoubleExtra("elevationGainInMeters",0);
+                txtElevation.setText(String.format("%.2f", elevationGain)+"m");
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter(Constants.ACTION.BROADCAST_ACTION));
@@ -113,6 +119,24 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
             //Toast.makeText(TrainingActivity.this, "PROFIL!", Toast.LENGTH_LONG).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+    private void turnOnLocation(){
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.gps_dialog_title));
+        builder.setMessage(getString(R.string.gps_dialog_message));
+        builder.setPositiveButton(getString(R.string.gps_positive_answer), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(intent,1);
+            }
+        }).setNegativeButton(getString(R.string.gps_negative_answer), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        android.support.v7.app.AlertDialog mGPSDialog = builder.create();
+        mGPSDialog.show();
     }
 
     private void Pause()
@@ -150,9 +174,10 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     {
         if(training == false)
         {
-            startMeasuring();
+            if(!FusedLocationProvider.isLocationEnabled(this))turnOnLocation();
+            else startMeasuring();
         }
-        if(timer == false)
+        if(timer == false && training == true)
         {
             Resume();
         }

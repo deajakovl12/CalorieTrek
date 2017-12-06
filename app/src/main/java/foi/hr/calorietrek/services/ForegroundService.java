@@ -5,36 +5,41 @@ package foi.hr.calorietrek.services;
  */
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
-import java.util.concurrent.TimeUnit;
 
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 public class ForegroundService extends Service {
 
     private Handler trainingHandler = new Handler();
+    private Handler locationHandler = new Handler();
+    private int delay = 2500;
+    private Runnable locationRunnable;
     private Intent intent;
     private long startTime = 0L;
     private long timeInMilliseconds = 0L;
     private long pausedTime = 0L;
     private long updateTime = 0L;
     private boolean stopTimer = false;
-
+    private FusedLocationProvider fusedLocationProvider = null;
+    private Location firstLocation = null;
+    private Location oldLocation = null;
+    private Location currentLocation = null;
+    private float distance = 0;
+    private double elevationGain=0;
     @Override
     public void onCreate()
     {
@@ -47,10 +52,10 @@ public class ForegroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
-
+            fusedLocationProvider = new FusedLocationProvider(Constants.GPSPARAMETERS.UPDATE_INTERVAL,Constants.GPSPARAMETERS.FASTEST_UPDATE_INTERVAL,Constants.GPSPARAMETERS.ACCURACY,this);
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
-
+            locationHandler.postDelayed(updateLocation, delay);
             Intent notificationIntent = new Intent(this, TrainingActivity.class);
 
             notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
@@ -73,12 +78,19 @@ public class ForegroundService extends Service {
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
+            if(fusedLocationProvider!=null) fusedLocationProvider.startLocationUpdates();
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
+            locationHandler.postDelayed(locationRunnable,delay);
         } else if (intent.getAction().equals(Constants.ACTION.PAUSE_ACTION)) {
+            if(fusedLocationProvider!=null)fusedLocationProvider.stopLocationUpdates();
             pausedTime += timeInMilliseconds;
             trainingHandler.removeCallbacks(updateTimerThread);
+            locationHandler.removeCallbacks(locationRunnable);
         } else if (intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION)) {
+            if(fusedLocationProvider!=null) {
+                fusedLocationProvider.stopLocationUpdates();
+            }
             timeInMilliseconds = 0L;
             startTime = 0L;
             pausedTime = 0L;
@@ -97,18 +109,49 @@ public class ForegroundService extends Service {
             timeInMilliseconds = SystemClock.uptimeMillis() - startTime;
             updateTime = pausedTime + timeInMilliseconds;
             intent.putExtra("timeInMilliseconds", updateTime);
+            intent.putExtra("distanceInMeters",distance);
+            intent.putExtra("elevationGainInMeters",elevationGain);
             sendBroadcast(intent);
-
             if (!stopTimer) {
                 trainingHandler.postDelayed(this, 0);
             }
         }
     };
 
+    private Runnable updateLocation =new Runnable() {
+        public void run() {
+            oldLocation = currentLocation;
+            currentLocation = fusedLocationProvider.GetLocation();
+            calculateDistance();
+            calculateElevationGain();
+            locationRunnable=this;
+            locationHandler.postDelayed(locationRunnable, delay);
+        }
+    };
+
+
+    private  void calculateDistance() {
+        if(oldLocation!=null) {
+            distance+=oldLocation.distanceTo(currentLocation);
+        }
+    }
+    private  void calculateElevationGain() {
+            if(oldLocation==null && currentLocation != null) {
+                firstLocation = currentLocation;
+            }
+            else if(currentLocation!=null && firstLocation!=null){
+                elevationGain = currentLocation.getAltitude()-firstLocation.getAltitude();
+            }
+        }
     @Override
     public void onDestroy()
     {
+
         trainingHandler.removeCallbacks(updateTimerThread);
+        locationHandler.removeCallbacks(locationRunnable);
+        if(fusedLocationProvider!=null) {
+            fusedLocationProvider.stopLocationUpdates();
+        }
         super.onDestroy();
     }
 
