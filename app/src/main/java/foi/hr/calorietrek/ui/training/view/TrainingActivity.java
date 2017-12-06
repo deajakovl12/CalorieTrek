@@ -47,7 +47,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     private int minCargo = 0;
     private int maxCargo = 100;
     public int currentCargo = 20;
-    public int MY_PERMISSIONS_REQUEST_LOCATION;
+    public int MY_PERMISSIONS_REQUEST_LOCATION=101;
 
     public @BindView(R.id.sbCargoWeight) SeekBar seekBarCargo;
     public @BindView(R.id.cargoKg) TextView cargoKg;
