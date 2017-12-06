@@ -24,6 +24,7 @@
     <string name="gps_dialog_message">Please enable GPS because this app calculates calorie consumption and distance traveled based on GPS.</string>
     <string name="gps_positive_answer">Enable GPS</string>
     <string name="gps_negative_answer">No</string>
+    <string name="location_permissions_not_granted">Application needs permission to access location to calculate calorie consumption and distance traveled.</string>
     <string name="login_with">Login with ...</string>
     <string name="facebook">Facebook</string>
     <string name="dialog_welcome">Welcome!</string>

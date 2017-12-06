@@ -1,5 +1,6 @@
 package foi.hr.calorietrek.ui.training.view;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +21,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,9 +43,11 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     private boolean training = false;
     private boolean timer = false;
+    private boolean locationPermission=false;
     private int minCargo = 0;
     private int maxCargo = 100;
     public int currentCargo = 20;
+    public int MY_PERMISSIONS_REQUEST_LOCATION;
 
     public @BindView(R.id.sbCargoWeight) SeekBar seekBarCargo;
     public @BindView(R.id.cargoKg) TextView cargoKg;
@@ -64,7 +72,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
-
+        locationPermission = checkLocationPermissions();
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         seekbarCargoProgress();
@@ -73,7 +81,6 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     public void startMeasuring()
     {
-
         Intent startIntentTimer = new Intent(TrainingActivity.this, ForegroundService.class);
         startIntentTimer.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
         startService(startIntentTimer);
@@ -174,6 +181,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     {
         if(training == false)
         {
+            if(locationPermission==false)askLocationPermissions();
             if(!FusedLocationProvider.isLocationEnabled(this))turnOnLocation();
             else startMeasuring();
         }
@@ -281,5 +289,23 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         currentCargo = cargo;
         cargoKg.setText(String.format("%2d kg", currentCargo));
         seekBarCargo.setProgress(currentCargo);
+    }
+
+    public boolean checkLocationPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Toast toast = Toast.makeText(this, R.string.location_permissions_not_granted, Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    public void askLocationPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
+        }
     }
 }
