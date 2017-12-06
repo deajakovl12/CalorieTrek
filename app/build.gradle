@@ -42,6 +42,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     debugCompile 'im.dino:dbinspector:3.4.1@aar'
+    compile 'com.facebook.android:facebook-android-sdk:4.18.0'
 }
 
 

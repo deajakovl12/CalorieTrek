@@ -35,17 +35,39 @@
             android:id="@+id/btn_sign_in"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"/>
+            android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"
+            android:color="@color/transparent"
+            />
 
-        <Button
-            android:id="@+id/btn_facebook"
-            android:layout_width="fill_parent"
+
+
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/facebook"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            android:background="@drawable/bg_button_facebook"/>
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_margin="@dimen/btn_fb_margin"
+            android:paddingTop="@dimen/btn_fb_padding_top"
+            android:paddingBottom="@dimen/btn_fb_padding_bottom"
+            android:background="@drawable/bg_button_facebook"
+            />
+
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
+
+
+
 
     </LinearLayout>
 </RelativeLayout>
