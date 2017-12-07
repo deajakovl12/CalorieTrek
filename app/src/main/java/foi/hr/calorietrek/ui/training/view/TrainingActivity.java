@@ -72,13 +72,8 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
 
-        Intent intentDialog = getIntent();
-        boolean response = intentDialog.getExtras().getBoolean("userExist");
-        if (!response){
-            dialogInput();
-            dialogWelcome();
-        }
-
+        dialogInput();
+        dialogWelcome();
         loadWeight();
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);

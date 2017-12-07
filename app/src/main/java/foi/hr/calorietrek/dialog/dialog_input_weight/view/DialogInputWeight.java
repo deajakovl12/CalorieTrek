@@ -36,10 +36,10 @@ public class DialogInputWeight extends AppCompatDialogFragment implements IDialo
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_weight_layout, null);
+        View view = inflater.inflate(R.layout.dialog_weight_layout, null);
 
         dialogInputController = new DialogInputController(getContext());
 
@@ -54,22 +54,17 @@ public class DialogInputWeight extends AppCompatDialogFragment implements IDialo
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i){
-                        dismiss();
+
                     }
                 })
                 .setPositiveButton("SAVE", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i){
-                        if (inputWeight.getText().toString().isEmpty()){
-                            Toast.makeText(getContext(), "Input weight is required!", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
-                            int value = selectedCargo.getProgress();
-                            listener.applyCargo(value);
+                        int value = selectedCargo.getProgress();
+                        listener.applyCargo(value);
 
-                            String weight = inputWeight.getText().toString();
-                            changeWeight(weight);
-                        }
+                        String weight = inputWeight.getText().toString();
+                        changeWeight(weight);
                     }
                 });
 
