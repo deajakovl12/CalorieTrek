@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="foi.hr.calorietrek.ProfileActivity">
+    android:background="@drawable/img_bg"
+    tools:context="foi.hr.calorietrek.ui.profile.view.ProfileActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/menubar_height"
-        android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:titleTextColor="#ffffff">
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -29,18 +31,20 @@
             android:layout_marginTop="@dimen/profile_det_margin"
             android:layout_marginBottom="@dimen/profile_det_margin">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/profile_image"
                 android:layout_height="@dimen/profile_image"
-                android:layout_marginRight="@dimen/profile_image_margin"
-                android:background="@drawable/largeiconprofile" />
+                android:layout_marginEnd="@dimen/profile_image_margin"
+                android:src="@drawable/largeiconprofile" />
 
             <TextView
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Olivia Holdens"
+                android:textColor="@color/white"
                 android:layout_centerVertical="true"
                 android:textStyle="bold"
                 android:layout_toEndOf="@+id/profileImage" />
@@ -52,7 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Kilogrami" />
+            android:text="Weight"
+            android:textColor="@color/white"/>
 
         <SeekBar
             android:id="@+id/sbKg"
@@ -63,20 +68,53 @@
             android:max="120"
             android:progress="55" />
 
-        <Button
-            android:id="@+id/btnAllTrainings"
-            style="@style/Widget.AppCompat.Button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="All your trainings"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnLogOut"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_list"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_screen"/>
+
+            <Button
+                android:id="@+id/btnAllTrainings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_button"
+                android:text="@string/all_your_trainings"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_logout"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_screen"/>
+
+            <Button
+                android:id="@+id/btnLogOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/log_out"
+                android:textAllCaps="false"
+                android:background="@drawable/border_button"
+                android:textColor="@color/white"
+                android:textAlignment="textStart"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

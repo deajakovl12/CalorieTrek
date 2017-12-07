@@ -7,7 +7,7 @@
     <dimen name="logo_height">64dp</dimen>
     <dimen name="logo_topmargin">40dp</dimen>
 
-    <dimen name="profile_det_margin">30dp</dimen>
+    <dimen name="profile_det_margin">25dp</dimen>
     <dimen name="profile_image">100dp</dimen>
     <dimen name="profile_image_margin">10dp</dimen>
 
@@ -41,7 +41,20 @@
 
     <dimen name="btn_sign_out_margin_bottom">2dp</dimen>
     <dimen name="btn_sign_out_margin_top">20dp</dimen>
+    <dimen name="training_text">16sp</dimen>
 
+    <dimen name="margin_bottom_elements">15dp</dimen>
+    <dimen name="padding_screen">10dp</dimen>
+    <dimen name="img_welcome_height">130dp</dimen>
+    <dimen name="padding_welcome_dialog">20dp</dimen>
+    <dimen name="fontsize_dialog_welcome">25sp</dimen>
+    <dimen name="fontsize_dialog_message">17sp</dimen>
+    <dimen name="textsize_input_weight_large">20sp</dimen>
+    <dimen name="dialog_margin_bottom">10dp</dimen>
+
+    <dimen name="btn_fb_margin">4dp</dimen>
+    <dimen name="btn_fb_padding_top">12dp</dimen>
+    <dimen name="btn_fb_padding_bottom">12dp</dimen>
 
 
 

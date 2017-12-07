@@ -2,10 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/profile"
+        android:id="@+id/action_profile"
         android:title="@string/menu_action_profile"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/iconprofile">
-
-    </item>
+        app:showAsAction="always"/>
 </menu>

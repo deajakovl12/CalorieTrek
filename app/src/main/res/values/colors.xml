@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4d4d4d</color>
+    <color name="colorPrimary">#0c204f</color>
     <color name="colorPrimaryDark">#1a1a1a</color>
     <color name="colorAccent">#00cc99</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="white">@android:color/white</color>
+    <color name="colorSmallText">#8daace</color>
+    <color name="colorTimer">#b8bfce</color>
 </resources>

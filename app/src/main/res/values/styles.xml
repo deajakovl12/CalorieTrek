@@ -11,8 +11,12 @@
 
     <style name="SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">
-            @drawable/background
+            @drawable/img_bg
         </item>
+    </style>
+    
+    <style name="ToolbarBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
 </resources>
