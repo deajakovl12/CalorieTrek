@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,11 +30,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.dialog.dialog_input_weight.view.DialogInputWeight;
 import foi.hr.calorietrek.dialog.dialog_input_weight.view.IDialogInputWeight;
 import foi.hr.calorietrek.dialog.dialog_welcome.DialogWelcome;
 import foi.hr.calorietrek.dialog.dialog_welcome.IDialogWelcome;
+import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.services.ForegroundService;
 import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
@@ -47,6 +50,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     private int minCargo = 0;
     private int maxCargo = 100;
     public int currentCargo = 20;
+    private int weight = 0;
     public int MY_PERMISSIONS_REQUEST_LOCATION=101;
 
     public @BindView(R.id.sbCargoWeight) SeekBar seekBarCargo;
@@ -57,9 +61,11 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     public @BindView(R.id.txtDistance) TextView txtDistance;
     public @BindView(R.id.txtElevation) TextView txtElevation;
     public @BindView(R.id.btnStop) Button btnStop;
+    public @BindView(R.id.txtKcal) TextView txtKcal;
 
     UserModel userModel;
     BroadcastReceiver broadcastReceiver = null;
+    DbHelper instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
         dialogInput();
         dialogWelcome();
+        loadWeight();
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
@@ -79,11 +86,24 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         btnStop.setVisibility(btnStop.INVISIBLE);
     }
 
+    private void loadWeight()
+    {
+        instance = DbHelper.getInstance(this);
+        String result = instance.returnWeight(CurrentUser.personName);
+        try {
+            weight = Integer.parseInt(result);
+        }
+        catch (NumberFormatException e){
+            weight = 55;
+        }
+    }
+
     public void startMeasuring()
     {
-        Intent startIntentTimer = new Intent(TrainingActivity.this, ForegroundService.class);
-        startIntentTimer.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-        startService(startIntentTimer);
+        loadData();
+        Intent startIntent = new Intent(TrainingActivity.this, ForegroundService.class);
+        startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+        startService(startIntent);
 
         registerBroadCastReceiver();
 
@@ -105,6 +125,8 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
                 txtDistance.setText(String.format("%.2f", distance)+"m");
                 double elevationGain = intent.getDoubleExtra("elevationGainInMeters",0);
                 txtElevation.setText(String.format("%.2f", elevationGain)+"m");
+                double calorie = intent.getDoubleExtra("calories", 0);
+                txtKcal.setText(String.format("%.1f", calorie));
             }
         };
         registerReceiver(broadcastReceiver, new IntentFilter(Constants.ACTION.BROADCAST_ACTION));
@@ -236,6 +258,14 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         txtTime.setText(getString(R.string.time_format_zero));
         timer = false;
     }
+    private void loadData()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("cargoWeight", currentCargo);
+        editor.putInt("userWeight", weight);
+        editor.apply();
+    }
 
     public void seekbarCargoProgress (){
         seekBarCargo.setProgress(currentCargo);
@@ -247,6 +277,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 currentCargo = progress + minCargo;
                 cargoKg.setText(String.format("%2d kg", currentCargo));
+                loadData();
             }
 
             @Override

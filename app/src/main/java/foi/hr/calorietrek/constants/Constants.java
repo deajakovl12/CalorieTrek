@@ -32,4 +32,8 @@ public class Constants {
         public static int PHOTO_WIDTH=200;
     }
 
+    public interface CALORIES {
+        public static int JOULES = 4184;
+    }
+
 }

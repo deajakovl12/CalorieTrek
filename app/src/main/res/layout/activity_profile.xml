@@ -31,12 +31,16 @@
             android:layout_marginTop="@dimen/profile_det_margin"
             android:layout_marginBottom="@dimen/profile_det_margin">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/profile_image"
                 android:layout_height="@dimen/profile_image"
                 android:layout_marginEnd="@dimen/profile_image_margin"
                 android:background="@drawable/largeiconprofile" />
+                android:src="@drawable/profile"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FF000000"/>
 
             <TextView
                 android:id="@+id/txtName"
