@@ -95,7 +95,6 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         catch (NumberFormatException e){
             current = 55;
         }
-
     }
 
     //Prikaz tezine u kg

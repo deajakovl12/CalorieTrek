@@ -15,6 +15,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
 import foi.hr.calorietrek.R;
@@ -40,12 +41,15 @@ public class ForegroundService extends Service {
     private Location currentLocation = null;
     private float distance = 0;
     private double elevationGain=0;
+    private double calories = 0;
+    private int userWeight = 0;
+    private int cargoWeight = 0;
+
     @Override
     public void onCreate()
     {
         super.onCreate();
         intent = new Intent(Constants.ACTION.BROADCAST_ACTION);
-
     }
 
 
@@ -53,6 +57,7 @@ public class ForegroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
             fusedLocationProvider = new FusedLocationProvider(Constants.GPSPARAMETERS.UPDATE_INTERVAL,Constants.GPSPARAMETERS.FASTEST_UPDATE_INTERVAL,Constants.GPSPARAMETERS.ACCURACY,this);
+            loadData();
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
             locationHandler.postDelayed(updateLocation, delay);
@@ -79,6 +84,7 @@ public class ForegroundService extends Service {
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
             if(fusedLocationProvider!=null) fusedLocationProvider.startLocationUpdates();
+            loadData();
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
             locationHandler.postDelayed(locationRunnable,delay);
@@ -96,6 +102,10 @@ public class ForegroundService extends Service {
             pausedTime = 0L;
             updateTime = 0L;
 
+            distance = 0;
+            elevationGain = 0;
+            calories = 0;
+
             stopTimer = true;
             stopForeground(true);
             stopSelf();
@@ -111,6 +121,7 @@ public class ForegroundService extends Service {
             intent.putExtra("timeInMilliseconds", updateTime);
             intent.putExtra("distanceInMeters",distance);
             intent.putExtra("elevationGainInMeters",elevationGain);
+            intent.putExtra("calories", calories);
             sendBroadcast(intent);
             if (!stopTimer) {
                 trainingHandler.postDelayed(this, 0);
@@ -118,13 +129,15 @@ public class ForegroundService extends Service {
         }
     };
 
-    private Runnable updateLocation =new Runnable() {
+    private Runnable updateLocation = new Runnable() {
         public void run() {
             oldLocation = currentLocation;
             currentLocation = fusedLocationProvider.GetLocation();
             calculateDistance();
             calculateElevationGain();
             locationRunnable=this;
+            loadData();
+            calculateCalories();
             locationHandler.postDelayed(locationRunnable, delay);
         }
     };
@@ -143,6 +156,27 @@ public class ForegroundService extends Service {
                 elevationGain = currentLocation.getAltitude()-firstLocation.getAltitude();
             }
         }
+
+    private double calculateCoefficient()
+    {
+        return currentLocation.getAltitude() - oldLocation.getAltitude() / oldLocation.distanceTo(currentLocation);
+    }
+
+    private void calculateCalories()
+    {
+        if(currentLocation != null && oldLocation != null && oldLocation.distanceTo(currentLocation) != 0)
+        {
+            double coefficient = calculateCoefficient();
+            calories += ((coefficient * (userWeight + cargoWeight) * oldLocation.distanceTo(currentLocation)) / Constants.CALORIES.JOULES);
+        }
+    }
+
+    private void loadData()
+    {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        userWeight = sp.getInt("userWeight", 0);
+        cargoWeight = sp.getInt("cargoWeight", 0);
+    }
     @Override
     public void onDestroy()
     {
