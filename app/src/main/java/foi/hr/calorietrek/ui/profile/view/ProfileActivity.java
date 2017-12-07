@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInstaller;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaCas;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -137,19 +139,28 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     @OnClick(R.id.btnLogOut)
     public void onClickLogOut()
     {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(accessToken != null){
+        if(accessToken != null) {
             LoginManager.getInstance().logOut();
-        }
+            accessToken.isExpired();
+            onBackPressed();
 
+
+        }
         else{
             LogOut();
         }
 
         Intent login = new Intent(ProfileActivity.this, LoginActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(login);
         finish();
     }
