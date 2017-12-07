@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 nextActivity(profile);
                 Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
 
-                // ZA EMAIL
+
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 request.setParameters(parameters);
                 request.executeAsync();
 
-                //do tu EMAIL
+
             }
 
             @Override
@@ -146,9 +146,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email"));
 
-        //LoginManager.getInstance().logInWithReadPermissions(this,Arrays.asList("email"));
 
-        // loginButton.setReadPermissions("email");
         loginButton.registerCallback(callbackManager, callback);
 
 
@@ -277,17 +275,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //Facebook login
         Profile profile = Profile.getCurrentProfile();
         nextActivity(profile);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Profile profile = Profile.getCurrentProfile();
+        nextActivity(profile);
     }
 
 
     protected void onStop() {
         super.onStop();
-        //Facebook login
+
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
     }
