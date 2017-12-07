@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/menubar_height"
         android:minHeight="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:layout_alignParentStart="true">
     </android.support.v7.widget.Toolbar>
 
     <LinearLayout
@@ -37,10 +37,7 @@
                 android:layout_width="@dimen/profile_image"
                 android:layout_height="@dimen/profile_image"
                 android:layout_marginEnd="@dimen/profile_image_margin"
-                android:background="@drawable/largeiconprofile" />
-                android:src="@drawable/profile"
-                app:civ_border_width="2dp"
-                app:civ_border_color="#FF000000"/>
+                android:src="@drawable/largeiconprofile" />
 
             <TextView
                 android:id="@+id/txtName"
@@ -71,20 +68,53 @@
             android:max="120"
             android:progress="55" />
 
-        <Button
-            android:id="@+id/btnAllTrainings"
-            style="@style/Widget.AppCompat.Button"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/all_your_trainings"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnLogOut"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_list"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_screen"/>
+
+            <Button
+                android:id="@+id/btnAllTrainings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_button"
+                android:text="@string/all_your_trainings"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/log_out"
-            android:textAllCaps="false" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_logout"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_screen"/>
+
+            <Button
+                android:id="@+id/btnLogOut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/log_out"
+                android:textAllCaps="false"
+                android:background="@drawable/border_button"
+                android:textColor="@color/white"
+                android:textAlignment="textStart"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </RelativeLayout>

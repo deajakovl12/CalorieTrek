@@ -237,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInAccount accountData = result.getSignInAccount();
         String personPhoto;
 
-        DbUser(accountData.getDisplayName());
+        boolean userExist = DbUser(accountData.getDisplayName());
 
         if (accountData.getPhotoUrl() != null){
             personPhoto = accountData.getPhotoUrl().toString();
@@ -249,6 +249,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
+        if (userExist){
+            sendData.putExtra("userExist", true);
+        }
+        else{
+            sendData.putExtra("userExist", false);
+        }
         sendData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         sendData.putExtra("userModel", userModel);
         startActivity(sendData);
@@ -260,14 +266,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    public void DbUser(String nameSurname){
+    public boolean DbUser(String nameSurname){
+        boolean exist = false;
+
         boolean isInserted = instance.existingUser(nameSurname);
         if (isInserted == true){
             Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
         }
         else{
             Toast.makeText(LoginActivity.this, R.string.existing_user, Toast.LENGTH_LONG).show();
+            exist = true;
         }
+
+        return exist;
     }
     @Override
     protected void onResume() {
@@ -298,7 +309,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         String personPhoto;
 
         if(profile != null){
-            DbUser(profile.getName());
+            boolean userExist = DbUser(profile.getName());
 
             if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
                 personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
@@ -310,6 +321,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             //userModel = new UserModel(profile.getName(), "", personPhoto);
             userModel = new UserModel(profile.getName(), personEmail, personPhoto);
             Intent main = new Intent(LoginActivity.this, TrainingActivity.class);
+
+            if (userExist){
+                main.putExtra("userExist", true);
+            }
+            else{
+                main.putExtra("userExist", false);
+            }
+
             CurrentUser loggedUser = new CurrentUser(profile.getName(),personEmail, personPhoto);
 
             main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
