@@ -24,6 +24,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import foi.hr.calorietrek.constants.Constants;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.ui.login.controller.LoginControllerImpl;
@@ -32,7 +33,35 @@ import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+
+import org.json.JSONObject;
+import org.json.JSONException;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ILoginView {
+
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
+
+    String personEmail="";
+    @BindView(R.id.login_button) LoginButton loginButton;
 
     public  @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
 
@@ -47,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -55,6 +85,73 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mGoogleApiClient = GetGoogleApiClient(gso);
 
         instance = DbHelper.getInstance(this);
+        callbackManager = CallbackManager.Factory.create();
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
+            }
+        };
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                nextActivity(newProfile);
+            }
+        };
+        accessTokenTracker.startTracking();
+        profileTracker.startTracking();
+
+
+        FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Profile profile = Profile.getCurrentProfile();
+                nextActivity(profile);
+                Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
+
+                // ZA EMAIL
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("LoginActivity", response.toString());
+
+                                try {
+                                    personEmail = object.getString("email");
+                                    String birthday = object.getString("birthday");
+                                }
+                                catch (JSONException e){
+                                    Log.e("CalorieTrek", "unexpected JSON exception", e);
+                                }
+                            }
+                        });
+
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "email,birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+                //do tu EMAIL
+            }
+
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+            }
+        };
+        loginButton.setReadPermissions(Arrays.asList(
+                "public_profile", "email"));
+
+        //LoginManager.getInstance().logInWithReadPermissions(this,Arrays.asList("email"));
+
+        // loginButton.setReadPermissions("email");
+        loginButton.registerCallback(callbackManager, callback);
+
+
     }
 
     private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
@@ -89,6 +186,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
+
+        else
+        {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
     }
 
     private void handleSignInResult(GoogleSignInResult result)
@@ -168,5 +271,57 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Toast.makeText(LoginActivity.this, R.string.existing_user, Toast.LENGTH_LONG).show();
         }
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Facebook login
+        Profile profile = Profile.getCurrentProfile();
+        nextActivity(profile);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+
+    protected void onStop() {
+        super.onStop();
+        //Facebook login
+        accessTokenTracker.stopTracking();
+        profileTracker.stopTracking();
+    }
+
+
+    private void nextActivity(Profile profile){
+        String personPhoto;
+
+        if(profile != null){
+            DbUser(profile.getName());
+
+            if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
+                personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
+            }
+            else{
+                personPhoto = "noImage";
+            }
+
+            //userModel = new UserModel(profile.getName(), "", personPhoto);
+            userModel = new UserModel(profile.getName(), personEmail, personPhoto);
+            Intent main = new Intent(LoginActivity.this, TrainingActivity.class);
+            CurrentUser loggedUser = new CurrentUser(profile.getName(),personEmail, personPhoto);
+
+            main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            main.putExtra("name", profile.getFirstName());
+            main.putExtra("surname", profile.getLastName());
+            main.putExtra("imageUrl", personPhoto);
+            main.putExtra("email", personEmail);
+            main.putExtra("userModel", userModel);
+
+            startActivity(main);
+        }
+    }
+
+
 }
 

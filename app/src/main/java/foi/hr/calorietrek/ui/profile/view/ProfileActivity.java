@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +41,16 @@ import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
+
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+
+import org.w3c.dom.Text;
+
+import java.io.InputStream;
+
 public class ProfileActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, IProfileView {
 
     private GoogleApiClient googleClient;
@@ -52,6 +66,8 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     static String personName;
     static String personEmail;
     static String personPhotoUrl;
+
+    private ShareDialog shareDialog;
 
     DbHelper instance;
 
@@ -124,17 +140,65 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     @OnClick(R.id.btnLogOut)
     public void onClickLogOut()
     {
-        LogOut();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null){
+            LoginManager.getInstance().logOut();
+        }
+
+        else{
+            LogOut();
+        }
+
+        Intent login = new Intent(ProfileActivity.this, LoginActivity.class);
+        startActivity(login);
+        finish();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
 
-        getAccount();
+
+
+        shareDialog = new ShareDialog(this);
+        String fbname,fbsurname,fbimageUrl,fbemail;
+
+        if(getIntent().hasExtra("name") && getIntent().hasExtra("surname")) {
+            Bundle inBundle = getIntent().getExtras();
+            fbname = inBundle.get("name").toString();
+            fbsurname = inBundle.get("surname").toString();
+            fbimageUrl = inBundle.get("imageUrl").toString();
+
+
+            if(getIntent().hasExtra("userModel")) {
+                UserModel userModel = getIntent().getParcelableExtra("userModel");
+
+                personName = userModel.getPersonName();
+                personEmail = userModel.getPersonEmail();
+                personPhotoUrl = userModel.getPersonPhotoUrl();
+
+                name.setText(CurrentUser.personName);
+
+            }
+
+            else{
+                name.setText(CurrentUser.personName);
+            }
+
+            if(fbimageUrl != "noImage") {
+                new ProfileActivity.DownloadImage(profilePic).execute(fbimageUrl);
+            }
+        }
+        else {
+
+            getAccount();
+        }
+
+
         instance = DbHelper.getInstance(this);
         loadWeight();
         initToolbar();
@@ -228,4 +292,32 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
         return super.onOptionsItemSelected(item);
     }
+
+    public class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImage(ImageView bmImage){
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls){
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try{
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            }catch (Exception e){
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result){
+            bmImage.setImageBitmap(result);
+        }
+
+    }
+
+
 }

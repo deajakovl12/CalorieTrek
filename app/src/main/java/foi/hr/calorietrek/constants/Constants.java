@@ -12,6 +12,7 @@ public class Constants {
         public static String BROADCAST_ACTION = "foi.hr.calorietrek.action.broadcast";
         public static String STARTFOREGROUND_ACTION = "foi.hr.calorietrek.action.startforeground";
         public static String STOPFOREGROUND_ACTION = "foi.hr.calorietrek.action.stopforeground";
+
     }
 
     public interface NOTIFICATION_ID {
@@ -25,4 +26,10 @@ public class Constants {
         //točnost gps lokacija koje uređaj dobiva, o čemu ovisi i potrošnja baterije  high-100, balanced-102,  low-104, noPower-105
         public  static  int ACCURACY = 100;
     }
+
+    public interface PHOTOPARAMETERS{
+        public static int PHOTO_HEIGHT=200;
+        public static int PHOTO_WIDTH=200;
+    }
+
 }
