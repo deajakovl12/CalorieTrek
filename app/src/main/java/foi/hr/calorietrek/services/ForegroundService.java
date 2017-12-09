@@ -22,6 +22,7 @@ import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.constants.Constants;
 import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
+import static java.lang.Math.abs;
 
 public class ForegroundService extends Service {
 
@@ -160,7 +161,22 @@ public class ForegroundService extends Service {
 
     private double calculateCoefficient()
     {
-        return currentLocation.getAltitude() - oldLocation.getAltitude() / oldLocation.distanceTo(currentLocation);
+        double slope=(currentLocation.getAltitude() - oldLocation.getAltitude()) / oldLocation.distanceTo(currentLocation);
+        for(int i=0;i<Constants.CALORIES.SLOPE_COEFFICIENT.length-1;i++) {
+            if(slope>=Constants.CALORIES.SLOPE_COEFFICIENT[i][0] && slope<=Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])
+            {
+                if(slope<=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))<abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
+                {return Constants.CALORIES.SLOPE_COEFFICIENT[i][1];}
+                else if(slope<=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))>abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
+                {return Constants.CALORIES.SLOPE_COEFFICIENT[i+1][1];}
+                else if(slope>=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))>abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
+                {return Constants.CALORIES.SLOPE_COEFFICIENT[i+1][1];}
+                else if(slope>=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))<abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
+                {return Constants.CALORIES.SLOPE_COEFFICIENT[i][1];}
+            }
+        }
+        if(slope<Constants.CALORIES.SLOPE_COEFFICIENT[0][0])return Constants.CALORIES.SLOPE_COEFFICIENT[0][1];
+        else return Constants.CALORIES.SLOPE_COEFFICIENT[Constants.CALORIES.SLOPE_COEFFICIENT.length-1][1];
     }
 
     private void calculateCalories()

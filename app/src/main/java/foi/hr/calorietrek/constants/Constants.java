@@ -43,6 +43,22 @@ public class Constants {
 
     public interface CALORIES {
         public static int JOULES = 4184;
+        public static double[][] SLOPE_COEFFICIENT =
+        {
+            {-0.45,4.51},
+            {-0.40,3.82},
+            {-0.35,3.53},
+            {-0.30,2.85},
+            {-0.20,1.78},
+            {-0.10,1.18},
+            {00.00,2.14},
+            {00.10,5.02},
+            {00.20,8.64},
+            {00.30,12.43},
+            {00.35,13.48},
+            {00.40,15.36},
+            {00.45,18.44}
+        };
     }
 
 }
