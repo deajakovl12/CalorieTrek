@@ -27,7 +27,7 @@ public class ForegroundService extends Service {
 
     private Handler trainingHandler = new Handler();
     private Handler locationHandler = new Handler();
-    private int delay = 2500;
+    private int delay = 3750;
     private Runnable locationRunnable;
     private Intent intent;
     private long startTime = 0L;
@@ -44,7 +44,6 @@ public class ForegroundService extends Service {
     private double calories = 0;
     private int userWeight = 0;
     private int cargoWeight = 0;
-
     @Override
     public void onCreate()
     {
@@ -133,29 +132,31 @@ public class ForegroundService extends Service {
         public void run() {
             oldLocation = currentLocation;
             currentLocation = fusedLocationProvider.GetLocation();
-            calculateDistance();
-            calculateElevationGain();
+            if(isLocationAccurateEnough(oldLocation,currentLocation)) {
+                if(firstLocation==null)
+                {
+                    firstLocation=currentLocation;
+                    //16000ms is correction for location time, because of assumption that first location is cached location
+                    firstLocation.setTime(firstLocation.getTime()-16000);
+                }
+                calculateDistance();
+                calculateElevationGain();
+                calculateCalories();
+            }
             locationRunnable=this;
             loadData();
-            calculateCalories();
+
             locationHandler.postDelayed(locationRunnable, delay);
         }
     };
 
 
     private  void calculateDistance() {
-        if(oldLocation!=null) {
-            distance+=oldLocation.distanceTo(currentLocation);
-        }
+        distance+=oldLocation.distanceTo(currentLocation);
     }
     private  void calculateElevationGain() {
-            if(oldLocation==null && currentLocation != null) {
-                firstLocation = currentLocation;
-            }
-            else if(currentLocation!=null && firstLocation!=null){
-                elevationGain = currentLocation.getAltitude()-firstLocation.getAltitude();
-            }
-        }
+        elevationGain = currentLocation.getAltitude()-firstLocation.getAltitude();
+    }
 
     private double calculateCoefficient()
     {
@@ -168,6 +169,35 @@ public class ForegroundService extends Service {
         {
             double coefficient = calculateCoefficient();
             calories += ((coefficient * (userWeight + cargoWeight) * oldLocation.distanceTo(currentLocation)) / Constants.CALORIES.JOULES);
+        }
+    }
+
+    //tests if speed is in good range for walking/running human
+    private boolean isLocationAccurateEnough(Location oldLocation, Location currentLocation)
+    {
+        if(oldLocation!=null && currentLocation!=null && !oldLocation.equals(currentLocation))
+        {
+            //time is in miliseconds
+            double time = currentLocation.getTime()-oldLocation.getTime();
+            //distance is in meters with deducted regular GPS error range to allow test to pass if it was gps error
+            double distance= currentLocation.distanceTo(oldLocation)-Constants.GPSPARAMETERS.GPS_ERROR_RANGE;
+            //speed is in meters/second
+            double speed = distance/(time/1000);
+            if(speed>=Constants.GPSPARAMETERS.FASTEST_HUMAN_SPEED)
+                return false;
+            else if(speed<Constants.GPSPARAMETERS.FASTEST_HUMAN_SPEED &&
+                    speed>=Constants.GPSPARAMETERS.AVERAGE_HUMAN_FASTEST_RUNNING_SPEED &&
+                    cargoWeight<Constants.GPSPARAMETERS.MAX_CARGO_FOR_FAST_RUN)
+                return true;
+
+            else if(speed<Constants.GPSPARAMETERS.AVERAGE_HUMAN_FASTEST_RUNNING_SPEED )
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
         }
     }
 
