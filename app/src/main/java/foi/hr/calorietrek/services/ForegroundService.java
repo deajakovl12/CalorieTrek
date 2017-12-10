@@ -38,12 +38,12 @@ public class ForegroundService extends Service {
     private long updateTime = 0L;
     private boolean stopTimer = false;
     private FusedLocationProvider fusedLocationProvider = null;
-    private Location firstLocation = null;
     private Location oldLocation = null;
     private Location currentLocation = null;
     private float distance = 0;
     private double elevationGain=0;
-    private double firstElevation =55555;
+    private double oldAltitude =55555;
+    private double currentAltitude=55555;
     private double calories = 0;
     private int userWeight = 0;
     private int cargoWeight = 0;
@@ -86,14 +86,14 @@ public class ForegroundService extends Service {
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
             if(fusedLocationProvider!=null) fusedLocationProvider.startLocationUpdates();
-            altitude.onResume();
+            if(altitude!=null)altitude.onResume();
             loadData();
             startTime = SystemClock.uptimeMillis();
             trainingHandler.postDelayed(updateTimerThread, 0);
             locationHandler.postDelayed(locationRunnable,delay);
         } else if (intent.getAction().equals(Constants.ACTION.PAUSE_ACTION)) {
             if(fusedLocationProvider!=null)fusedLocationProvider.stopLocationUpdates();
-            altitude.onPause();
+            if(altitude!=null)altitude.onPause();
             pausedTime += timeInMilliseconds;
             trainingHandler.removeCallbacks(updateTimerThread);
             locationHandler.removeCallbacks(locationRunnable);
@@ -125,7 +125,7 @@ public class ForegroundService extends Service {
             updateTime = pausedTime + timeInMilliseconds;
             intent.putExtra("timeInMilliseconds", updateTime);
             intent.putExtra("distanceInMeters",distance);
-            if(altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable()&&firstElevation!=55555)intent.putExtra("elevationGainInMeters",altitude.getAltitude()-firstElevation);
+            if(altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable()&&oldAltitude!=55555 &&currentAltitude!=55555)intent.putExtra("elevationGainInMeters",currentAltitude-oldAltitude);
             else intent.putExtra("elevationGainInMeters",elevationGain);
             intent.putExtra("calories", calories);
             sendBroadcast(intent);
@@ -142,15 +142,10 @@ public class ForegroundService extends Service {
             if(currentLocation!=null&&altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable())
             {
                 currentLocation.setAltitude(altitude.getAltitude());
+                oldAltitude=currentAltitude;
+                currentAltitude=altitude.getAltitude();
             }
-            if(firstElevation==55555)firstElevation=altitude.getAltitude();
             if(isLocationAccurateEnough(oldLocation,currentLocation)) {
-                if(firstLocation==null)
-                {
-                    firstLocation=currentLocation;
-                    //16000ms is correction for location time, because of assumption that first location is cached location
-                    firstLocation.setTime(firstLocation.getTime()-16000);
-                }
                 calculateDistance();
                 calculateElevationGain();
                 calculateCalories();
@@ -167,7 +162,7 @@ public class ForegroundService extends Service {
         distance+=oldLocation.distanceTo(currentLocation);
     }
     private  void calculateElevationGain() {
-        elevationGain = currentLocation.getAltitude()-firstLocation.getAltitude();
+        elevationGain = currentLocation.getAltitude()-oldLocation.getAltitude();
     }
 
     private double calculateCoefficient()
