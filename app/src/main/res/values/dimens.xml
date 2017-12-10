@@ -55,7 +55,18 @@
     <dimen name="btn_fb_margin">4dp</dimen>
     <dimen name="btn_fb_padding_top">12dp</dimen>
     <dimen name="btn_fb_padding_bottom">12dp</dimen>
-
+    <dimen name="your_weight_width">252dp</dimen>
+    <dimen name="your_weight_text_size">12sp</dimen>
+    <dimen name="input_weight_parent_width">252dp</dimen>
+    <dimen name="input_weight_parent_height">38pt</dimen>
+    <dimen name="kg_width">16dp</dimen>
+    <dimen name="kg_height">26dp</dimen>
+    <dimen name="kg_margin_right">2pt</dimen>
+    <dimen name="kg_margin_top">4pt</dimen>
+    <dimen name="kg_text_size">12sp</dimen>
+    <dimen name="input_width">252dp</dimen>
+    <dimen name="input_height">36dp</dimen>
+    <dimen name="input_text_size">12sp</dimen>
 
 
 </resources>

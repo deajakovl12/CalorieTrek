@@ -41,5 +41,9 @@
     <string name="not_saved">Not saved</string>
     <string name="input_your_weight">Input Your Weight (kg)</string>
     <string name="facebook_app_id">287766131743318</string>
+    <string name="weight_saved">Your Weight has been saved.</string>
+    <string name="weight_not_saved">Your Weight has not been changed.</string>
+    <string name="your_weight">Your Weight</string>
+    <string name="kg">kg</string>
 
 </resources>
