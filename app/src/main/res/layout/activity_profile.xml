@@ -57,7 +57,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
-            android:text="Your Weight"
+            android:text="@string/your_weight"
             android:textColor="@color/light_green"
             android:textSize="@dimen/your_weight_text_size" />
 
@@ -74,7 +74,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="@dimen/kg_margin_right"
                 android:layout_marginTop="@dimen/kg_margin_top"
-                android:text="kg"
+                android:text="@string/kg"
                 android:textColor="@color/silver"
                 android:textSize="@dimen/kg_text_size" />
 
@@ -87,7 +87,7 @@
                 android:layout_gravity="center"
                 android:backgroundTint="@color/silver"
                 android:ems="10"
-                android:hint="Your Weight"
+                android:hint="@string/your_weight"
                 android:inputType="number"
                 android:textColor="@color/white"
                 android:textColorHint="@color/dark_silver"
