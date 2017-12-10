@@ -7,4 +7,7 @@
     <color name="white">@android:color/white</color>
     <color name="colorSmallText">#8daace</color>
     <color name="colorTimer">#b8bfce</color>
+    <color name="light_green">#2bd15b</color>
+    <color name="silver">#C0C0C0</color>
+
 </resources>

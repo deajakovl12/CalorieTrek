@@ -19,20 +19,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="@dimen/layout_margin"
         android:layout_marginLeft="@dimen/layout_margin"
         android:layout_marginRight="@dimen/layout_margin"
-        android:layout_marginBottom="@dimen/layout_margin"
-        android:layout_below="@+id/toolbar">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/profile_det_margin"
-            android:layout_marginBottom="@dimen/profile_det_margin">
+            android:layout_marginBottom="@dimen/profile_det_margin"
+            android:layout_marginTop="@dimen/profile_det_margin">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/profileImage"
                 android:layout_width="@dimen/profile_image"
                 android:layout_height="@dimen/profile_image"
@@ -43,30 +42,60 @@
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/profileImage"
                 android:text="Olivia Holdens"
                 android:textColor="@color/white"
-                android:layout_centerVertical="true"
-                android:textStyle="bold"
-                android:layout_toEndOf="@+id/profileImage" />
+                android:textStyle="bold" />
 
         </RelativeLayout>
 
         <TextView
             android:id="@+id/txtKg"
-            android:layout_width="wrap_content"
+            android:layout_width="252dp"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center"
-            android:text="Weight"
-            android:textColor="@color/white"/>
+            android:text="Your Weight"
+            android:textColor="#2bd15b"
+            android:textSize="12sp" />
 
-        <SeekBar
-            android:id="@+id/sbKg"
-            style="@android:style/Widget.DeviceDefault.SeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/seekbar_margin"
-            android:max="120"
-            android:progress="55" />
+        <RelativeLayout
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:layout_gravity="center"
+            android:layout_width="252dp"
+            android:layout_height="38pt">
+
+            <TextView
+                android:layout_width="16dp"
+                android:layout_height="26dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="2pt"
+                android:layout_marginTop="4pt"
+                android:text="kg"
+                android:textColor="#C0C0C0"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/txtYourWeight"
+                android:layout_width="252dp"
+                android:layout_height="36dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:backgroundTint="#C0C0C0"
+                android:ems="10"
+                android:hint="Your Weight"
+                android:textColorHint="#808080"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:inputType="number" />
+
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,9 +105,9 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_list"
                 android:layout_gravity="center"
-                android:padding="@dimen/padding_screen"/>
+                android:padding="@dimen/padding_screen"
+                android:src="@drawable/ic_list" />
 
             <Button
                 android:id="@+id/btnAllTrainings"
@@ -100,19 +129,19 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_logout"
                 android:layout_gravity="center"
-                android:padding="@dimen/padding_screen"/>
+                android:padding="@dimen/padding_screen"
+                android:src="@drawable/ic_logout" />
 
             <Button
                 android:id="@+id/btnLogOut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/log_out"
-                android:textAllCaps="false"
                 android:background="@drawable/border_button"
-                android:textColor="@color/white"
-                android:textAlignment="textStart"/>
+                android:text="@string/log_out"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
