@@ -9,5 +9,6 @@
     <color name="colorTimer">#b8bfce</color>
     <color name="light_green">#2bd15b</color>
     <color name="silver">#C0C0C0</color>
+    <color name="dark_silver">#808080</color>
 
 </resources>

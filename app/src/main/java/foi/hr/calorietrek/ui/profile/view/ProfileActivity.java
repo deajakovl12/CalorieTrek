@@ -68,8 +68,8 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
     public @BindView(R.id.toolbar) Toolbar toolbar;
 
-    public @BindView(R.id.txtYourWeight) TextView inputWeight;
-    public @BindView(R.id.txtKg) TextView txtKg;
+    public @BindView(R.id.txtInputWeight) TextView inputWeight;
+    public @BindView(R.id.txtYourWeight) TextView txtYourWeight;
 
     public @BindView(R.id.profileImage) ImageView profilePic;
     public @BindView(R.id.txtName) TextView name;
@@ -151,16 +151,16 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-        txtKg.setVisibility(View.INVISIBLE);
+        txtYourWeight.setVisibility(View.INVISIBLE);
 
         inputWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 inputWeight.getBackground().setColorFilter(getResources().getColor(R.color.light_green), PorterDuff.Mode.SRC_ATOP);
-                txtKg.setVisibility(View.VISIBLE);
+                txtYourWeight.setVisibility(View.VISIBLE);
                 if(!hasFocus)
                 {
-                    txtKg.setVisibility(View.INVISIBLE);
+                    txtYourWeight.setVisibility(View.INVISIBLE);
                     inputWeight.getBackground().setColorFilter(getResources().getColor(R.color.silver), PorterDuff.Mode.SRC_ATOP);
                     changeWeight(inputWeight.getText().toString());
                 }
