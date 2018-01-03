@@ -11,6 +11,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ovdje dolaze detalji o obavljenom treningu..."
-        tools:layout_editor_absoluteX="67dp"
-        tools:layout_editor_absoluteY="55dp" />
+        tools:layout_editor_absoluteX="71dp"
+        tools:layout_editor_absoluteY="239dp" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp" />
+
 </android.support.constraint.ConstraintLayout>
