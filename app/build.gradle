@@ -25,31 +25,33 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    //Butterknife
+
+    //Google
+
+    //DbInspector
+
+    //Facebook
+
+    //CircleImageView
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
-
-    //Butterknife
     compile 'com.jakewharton:butterknife:8.5.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-
-    //Google
     compile 'com.google.android.gms:play-services-auth:11.0.4'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.android.gms:play-services-location:11.0.4'
     compile 'javax.inject:javax.inject:1'
-    compile 'de.hdodenhof:circleimageview:2.2.0'
-    testCompile 'junit:junit:4.12'
-
-    //DbInspector
-    debugCompile 'im.dino:dbinspector:3.4.1@aar'
-
-    //Facebook
     compile 'com.facebook.android:facebook-android-sdk:4.18.0'
-
-    //CircleImageView
-    compile 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.android.support:support-v4:26.+'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    debugCompile 'im.dino:dbinspector:3.4.1@aar'
 }
+
+
 
 
 apply plugin: 'com.google.gms.google-services'

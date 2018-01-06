@@ -18,10 +18,7 @@
         android:title="@string/action_details"
         app:showAsAction="always" >
         <menu>
-            <item android:id="@+id/submenu_item1"
-                android:title="@string/details_module_1" />
-            <item android:id="@+id/submenu_item2"
-                android:title="@string/details_module_2" />
+
         </menu>
     </item>
 

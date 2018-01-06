@@ -7,31 +7,46 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.internal.ListenerClass;
 import foi.hr.calorietrek.R;
+import foi.hr.calorietrek.module_navigation.CurrentActivity;
+import foi.hr.calorietrek.module_navigation.NavigationManager;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 public class FinishedTraining extends AppCompatActivity {
 
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
+    private NavigationManager navManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_training);
 
+        CurrentActivity.setActivity(this);
         ButterKnife.bind(this);
         toolbarDetails.setTitle("");
+        toolbarDetails.inflateMenu(R.menu.menu_finished_training);
         setSupportActionBar(toolbarDetails);
+
+        navManager = NavigationManager.getInstance();
+        navManager.setDependencies(this, toolbarDetails);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_finished_training, menu);
+
+        //modules are added here
+        navManager.addItem(new TrainingDetailsFragment());
+        navManager.addItem(new TrainingDetailsAlternateFragment());
+
         return true;
     }
 
@@ -39,5 +54,9 @@ public class FinishedTraining extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setUpAvailableModules() {
+
     }
 }
