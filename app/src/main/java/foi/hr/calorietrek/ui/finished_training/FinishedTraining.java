@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.FrameLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,11 +53,23 @@ public class FinishedTraining extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        int itemId = item.getItemId();
+        switch(itemId) {
+            case R.id.action_pdf:
+                break;
+            case R.id.action_share:
+                break;
+            case R.id.action_module_submenu:
+                break;
+            default:
+                navManager.selectNavigationItem(item);
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void setUpAvailableModules() {
 
     }
+
+
 }

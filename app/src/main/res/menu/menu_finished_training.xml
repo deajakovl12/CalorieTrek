@@ -13,11 +13,11 @@
         android:title="@string/action_share"
         app:showAsAction="always" />
 
-    <item android:id="@+id/submenu"
+    <item android:id="@+id/action_module_submenu"
         android:icon="@drawable/ic_logout"
         android:title="@string/action_details"
         app:showAsAction="always" >
-        <menu>
+        <menu android:id="@+id/module_submenu">
 
         </menu>
     </item>
