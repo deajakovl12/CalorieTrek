@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +45,10 @@ public class FinishedTraining extends AppCompatActivity {
         navManager.addItem(new TrainingDetailsAlternateFragment());
 
         //loading the default(first) fragment
-        navManager.selectNavigationItem(toolbarDetails.getMenu().getItem(2).getSubMenu().getItem(0));
+        SubMenu submenu = toolbarDetails.getMenu().getItem(2).getSubMenu();
+        if(submenu.size() > 0) {
+            navManager.selectNavigationItem(submenu.getItem(0));
+        }
 
         return true;
     }
