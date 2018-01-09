@@ -1,8 +1,5 @@
 package foi.hr.calorietrek.ui.finished_training;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.app.Fragment;
@@ -12,11 +9,8 @@ import android.view.ViewGroup;
 
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.module_navigation.NavigationItem;
-import foi.hr.calorietrek.module_navigation.ReadyForDataListener;
 
 public class TrainingDetailsFragment extends Fragment implements NavigationItem {
-
-    private int position;
     private String name = "Details Fragment";
 
     @Nullable
@@ -37,27 +31,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     }
 
     @Override
-    public int getPosition() {
-        return position;
-    }
-
-    @Override
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    @Override
     public android.app.Fragment getFragment() {
         return this;
-    }
-
-    @Override
-    public void setReadyForDataListener(ReadyForDataListener readyForDataListener) {
-
-    }
-
-    @Override
-    public void loadData() {
-
     }
 }

@@ -36,7 +36,6 @@ public class NavigationManager {
 
     public void addItem(NavigationItem newItem) {
         submenu = toolbar.getMenu().getItem(2).getSubMenu();
-        newItem.setPosition(navigationItems.size());
         navigationItems.add(newItem);
         submenu.add(newItem.getItemName());
     }

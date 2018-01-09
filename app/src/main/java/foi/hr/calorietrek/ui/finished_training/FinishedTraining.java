@@ -1,23 +1,18 @@
 package foi.hr.calorietrek.ui.finished_training;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
-import android.widget.FrameLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.internal.ListenerClass;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.module_navigation.CurrentActivity;
 import foi.hr.calorietrek.module_navigation.NavigationManager;
-import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
-import foi.hr.calorietrek.ui.training.view.TrainingActivity;
+
 
 public class FinishedTraining extends AppCompatActivity {
 
@@ -48,6 +43,9 @@ public class FinishedTraining extends AppCompatActivity {
         navManager.addItem(new TrainingDetailsFragment());
         navManager.addItem(new TrainingDetailsAlternateFragment());
 
+        //loading the default(first) fragment
+        navManager.selectNavigationItem(toolbarDetails.getMenu().getItem(2).getSubMenu().getItem(0));
+
         return true;
     }
 
@@ -66,10 +64,4 @@ public class FinishedTraining extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void setUpAvailableModules() {
-
-    }
-
-
 }
