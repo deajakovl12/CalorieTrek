@@ -5,16 +5,33 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.util.Log;
 
 public class DbHelper extends SQLiteOpenHelper{
     private static DbHelper sInstance;
 
     public static final String DATABASE_NAME = "CalorieTrek.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final String TABLE_USER = "user";
     public static final String COL_ID_USER = "id_user";
+    public static final String COL_EMAIL = "email";
     public static final String COL_NAME = "name_surname";
     public static final String COL_WEIGHT = "weight";
+
+    public static final String TABLE_TRAINING = "training";
+    public static final String COL_ID_TRAINING = "id_training";
+    public static final String COL_FK_USER = "fk_user";
+    public static final String COL_DATE = "date";
+    public static final String COL_TRAINING_NAME = "training_name";
+
+    public static final String TABLE_LOCATION = "locations";
+    public static final String COL_ID_LOCATION = "id_location";
+    public static final String COL_FK_TRAINING = "fk_training";
+    public static final String COL_ALTITUDE = "altitude";
+    public static final String COL_LATITUDE = "latitude";
+    public static final String COL_LONGITUDE = "longitude";
+    public static final String COL_TIME = "time";
 
     public static synchronized DbHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -32,26 +49,46 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL("CREATE TABLE " + TABLE_USER + "(" +
                 COL_ID_USER + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_NAME + " VARCHAR(100) NOT NULL, " +
+                COL_EMAIL + " VARCHAR(100) NOT NULL, " +
                 COL_WEIGHT + " INTEGER NOT NULL);");
+        db.execSQL("CREATE TABLE " + TABLE_TRAINING + "(" +
+                COL_ID_TRAINING + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_FK_USER + " INTEGER NOT NULL, " +
+                COL_DATE + " VARCHAR(19), "+
+                COL_TRAINING_NAME + " TEXT,"+
+                "FOREIGN KEY ("+COL_FK_USER+") REFERENCES "+TABLE_USER+"("+COL_ID_USER+"));");
+        db.execSQL("CREATE TABLE " + TABLE_LOCATION + "(" +
+                COL_ID_LOCATION + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_FK_TRAINING + " INTEGER NOT NULL, " +
+                COL_ALTITUDE + " REAL NOT NULL, "+
+                COL_LATITUDE + " REAL NOT NULL, "+
+                COL_LONGITUDE + " REAL NOT NULL, "+
+                COL_TIME + " REAL NOT NULL,"+
+                "FOREIGN KEY ("+COL_FK_TRAINING+") REFERENCES "+TABLE_TRAINING+"("+COL_ID_TRAINING+"));");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS" + TABLE_USER);
-        onCreate(db);
+        if(oldVersion!=newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOCATION);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_TRAINING);
+            onCreate(db);
+        }
     }
 
-    public void insertUser(String nameSurname, String weight){
+    public void insertUser(String nameSurname,String email , String weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COL_NAME, nameSurname);
+        values.put(COL_EMAIL, email);
         values.put(COL_WEIGHT, weight);
 
         long result = db.insert(TABLE_USER, null, values);
     }
 
-    public boolean existingUser(String nameSurname){
+    public boolean existingUser(String nameSurname, String email){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM user WHERE name_surname = '" + nameSurname + "'";
         Cursor cursor = db.rawQuery(query, null);
@@ -59,7 +96,7 @@ public class DbHelper extends SQLiteOpenHelper{
         if (cursor.getCount() <= 0){
             cursor.close();
             db.close();
-            insertUser(nameSurname, "55");
+            insertUser(nameSurname, email,"55");
             return true;
         }
         else{
@@ -67,6 +104,25 @@ public class DbHelper extends SQLiteOpenHelper{
             db.close();
             return false;
         }
+    }
+
+    //since method above should be run(and always is) before this one checking if user exists is not necessary
+    public int getUserID(String email){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String table = TABLE_USER;
+        String[] columns = {COL_ID_USER};
+        String selection = COL_EMAIL+" =?";
+        String[] selectionArgs = {email};
+        String groupBy = null;
+        String having = null;
+        String orderBy = null;
+        String limit = null;
+        Cursor cursor = db.query(table, columns, selection, selectionArgs, groupBy, having, orderBy, limit);
+        cursor.moveToFirst();
+        Integer result = cursor.getInt(cursor.getColumnIndex(COL_ID_USER));
+        cursor.close();
+        db.close();
+        return result;
     }
 
     public String returnWeight(String nameSurname){
@@ -82,7 +138,6 @@ public class DbHelper extends SQLiteOpenHelper{
 
         cursor.close();
         db.close();
-
         return result;
     }
 
@@ -92,7 +147,53 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL(query);
         return true;
     }
+    public boolean updateEmail(String nameSurname, String email){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE user SET email = '" + email + "' WHERE name_surname = '" + nameSurname + "'";
+        db.execSQL(query);
+        return true;
+    }
 
+    public long insertTraining(int fkUser, double dateTime, String trainingName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put(COL_FK_USER, fkUser);
+        values.put(COL_DATE, dateTime);
+        values.put(COL_TRAINING_NAME, trainingName);
+
+        return db.insert(TABLE_TRAINING, null, values);
+    }
+
+    public long insertTraining(int fkUser, double dateTime){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_FK_USER, fkUser);
+        values.put(COL_DATE, dateTime);
+
+        return db.insert(TABLE_TRAINING, null, values);
+    }
+
+    public long insertTraining(int fkUser){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_FK_USER, fkUser);
+
+        return db.insert(TABLE_TRAINING, null, values);
+    }
+    public  void insertLocation(long fkTraining, Location location){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_FK_TRAINING, fkTraining);
+        values.put(COL_ALTITUDE, location.getAltitude());
+        values.put(COL_LATITUDE, location.getLatitude());
+        values.put(COL_LONGITUDE, location.getLongitude());
+        values.put(COL_TIME, location.getTime());
+
+        long result = db.insert(TABLE_LOCATION, null, values);
+    }
 
 }
