@@ -8,6 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.util.Log;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import foi.hr.calorietrek.model.TrainingModel;
+
 public class DbHelper extends SQLiteOpenHelper{
     private static DbHelper sInstance;
 
@@ -134,6 +139,96 @@ public class DbHelper extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()){
             result = cursor.getString(cursor.getColumnIndex("weight"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public TrainingModel returnLatestTraining(int userID) {
+        TrainingModel result = new TrainingModel("", "", new ArrayList<Location>());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT id_training FROM training WHERE fk_user = '" + userID + "' ORDER BY id_training DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
+            result = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public ArrayList<TrainingModel> returnAllTrainings(int userID) {
+        ArrayList<TrainingModel> result = new ArrayList<TrainingModel>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM training WHERE fk_user = '" + userID + "'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        while (cursor.moveToNext()){
+            int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
+            TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID));
+            result.add(training);
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public String returnTrainingName(int trainingID){
+        String result = "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT training_name FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getString(cursor.getColumnIndex("training_name"));
+        }
+        result = (result == null) ? "" : result;
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public String returnTrainingDate(int trainingID){
+        String result = "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT date FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getString(cursor.getColumnIndex("date"));
+        }
+        result = (result == null) ? "" : result;
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public ArrayList<Location> returnTrainingLocations(int trainingID){
+        ArrayList<Location> result = new ArrayList<Location>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT * FROM locations WHERE fk_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        while (cursor.moveToNext()){
+            Location location = new Location("dummy");
+            location.setAltitude(cursor.getDouble(cursor.getColumnIndex("altitude")));
+            location.setLatitude(cursor.getDouble(cursor.getColumnIndex("latitude")));
+            location.setLongitude(cursor.getDouble(cursor.getColumnIndex("longitude")));
+            location.setTime(cursor.getLong(cursor.getColumnIndex("time")));
+            result.add(location);
         }
 
         cursor.close();

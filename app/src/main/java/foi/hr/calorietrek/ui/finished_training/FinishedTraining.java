@@ -8,10 +8,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import foi.hr.calorietrek.R;
-import foi.hr.calorietrek.module_navigation.CurrentActivity;
+import foi.hr.calorietrek.database.DbHelper;
+import foi.hr.calorietrek.model.CurrentUser;
+import foi.hr.calorietrek.model.TrainingModel;
 import foi.hr.calorietrek.module_navigation.NavigationManager;
 
 
@@ -19,13 +23,14 @@ public class FinishedTraining extends AppCompatActivity {
 
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
     private NavigationManager navManager;
+    private DbHelper instance;
+    public ArrayList<TrainingModel> allTrainings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finished_training);
 
-        CurrentActivity.setActivity(this);
         ButterKnife.bind(this);
         toolbarDetails.setTitle("");
         toolbarDetails.inflateMenu(R.menu.menu_finished_training);
@@ -33,6 +38,18 @@ public class FinishedTraining extends AppCompatActivity {
 
         navManager = NavigationManager.getInstance();
         navManager.setDependencies(this, toolbarDetails);
+        instance = DbHelper.getInstance(this);
+        allTrainings = new ArrayList<TrainingModel>();
+
+        boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
+        if(isAllTrainings)
+        {
+            allTrainings = instance.returnAllTrainings(instance.getUserID(CurrentUser.personEmail));
+        }
+        else
+        {
+            allTrainings.add(instance.returnLatestTraining(instance.getUserID(CurrentUser.personEmail)));
+        }
     }
 
     @Override
