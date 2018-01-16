@@ -177,16 +177,13 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             fbsurname = inBundle.get("surname").toString();
             fbimageUrl = inBundle.get("imageUrl").toString();
 
-
             if(getIntent().hasExtra("userModel")) {
                 UserModel userModel = getIntent().getParcelableExtra("userModel");
 
                 personName = userModel.getPersonName();
                 personEmail = userModel.getPersonEmail();
                 personPhotoUrl = userModel.getPersonPhotoUrl();
-
                 name.setText(CurrentUser.personName);
-
             }
 
             else{
@@ -219,26 +216,9 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
             //CurrentUser loggedUser = new CurrentUser(personName, personEmail, personPhotoUrl);
             name.setText(CurrentUser.personName);
 
-            /*
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("personName", personName);
-            editor.putString("personEmail", personEmail);
-            editor.putString("personPhotoUrl", personPhotoUrl);
-            editor.apply();
-            Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
-            */
         }
         else{
             name.setText(CurrentUser.personName);
-            /*
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            personName=sharedPref.getString("personName","not Available");
-            personEmail=sharedPref.getString("personEmail","not Available");
-            personPhotoUrl= sharedPref.getString("personPhotoUrl","noImage");
-            name.setText(personName);
-            Log.e("tusamPA2",sharedPref.getString("personName","not Available"));
-            */
         }
 
         //-changed

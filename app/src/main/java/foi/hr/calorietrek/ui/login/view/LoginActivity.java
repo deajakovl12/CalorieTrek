@@ -3,6 +3,8 @@ package foi.hr.calorietrek.ui.login.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private ProfileTracker profileTracker;
 
     String personEmail="";
+    String personName;
     @BindView(R.id.login_button) LoginButton loginButton;
 
     public  @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
@@ -119,7 +122,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                                 try {
                                     personEmail = object.getString("email");
-                                    String birthday = object.getString("birthday");
+                                    DbHelper instance = DbHelper.getInstance(getApplicationContext());
+                                    instance.updateEmail(personName,personEmail);
+                                    instance.close();
+                                    Log.v("personEmail", personEmail);
                                 }
                                 catch (JSONException e){
                                     Log.e("CalorieTrek", "unexpected JSON exception", e);
@@ -128,11 +134,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         });
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "email,birthday");
+                parameters.putString("fields", "email");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-
             }
 
             @Override
@@ -237,7 +241,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInAccount accountData = result.getSignInAccount();
         String personPhoto;
 
-        boolean userExist = DbUser(accountData.getDisplayName());
+        boolean userExist = DbUser(accountData.getDisplayName(),accountData.getEmail());
 
         if (accountData.getPhotoUrl() != null){
             personPhoto = accountData.getPhotoUrl().toString();
@@ -247,6 +251,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
+        setSharedPreferences(accountData.getDisplayName(),accountData.getEmail(),personPhoto);
         CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
         if (userExist){
@@ -266,10 +271,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    public boolean DbUser(String nameSurname){
+    public boolean DbUser(String nameSurname, String email){
         boolean exist = false;
 
-        boolean isInserted = instance.existingUser(nameSurname);
+        boolean isInserted = instance.existingUser(nameSurname, email);
         if (isInserted == true){
             Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
         }
@@ -309,8 +314,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         String personPhoto;
 
         if(profile != null){
-            boolean userExist = DbUser(profile.getName());
-
+            boolean userExist = DbUser(profile.getName(),personEmail);
+            personName=profile.getName();
             if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
                 personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
             }
@@ -337,11 +342,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             main.putExtra("imageUrl", personPhoto);
             main.putExtra("email", personEmail);
             main.putExtra("userModel", userModel);
-
+            setSharedPreferences(profile.getFirstName()+" "+profile.getLastName(),personEmail,personPhoto);
             startActivity(main);
         }
     }
-
+    public void setSharedPreferences(String name, String email, String photoUrl){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("personName", name);
+        editor.putString("personEmail", email);
+        editor.putString("personPhotoUrl", photoUrl);
+        editor.apply();
+        Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
+    }
 
 }
 

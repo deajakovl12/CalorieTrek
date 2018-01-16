@@ -7,6 +7,7 @@ package foi.hr.calorietrek.services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,15 +16,18 @@ import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import foi.hr.calorietrek.R;
+import foi.hr.calorietrek.calorie.CalorieCalculus;
 import foi.hr.calorietrek.constants.Constants;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.location.Altitude;
 import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
-import static java.lang.Math.abs;
 
 public class ForegroundService extends Service {
 
@@ -47,6 +51,9 @@ public class ForegroundService extends Service {
     private double calories = 0;
     private int userWeight = 0;
     private int cargoWeight = 0;
+    private int userID ;
+    private long trainingID;
+    DbHelper instance;
     Altitude altitude;
     @Override
     public void onCreate()
@@ -83,6 +90,13 @@ public class ForegroundService extends Service {
                     .build();
             altitude = new Altitude(this);
             startForeground(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, notification);
+            //delete
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String personEmail = sharedPref.getString("personEmail","not Available");
+            instance = DbHelper.getInstance(getApplicationContext());
+            userID = instance.getUserID(personEmail);
+            trainingID = instance.insertTraining(userID);
+
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
             if(fusedLocationProvider!=null) fusedLocationProvider.startLocationUpdates();
@@ -145,10 +159,11 @@ public class ForegroundService extends Service {
                 oldAltitude=currentAltitude;
                 currentAltitude=altitude.getAltitude();
             }
-            if(isLocationAccurateEnough(oldLocation,currentLocation)) {
-                calculateDistance();
-                calculateElevationGain();
-                calculateCalories();
+            if(CalorieCalculus.isLocationAccurateEnough(oldLocation,currentLocation,cargoWeight)) {
+                instance.insertLocation(trainingID,oldLocation);
+                distance+=CalorieCalculus.calculateDistance(oldLocation,currentLocation);
+                elevationGain = CalorieCalculus.calculateElevationGain(currentLocation,oldLocation);
+                calories+=CalorieCalculus.calculateCalories(currentLocation,oldLocation,userWeight,cargoWeight);
             }
             locationRunnable=this;
             loadData();
@@ -156,72 +171,6 @@ public class ForegroundService extends Service {
             locationHandler.postDelayed(locationRunnable, delay);
         }
     };
-
-
-    private  void calculateDistance() {
-        distance+=oldLocation.distanceTo(currentLocation);
-    }
-    private  void calculateElevationGain() {
-        elevationGain = currentLocation.getAltitude()-oldLocation.getAltitude();
-    }
-
-    private double calculateCoefficient()
-    {
-        double slope=(currentLocation.getAltitude() - oldLocation.getAltitude()) / oldLocation.distanceTo(currentLocation);
-        for(int i=0;i<Constants.CALORIES.SLOPE_COEFFICIENT.length-1;i++) {
-            if(slope>=Constants.CALORIES.SLOPE_COEFFICIENT[i][0] && slope<=Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])
-            {
-                if(slope<=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))<abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
-                {return Constants.CALORIES.SLOPE_COEFFICIENT[i][1];}
-                else if(slope<=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))>abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
-                {return Constants.CALORIES.SLOPE_COEFFICIENT[i+1][1];}
-                else if(slope>=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))>abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
-                {return Constants.CALORIES.SLOPE_COEFFICIENT[i+1][1];}
-                else if(slope>=0 && abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i][0]))<abs(abs(slope)-abs(Constants.CALORIES.SLOPE_COEFFICIENT[i+1][0])))
-                {return Constants.CALORIES.SLOPE_COEFFICIENT[i][1];}
-            }
-        }
-        if(slope<Constants.CALORIES.SLOPE_COEFFICIENT[0][0])return Constants.CALORIES.SLOPE_COEFFICIENT[0][1];
-        else return Constants.CALORIES.SLOPE_COEFFICIENT[Constants.CALORIES.SLOPE_COEFFICIENT.length-1][1];
-    }
-
-    private void calculateCalories()
-    {
-        if(currentLocation != null && oldLocation != null && oldLocation.distanceTo(currentLocation) != 0)
-        {
-            double coefficient = calculateCoefficient();
-            calories += ((coefficient * (userWeight + cargoWeight) * oldLocation.distanceTo(currentLocation)) / Constants.CALORIES.JOULES);
-        }
-    }
-
-    //tests if speed is in good range for walking/running human
-    private boolean isLocationAccurateEnough(Location oldLocation, Location currentLocation)
-    {
-        if(oldLocation!=null && currentLocation!=null && !oldLocation.equals(currentLocation))
-        {
-            //time is in miliseconds
-            double time = currentLocation.getTime()-oldLocation.getTime();
-            //distance is in meters with deducted regular GPS error range to allow test to pass if it was gps error
-            double distance= currentLocation.distanceTo(oldLocation)-Constants.GPSPARAMETERS.GPS_ERROR_RANGE;
-            //speed is in meters/second
-            double speed = distance/(time/1000);
-            if(speed>=Constants.GPSPARAMETERS.FASTEST_HUMAN_SPEED)
-                return false;
-            else if(speed<Constants.GPSPARAMETERS.FASTEST_HUMAN_SPEED &&
-                    speed>=Constants.GPSPARAMETERS.AVERAGE_HUMAN_FASTEST_RUNNING_SPEED &&
-                    cargoWeight<Constants.GPSPARAMETERS.MAX_CARGO_FOR_FAST_RUN)
-                return true;
-
-            else if(speed<Constants.GPSPARAMETERS.AVERAGE_HUMAN_FASTEST_RUNNING_SPEED )
-                return true;
-            else
-                return false;
-        }
-        else
-        {
-            return false;
-        }
-    }
 
     private void loadData()
     {
