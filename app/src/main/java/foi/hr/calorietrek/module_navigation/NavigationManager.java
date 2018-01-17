@@ -46,7 +46,6 @@ public class NavigationManager {
             if(menuItem.getTitle() == navItem.getItemName())
                 clickedItem = navItem;
         }
-        //NavigationItem clickedItem = navigationItems.get(menuItem.getItemId());
 
         FragmentManager fragmentManager = handlerActivity.getFragmentManager();
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);

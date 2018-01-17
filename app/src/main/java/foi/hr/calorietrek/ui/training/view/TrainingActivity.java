@@ -240,6 +240,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
             case DialogInterface.BUTTON_POSITIVE:
                 Stop();
                 Intent intent = new Intent(TrainingActivity.this, FinishedTraining.class);
+                intent.putExtra("ALL_TRAININGS", "false");
                 startActivity(intent);
                 break;
 

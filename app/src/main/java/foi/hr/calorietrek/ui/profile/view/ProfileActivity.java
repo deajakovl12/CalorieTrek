@@ -49,6 +49,7 @@ import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.UserModel;
+import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
@@ -106,6 +107,14 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         else{
             Toast.makeText(getApplicationContext(), R.string.weight_not_saved, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @OnClick(R.id.btnAllTrainings)
+    public void onClickAllTrainings()
+    {
+        Intent intent = new Intent(ProfileActivity.this, FinishedTraining.class);
+        intent.putExtra("ALL_TRAININGS", "true");
+        startActivity(intent);
     }
 
     @OnClick(R.id.btnLogOut)
