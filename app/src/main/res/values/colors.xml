@@ -10,5 +10,7 @@
     <color name="light_green">#2bd15b</color>
     <color name="silver">#C0C0C0</color>
     <color name="dark_silver">#808080</color>
+    <color name="yellow">#e2a70b</color>
+    <color name="blueChart">#7aa2ae</color>
 
 </resources>

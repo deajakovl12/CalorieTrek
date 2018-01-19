@@ -48,4 +48,9 @@
     <string name="action_pdf">PDF Export</string>
     <string name="action_share">Share</string>
     <string name="action_details">Details</string>
+    <string name="kcal">Kcal</string>
+    <string name="distance">Distance</string>
+    <string name="elevation_gain">Elevation gain</string>
+    <string name="time">Time</string>
+    <string name="metar">m</string>
 </resources>

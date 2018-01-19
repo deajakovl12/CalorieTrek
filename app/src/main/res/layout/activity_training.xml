@@ -65,10 +65,12 @@
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="11dp"
             android:text="Time"
+            android:textAlignment="center"
             android:textColor="@color/colorSmallText"
-            android:textSize="@dimen/training_text"
-            android:textAlignment="center" />
+            android:textSize="@dimen/training_text" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorSmallText"
-                    android:text="Distance"
+                    android:text="@string/distance"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true" />
 
