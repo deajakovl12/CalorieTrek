@@ -26,7 +26,7 @@
         <com.github.mikephil.charting.charts.CombinedChart
             android:id="@+id/chart"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/chart_high"
             android:background="@drawable/img_graph_background"
             android:layout_alignParentStart="true" />
 
@@ -37,7 +37,7 @@
             android:text="@string/kcal"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="10sp"
+            android:textSize="@dimen/axis_description_size"
             android:visibility="visible" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:text="@string/metar"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="10sp"
+            android:textSize="@dimen/axis_description_size"
             android:visibility="visible" />
 
     </RelativeLayout>
@@ -82,10 +82,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="0"
+                android:text="@string/zero"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/txt_chart_info"
                 android:textStyle="bold" />
 
             <TextView
@@ -121,7 +121,7 @@
                 android:text="@string/time_format_zero"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/txt_chart_info"
                 android:textStyle="bold" />
 
             <TextView
@@ -159,10 +159,10 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:gravity="center"
-                    android:text="0 m"
+                    android:text="@string/_0_m"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/txt_chart_info"
                     android:textStyle="bold" />
 
                 <TextView
@@ -195,10 +195,10 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:gravity="center"
-                    android:text="0 m"
+                    android:text="@string/_0_m"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/txt_chart_info"
                     android:textStyle="bold" />
 
                 <TextView
