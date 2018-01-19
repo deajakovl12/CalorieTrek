@@ -1,5 +1,6 @@
 package foi.hr.calorietrek.ui.finished_training;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
 import foi.hr.calorietrek.module_navigation.NavigationManager;
+import foi.hr.calorietrek.pdf_export.ExportPDF;
 
 
 public class FinishedTraining extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class FinishedTraining extends AppCompatActivity {
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
     private NavigationManager navManager;
     private DbHelper instance;
+    public ExportPDF exportPDF;
     public ArrayList<TrainingModel> allTrainings;
 
     @Override
@@ -39,6 +42,7 @@ public class FinishedTraining extends AppCompatActivity {
         navManager = NavigationManager.getInstance();
         navManager.setDependencies(this, toolbarDetails);
         instance = DbHelper.getInstance(this);
+        exportPDF = new ExportPDF(this.getApplicationContext());
         allTrainings = new ArrayList<TrainingModel>();
 
         boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
@@ -75,6 +79,7 @@ public class FinishedTraining extends AppCompatActivity {
         int itemId = item.getItemId();
         switch(itemId) {
             case R.id.action_pdf:
+                exportPDF.writePDF(allTrainings);
                 break;
             case R.id.action_share:
                 break;

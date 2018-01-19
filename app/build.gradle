@@ -20,19 +20,14 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     //Butterknife
-
     //Google
-
     //DbInspector
-
     //Facebook
-
     //CircleImageView
     compile 'de.hdodenhof:circleimageview:2.2.0'
     compile 'com.android.support:appcompat-v7:26.+'
@@ -48,6 +43,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     debugCompile 'im.dino:dbinspector:3.4.1@aar'
+    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.12'
 }
 
 
