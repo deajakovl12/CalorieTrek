@@ -18,6 +18,10 @@ public final class CalorieCalculus {
         return currentLocation.getAltitude()-oldLocation.getAltitude();
     }
 
+    public static  double calculateAltitude(Location currentLocation) {
+        return currentLocation.getAltitude();
+    }
+
     public static double calculateCoefficient(Location currentLocation, Location oldLocation)
     {
         double slope=(currentLocation.getAltitude() - oldLocation.getAltitude()) / oldLocation.distanceTo(currentLocation);

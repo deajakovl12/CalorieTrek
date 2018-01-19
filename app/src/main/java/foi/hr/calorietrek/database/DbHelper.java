@@ -9,15 +9,18 @@ import android.location.Location;
 import android.util.Log;
 
 import java.lang.reflect.Array;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
 
 public class DbHelper extends SQLiteOpenHelper{
     private static DbHelper sInstance;
 
     public static final String DATABASE_NAME = "CalorieTrek.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     public static final String TABLE_USER = "user";
     public static final String COL_ID_USER = "id_user";
     public static final String COL_EMAIL = "email";
@@ -29,6 +32,7 @@ public class DbHelper extends SQLiteOpenHelper{
     public static final String COL_FK_USER = "fk_user";
     public static final String COL_DATE = "date";
     public static final String COL_TRAINING_NAME = "training_name";
+    public static final String COL_TRAINING_WEIGHT = "weight_training";
 
     public static final String TABLE_LOCATION = "locations";
     public static final String COL_ID_LOCATION = "id_location";
@@ -37,6 +41,7 @@ public class DbHelper extends SQLiteOpenHelper{
     public static final String COL_LATITUDE = "latitude";
     public static final String COL_LONGITUDE = "longitude";
     public static final String COL_TIME = "time";
+    public static final String COL_CARGO_WEIGHT = "cargo_weight_";
 
     public static synchronized DbHelper getInstance(Context context) {
         if (sInstance == null) {
@@ -61,6 +66,7 @@ public class DbHelper extends SQLiteOpenHelper{
                 COL_FK_USER + " INTEGER NOT NULL, " +
                 COL_DATE + " VARCHAR(19), "+
                 COL_TRAINING_NAME + " TEXT,"+
+                COL_TRAINING_WEIGHT + " INTEGER NOT NULL,"+
                 "FOREIGN KEY ("+COL_FK_USER+") REFERENCES "+TABLE_USER+"("+COL_ID_USER+"));");
         db.execSQL("CREATE TABLE " + TABLE_LOCATION + "(" +
                 COL_ID_LOCATION + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -69,6 +75,7 @@ public class DbHelper extends SQLiteOpenHelper{
                 COL_LATITUDE + " REAL NOT NULL, "+
                 COL_LONGITUDE + " REAL NOT NULL, "+
                 COL_TIME + " REAL NOT NULL,"+
+                COL_CARGO_WEIGHT + " INTEGER NOT NULL,"+
                 "FOREIGN KEY ("+COL_FK_TRAINING+") REFERENCES "+TABLE_TRAINING+"("+COL_ID_TRAINING+"));");
     }
 
@@ -111,7 +118,7 @@ public class DbHelper extends SQLiteOpenHelper{
         }
     }
 
-    //since method above should be run(and always is) before this one checking if user exists is not necessary
+    //since method above should be run(and always is) before this one, checking if user exists is not necessary
     public int getUserID(String email){
         SQLiteDatabase db = this.getReadableDatabase();
         String table = TABLE_USER;
@@ -147,15 +154,16 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     public TrainingModel returnLatestTraining(int userID) {
-        TrainingModel result = new TrainingModel("", "", new ArrayList<Location>());
+        TrainingModel result = new TrainingModel("", "", new ArrayList<TrainingLocationInfo>(),0);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryTraining = "SELECT id_training FROM training WHERE fk_user = '" + userID + "' ORDER BY id_training DESC LIMIT 1";
+        String queryTraining = "SELECT id_training,weight_training FROM training WHERE fk_user = '" + userID + "' ORDER BY id_training DESC LIMIT 1";
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
-            result = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID));
+            int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
+            result = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
         }
 
         cursor.close();
@@ -172,7 +180,8 @@ public class DbHelper extends SQLiteOpenHelper{
 
         while (cursor.moveToNext()){
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
-            TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID));
+            int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
+            TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
             result.add(training);
         }
 
@@ -198,6 +207,22 @@ public class DbHelper extends SQLiteOpenHelper{
         return result;
     }
 
+    public int returnTrainingWeight(int trainingID){
+        int result=0;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT weight_training FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndex("training_name"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public String returnTrainingDate(int trainingID){
         String result = "";
 
@@ -215,8 +240,8 @@ public class DbHelper extends SQLiteOpenHelper{
         return result;
     }
 
-    public ArrayList<Location> returnTrainingLocations(int trainingID){
-        ArrayList<Location> result = new ArrayList<Location>();
+    public ArrayList<TrainingLocationInfo> returnTrainingLocations(int trainingID){
+        ArrayList<TrainingLocationInfo> result = new ArrayList<TrainingLocationInfo>();
 
         SQLiteDatabase db = this.getWritableDatabase();
         String queryTraining = "SELECT * FROM locations WHERE fk_training = '" + trainingID + "'";
@@ -228,7 +253,10 @@ public class DbHelper extends SQLiteOpenHelper{
             location.setLatitude(cursor.getDouble(cursor.getColumnIndex("latitude")));
             location.setLongitude(cursor.getDouble(cursor.getColumnIndex("longitude")));
             location.setTime(cursor.getLong(cursor.getColumnIndex("time")));
-            result.add(location);
+            int cargoWeight = cursor.getInt(cursor.getColumnIndex("cargo_weight_"));
+            long time = cursor.getInt(cursor.getColumnIndex("time"));
+            TrainingLocationInfo trainingLocationInfo=new TrainingLocationInfo(location,cargoWeight,time);
+            result.add(trainingLocationInfo);
         }
 
         cursor.close();
@@ -249,36 +277,37 @@ public class DbHelper extends SQLiteOpenHelper{
         return true;
     }
 
-    public long insertTraining(int fkUser, double dateTime, String trainingName){
+    public long insertTraining(int fkUser, double dateTime, String trainingName, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COL_FK_USER, fkUser);
         values.put(COL_DATE, dateTime);
         values.put(COL_TRAINING_NAME, trainingName);
-
+        values.put(COL_TRAINING_WEIGHT,weight);
         return db.insert(TABLE_TRAINING, null, values);
     }
 
-    public long insertTraining(int fkUser, double dateTime){
+    public long insertTraining(int fkUser, double dateTime, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COL_FK_USER, fkUser);
         values.put(COL_DATE, dateTime);
+        values.put(COL_TRAINING_WEIGHT,weight);
 
         return db.insert(TABLE_TRAINING, null, values);
     }
 
-    public long insertTraining(int fkUser){
+    public long insertTraining(int fkUser, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COL_FK_USER, fkUser);
-
+        values.put(COL_TRAINING_WEIGHT,weight);
         return db.insert(TABLE_TRAINING, null, values);
     }
-    public  void insertLocation(long fkTraining, Location location){
+    public  void insertLocation(long fkTraining, Location location, int cargo_weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -287,7 +316,7 @@ public class DbHelper extends SQLiteOpenHelper{
         values.put(COL_LATITUDE, location.getLatitude());
         values.put(COL_LONGITUDE, location.getLongitude());
         values.put(COL_TIME, location.getTime());
-
+        values.put(COL_CARGO_WEIGHT, cargo_weight);
         long result = db.insert(TABLE_LOCATION, null, values);
     }
 
