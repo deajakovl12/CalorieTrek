@@ -262,6 +262,9 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         btnTrain.setText(getString(R.string.start_training));
         btnStop.setVisibility(btnStop.INVISIBLE);
         txtTime.setText(getString(R.string.time_format_zero));
+        txtDistance.setText(getString(R.string.distance_zero));
+        txtElevation.setText(getString(R.string.elevation_zero));
+        txtKcal.setText(getString(R.string.calorie_zero));
         timer = false;
     }
     private void loadData()

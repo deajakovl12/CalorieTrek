@@ -4,6 +4,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +22,13 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import foi.hr.calorietrek.Manifest;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
 import foi.hr.calorietrek.module_navigation.NavigationManager;
+import foi.hr.calorietrek.pdf_export.ExportPDF;
 
 
 public class FinishedTraining extends AppCompatActivity {
@@ -32,6 +36,7 @@ public class FinishedTraining extends AppCompatActivity {
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
     private NavigationManager navManager;
     private DbHelper instance;
+    public ExportPDF exportPDF;
     public ArrayList<TrainingModel> allTrainings;
     private static final int REQ_SELECT_PHOTO = 1;
     private static final int REQ_START_SHARE = 2;
@@ -49,6 +54,7 @@ public class FinishedTraining extends AppCompatActivity {
         navManager = NavigationManager.getInstance();
         navManager.setDependencies(this, toolbarDetails);
         instance = DbHelper.getInstance(this);
+        exportPDF = new ExportPDF(this.getApplicationContext());
         allTrainings = new ArrayList<TrainingModel>();
 
         boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
@@ -85,8 +91,12 @@ public class FinishedTraining extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch(itemId) {
-            case R.id.action_pdf:
+            case R.id.action_pdf: {
+                {
+                    exportPDF.writePDF(allTrainings);
+                }
                 break;
+            }
             case R.id.action_share:
                 break;
             case R.id.action_module_submenu:
