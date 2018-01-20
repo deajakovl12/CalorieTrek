@@ -96,7 +96,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
         txtElevation.setText(String.format("%.2f", elevation)+"m");
 
         return view;
-
     }
 
     private void addDataForChart() {
@@ -132,6 +131,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                     }
                     setChart(entriesBar, entries);
                     showChart = true;
+                    chart.saveToGallery("graf",100);
                 }
             }
             if(!showChart){

@@ -7,12 +7,28 @@
         android:title="@string/action_pdf"
         app:showAsAction="always" />
 
+
     <item
         android:id="@+id/action_share"
         android:icon="@drawable/ic_share"
         android:title="@string/action_share"
-        app:showAsAction="always" />
+        app:showAsAction="always">
 
+        <menu>
+            <item
+                android:id="@+id/action_share_fb"
+                app:showAsAction="ifRoom"
+                android:title="@string/share_fb"
+                app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
+
+            <item
+                android:id="@+id/action_share_google"
+                app:showAsAction="ifRoom"
+                android:title="@string/share_google"
+                app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
+
+        </menu>
+    </item>
     <item android:id="@+id/action_module_submenu"
         android:icon="@drawable/ic_more_vert"
         android:title="@string/action_details"
