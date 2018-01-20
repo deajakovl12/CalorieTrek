@@ -1,20 +1,19 @@
-package foi.hr.calorietrek.ui.finished_training;
+package foi.hr.calorietrek.all_trainings;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.media.Image;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.DropBoxManager;
-import android.support.annotation.Nullable;
-import android.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -28,43 +27,33 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
-import org.w3c.dom.Entity;
-
-import java.security.KeyStore;
-import java.sql.Time;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.calorie.CalorieCalculus;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
-import foi.hr.calorietrek.model.UserModel;
-import foi.hr.calorietrek.module_navigation.NavigationItem;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
-public class TrainingDetailsFragment extends Fragment implements NavigationItem {
-    private String name = "Details Fragment";
-    private ArrayList<TrainingModel> allTrainings;
+/*
+This class was created for activity wich show charts for all trainings. It use instance of DBHelper to find
+all information for charts. Library wich was used is: https://github.com/PhilJay/MPAndroidChart
+ */
 
-    public @BindView(R.id.chart) CombinedChart chart;
-    public @BindView(R.id.txtTime) TextView txtTime;
-    public @BindView(R.id.txtKcal) TextView txtKcal;
-    public @BindView(R.id.txtAxisX) TextView txtAxisX;
-    public @BindView(R.id.txtAxisY) TextView txtAxisY;
-    public @BindView(R.id.txtDistance) TextView txtDistance;
-    public @BindView(R.id.txtElevation) TextView txtElevation;
-    public @BindView(R.id.btnHome) Button btnHome;
+public class AllTrainings extends AppCompatActivity {
+
+    public @BindView(R.id.chartLayout) LinearLayout chartLayout;
+
+    private DbHelper instance;
+    private ArrayList<TrainingModel> allTrainings;
 
     Location oldLocation;
     float oldDistance = 0;
@@ -74,35 +63,31 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     long finishTime;
     float elevation;
     boolean showChart = false;
+    String trainingName = "Training name";
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
 
-        allTrainings = ((FinishedTraining) this.getActivity()).allTrainings;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_all_trainings);
 
-        View view = inflater.inflate(R.layout.training_details_fragment, container, false);
-        ButterKnife.bind(this, view);
+        ButterKnife.bind(this);
+        instance = DbHelper.getInstance(this);
+        allTrainings = new ArrayList<TrainingModel>();
+
+        allTrainings = instance.returnAllTrainings(instance.getUserID(CurrentUser.personEmail));
 
         addDataForChart();
-
-        txtKcal.setText(String.format("%.1f", sumCalories));
-        txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(finishTime-startTime),
-               TimeUnit.MILLISECONDS.toMinutes(finishTime-startTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(finishTime-startTime)),
-               TimeUnit.MILLISECONDS.toSeconds(finishTime-startTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finishTime-startTime))) );
-        txtDistance.setText(String.format("%.2f", oldDistance)+"m");
-        txtElevation.setText(String.format("%.2f", elevation)+"m");
-
-        return view;
 
     }
 
     private void addDataForChart() {
-        List<BarEntry> entriesBar = new ArrayList<>();
-        List<Entry> entries = new ArrayList<>();
 
         if(!allTrainings.isEmpty()) {
             for (TrainingModel data : allTrainings) {
+                if(data.getName()!="") trainingName = data.getName();
+                List<BarEntry> entriesBar = new ArrayList<>();
+                List<Entry> entries = new ArrayList<>();
                 if (data.getLocations().size() > 1) {
                     for (TrainingLocationInfo loc : data.getLocations()) {
                         if (counter == 0) {
@@ -111,7 +96,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                             counter++;
 
                         }
-
                         double altitude = CalorieCalculus.calculateAltitude(loc.getLocation());
                         float altitudeFloat = (float) altitude;
 
@@ -129,20 +113,33 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         finishTime = loc.getTime();
                         elevation = altitudeFloat;
                     }
-                    setChart(entriesBar, entries);
+                    CombinedChart chart = new CombinedChart(getApplicationContext());
+                    setChart(entriesBar, entries, chart);
                     showChart = true;
+                    oldDistance = 0;
+                    sumCalories = 0;
+                    counter = 0;
                 }
             }
-            if(!showChart){
-                txtAxisX.setVisibility(View.INVISIBLE);
-                txtAxisY.setVisibility(View.INVISIBLE);
-            }
-            chart.setNoDataText("Not enough data for graph");
-            chart.setNoDataTextColor(Color.rgb(226, 116, 7));
         }
     }
 
-    private void setChart(List<BarEntry> entriesBar, List<Entry> entries ) {
+    private void setChart(List<BarEntry> entriesBar, List<Entry> entries, CombinedChart chart ) {
+
+
+        chart.setBackground(getResources().getDrawable(R.drawable.img_graph_background));
+        TextView textView = new TextView(getApplicationContext());
+
+        textView.setText(trainingName);
+
+        RelativeLayout rl = new RelativeLayout(getApplicationContext());
+        rl.addView(chart);
+        rl.addView(textView);
+        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams1.setMargins(0, 25, 0, 25);
+        rl.setLayoutParams(layoutParams1);
+        chartLayout.addView(rl);
+
 
         LineDataSet dataSet = new LineDataSet(entries, "Elevation"); // add entries to dataset
         dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
@@ -184,10 +181,11 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
         rightYAxis.setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setAxisMinimum(0);
-        chart.setTouchEnabled(false);
-        chart.saveToGallery("new Line chart", 85);
         chart.getDescription().setEnabled(false);
-        chart.setSaveEnabled(true);
+        chart.setExtraRightOffset(50f);
+        chart.setExtraBottomOffset(10f);
+        chart.setExtraTopOffset(5f);
+        chart.setTouchEnabled(false);
 
         chart.setData(d);
         chart.invalidate();
@@ -196,22 +194,8 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     @OnClick(R.id.btnHome)
     public void onClickBtnHome()
     {
-        Intent intent = new Intent(getContext(), TrainingActivity.class );
+        Intent intent = new Intent(getApplicationContext(), TrainingActivity.class );
         startActivity(intent);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public String getItemName() {
-        return name;
-    }
-
-    @Override
-    public android.app.Fragment getFragment() {
-        return this;
-    }
 }
