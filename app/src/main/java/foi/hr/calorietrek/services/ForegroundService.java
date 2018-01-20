@@ -95,7 +95,7 @@ public class ForegroundService extends Service {
             String personEmail = sharedPref.getString("personEmail","not Available");
             instance = DbHelper.getInstance(getApplicationContext());
             userID = instance.getUserID(personEmail);
-            trainingID = instance.insertTraining(userID);
+            trainingID = instance.insertTraining(userID,userWeight);
 
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
@@ -160,7 +160,7 @@ public class ForegroundService extends Service {
                 currentAltitude=altitude.getAltitude();
             }
             if(CalorieCalculus.isLocationAccurateEnough(oldLocation,currentLocation,cargoWeight)) {
-                instance.insertLocation(trainingID,oldLocation);
+                instance.insertLocation(trainingID,oldLocation,cargoWeight);
                 distance+=CalorieCalculus.calculateDistance(oldLocation,currentLocation);
                 elevationGain = CalorieCalculus.calculateElevationGain(currentLocation,oldLocation);
                 calories+=CalorieCalculus.calculateCalories(currentLocation,oldLocation,userWeight,cargoWeight);

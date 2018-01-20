@@ -49,6 +49,7 @@ public class FinishedTraining extends AppCompatActivity {
         allTrainings = new ArrayList<TrainingModel>();
 
         boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
+        isAllTrainings = false;
         if(isAllTrainings)
         {
             allTrainings = instance.returnAllTrainings(instance.getUserID(CurrentUser.personEmail));

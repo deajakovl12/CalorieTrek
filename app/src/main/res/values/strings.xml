@@ -48,7 +48,6 @@
     <string name="action_pdf">PDF Export</string>
     <string name="action_share">Share</string>
     <string name="action_details">Details</string>
-
     <string name="pdf_export_start">Generating PDF...</string>
     <string name="pdf_export_finished">PDF export finished!</string>
     <string name="pdf_save_path">/storage/emulated/0/CalorieTrek</string>
@@ -72,4 +71,11 @@
     <string name="pdf_table_distance">Distance</string>
     <string name="pdf_table_elevationGain">Elevation Gain</string>
     <string name="pdf_date_format">dd/MM/yyyy</string>
+    <string name="kcal">Kcal</string>
+    <string name="distance">Distance</string>
+    <string name="elevation_gain">Elevation gain</string>
+    <string name="time">Time</string>
+    <string name="metar">m</string>
+    <string name="zero">0</string>
+    <string name="_0_m">0 m</string>
 </resources>
