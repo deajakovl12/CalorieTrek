@@ -55,4 +55,8 @@
     <string name="metar">m</string>
     <string name="zero">0</string>
     <string name="_0_m">0 m</string>
+    <string name="share_google">Google+</string>
+    <string name="share_fb">Facebook</string>
+
+
 </resources>
