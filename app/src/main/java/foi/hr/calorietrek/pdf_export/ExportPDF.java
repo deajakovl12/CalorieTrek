@@ -38,28 +38,26 @@ import com.itextpdf.text.pdf.PdfWriter;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
+import foi.hr.calorietrek.ui.login.view.LoginActivity;
 
 public class ExportPDF {
     private static Context context;
     private static File file;
 
-    private static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD);
-    private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.NORMAL);
-    private static Font boldNormalFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+    private static Font titleFont;
+    private static Font normalFont;
+    private static Font boldNormalFont;
 
-    private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-            Font.BOLD);
-    private static Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-            Font.BOLD);
 
     public ExportPDF(Context context)
     {
         this.context = context;
-        file = new File("/storage/emulated/0/Android/data/CalorieTrek");
+        file = new File(context.getString(R.string.pdf_save_path));
         if(!file.exists())
         {
             file.mkdir();
         }
+        initializeFonts();
     }
 
     public void writePDF(ArrayList<TrainingModel> allTrainings)
@@ -78,35 +76,36 @@ public class ExportPDF {
     }
 
     private void addMetaData(Document document) {
-        document.addTitle("CalorieTrek Trainings");
-        document.addSubject("CalorieTrek Trainings");
-        document.addKeywords("CalorieTrek, PDF, Training");
-        document.addAuthor("CalorieTrek");
-        document.addCreator("CalorieTrek Vogel");
+        document.addTitle(context.getString(R.string.pdf_meta_title));
+        document.addSubject(context.getString(R.string.pdf_meta_subject));
+        document.addKeywords(context.getString(R.string.pdf_meta_keywords));
+        document.addAuthor(context.getString(R.string.pdf_meta_author));
+        document.addCreator(context.getString(R.string.pdf_meta_creator));
     }
 
     private static void addTitlePage(Document document) throws DocumentException {
         Paragraph preface = new Paragraph();
-        addEmptyLine(preface, 1);
-        preface.add(new Paragraph("CalorieTrek Trainings", titleFont));
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_start));
+        preface.add(new Paragraph(context.getString(R.string.pdf_title), titleFont));
 
-        addEmptyLine(preface, 1);
-        Paragraph logo = returnImageParagraph(R.drawable.cklogo, 175, 50);
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_title));
+        Paragraph logo = returnImageParagraph(R.drawable.cklogo, context.getResources().getInteger(R.integer.pdf_logo_length),
+                                                                 context.getResources().getInteger(R.integer.pdf_logo_height));
         preface.add(logo);
 
-        addEmptyLine(preface, 1);
-        preface.add(new Paragraph("PDF created by user:", boldNormalFont));
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_logo));
+        preface.add(new Paragraph(context.getString(R.string.pdf_createdBy), boldNormalFont));
         preface.add(new Paragraph(CurrentUser.personEmail, normalFont));
 
-        addEmptyLine(preface, 1);
-        preface.add(new Paragraph("Date:", boldNormalFont));
-        preface.add(new Paragraph(getDate(), normalFont));
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_createdBy));
+        preface.add(new Paragraph(context.getString(R.string.pdf_date), boldNormalFont));
+        preface.add(new Paragraph(formatDate(getDate()), normalFont));
 
-        addEmptyLine(preface, 1);
-        preface.add(new Paragraph("This document contains training details calculated with the CalorieTrek application.", normalFont));
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_date));
+        preface.add(new Paragraph(context.getString(R.string.pdf_description), normalFont));
 
-        addEmptyLine(preface, 1);
-        preface.add(new Paragraph("Trainings can be viewed on the following pages.", normalFont));
+        addEmptyLine(preface, context.getResources().getInteger(R.integer.pdf_empty_line_number_after_description));
+        preface.add(new Paragraph(context.getString(R.string.pdf_instructions), normalFont));
 
         document.add(preface);
         document.newPage();
@@ -140,21 +139,23 @@ public class ExportPDF {
     private static void addTraining(Document document, TrainingModel training, boolean secondTrainingOnPage) throws DocumentException  {
         Paragraph trainingItem = new Paragraph();
 
-        trainingItem.add(new Paragraph("Training Name: ", boldNormalFont));
+        trainingItem.add(new Paragraph(context.getString(R.string.pdf_training_name), boldNormalFont));
         trainingItem.add(new Paragraph(training.getName(), normalFont));
 
-        trainingItem.add(new Paragraph("Training Date: ", boldNormalFont));
+        trainingItem.add(new Paragraph(context.getString(R.string.pdf_training_date), boldNormalFont));
         trainingItem.add(new Paragraph(training.getDate(), normalFont));
 
-        trainingItem.add(new Paragraph("Training Statistics: ", boldNormalFont));
+        trainingItem.add(new Paragraph(context.getString(R.string.pdf_training_stats), boldNormalFont));
         if(!secondTrainingOnPage)
         {
-            Paragraph graph = returnImageParagraph(R.drawable.cklogo, 175, 150);
+            Paragraph graph = returnImageParagraph(R.drawable.cklogo, context.getResources().getInteger(R.integer.pdf_graph_length),
+                                                                      context.getResources().getInteger(R.integer.pdf_graph_length));
             trainingItem.add(graph);
         }
         else
         {
-            Paragraph graph = returnImageParagraph(R.drawable.cklogo, 175, 150);
+            Paragraph graph = returnImageParagraph(R.drawable.cklogo, context.getResources().getInteger(R.integer.pdf_graph_length),
+                                                                      context.getResources().getInteger(R.integer.pdf_graph_length));
             trainingItem.add(graph);
         }
 
@@ -163,22 +164,22 @@ public class ExportPDF {
     }
 
     private static void addTrainingTable(Paragraph paragraph, TrainingModel training) {
-        PdfPTable table = new PdfPTable(2);
+        PdfPTable table = new PdfPTable(context.getResources().getInteger(R.integer.pdf_table_column_count));
 
         //headers
-        addCellToTable(table, "Stat", BaseColor.CYAN);
-        addCellToTable(table, "Value", BaseColor.CYAN);
-        table.setHeaderRows(1);
+        addCellToTable(table, context.getString(R.string.pdf_table_stat), BaseColor.CYAN);
+        addCellToTable(table, context.getString(R.string.pdf_table_value), BaseColor.CYAN);
+        table.setHeaderRows(context.getResources().getInteger(R.integer.pdf_table_header_row_count));
 
         //data
-        addCellToTable(table, "Kcal", null);
-        addCellToTable(table, "vrijednost kalorija", null);
-        addCellToTable(table, "Time", null);
-        addCellToTable(table, "vrijednost vremena", null);
-        addCellToTable(table, "Distance", null);
-        addCellToTable(table, "vrijednost udaljenosti", null);
-        addCellToTable(table, "Elevation Gain", null);
-        addCellToTable(table, "vrijednost visine", null);
+        addCellToTable(table, context.getString(R.string.pdf_table_Kcal), null);
+        addCellToTable(table, "vr. kalorija (placeholder)", null);
+        addCellToTable(table, context.getString(R.string.pdf_table_time), null);
+        addCellToTable(table, "vr. vremena (placeholder)", null);
+        addCellToTable(table, context.getString(R.string.pdf_table_distance), null);
+        addCellToTable(table, "vr. udaljenosti (placeholder)", null);
+        addCellToTable(table, context.getString(R.string.pdf_table_elevationGain), null);
+        addCellToTable(table, "vr. visine (placeholder)", null);
 
         paragraph.add(table);
     }
@@ -202,8 +203,16 @@ public class ExportPDF {
     private static String getDate()
     {
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.pdf_date_format));
         String sDate = sdf.format(date.getTime());
+        return sDate;
+    }
+
+    private static String formatDate(String date)
+    {
+        String sDate = date;
+        sDate = date.replaceAll("/", ".");
+        sDate += ".";
         return sDate;
     }
 
@@ -212,7 +221,7 @@ public class ExportPDF {
             Paragraph paragraph = new Paragraph();
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, context.getResources().getInteger(R.integer.pdf_bitmap_quality), stream);
             byte[] byteArray = stream.toByteArray();
 
             Image img = Image.getInstance(byteArray);
@@ -250,4 +259,9 @@ public class ExportPDF {
         return name + "_" + String.valueOf(i) + ".pdf";
     }
 
+    private static void initializeFonts() {
+        titleFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_title), Font.BOLD);
+        normalFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_normal), Font.NORMAL);
+        boldNormalFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_normalBold), Font.BOLD);
+    }
 }

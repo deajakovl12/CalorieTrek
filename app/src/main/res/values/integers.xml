@@ -1,0 +1,23 @@
+<resources>
+    <integer name="pdf_logo_length">175</integer>
+    <integer name="pdf_logo_height">50</integer>
+
+    <integer name="pdf_graph_length">175</integer>
+    <integer name="pdf_graph_height">150</integer>
+
+    <integer name="pdf_bitmap_quality">100</integer>
+
+    <integer name="pdf_font_size_title">20</integer>
+    <integer name="pdf_font_size_normal">16</integer>
+    <integer name="pdf_font_size_normalBold">16</integer>
+
+    <integer name="pdf_table_column_count">2</integer>
+    <integer name="pdf_table_header_row_count">1</integer>
+
+    <integer name="pdf_empty_line_number_after_start">1</integer>
+    <integer name="pdf_empty_line_number_after_title">1</integer>
+    <integer name="pdf_empty_line_number_after_logo">1</integer>
+    <integer name="pdf_empty_line_number_after_createdBy">1</integer>
+    <integer name="pdf_empty_line_number_after_date">1</integer>
+    <integer name="pdf_empty_line_number_after_description">1</integer>
+</resources>

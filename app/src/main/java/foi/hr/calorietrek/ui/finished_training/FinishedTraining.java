@@ -1,6 +1,7 @@
 package foi.hr.calorietrek.ui.finished_training;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -8,11 +9,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import foi.hr.calorietrek.Manifest;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
@@ -78,9 +81,12 @@ public class FinishedTraining extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         switch(itemId) {
-            case R.id.action_pdf:
-                exportPDF.writePDF(allTrainings);
+            case R.id.action_pdf: {
+                {
+                    exportPDF.writePDF(allTrainings);
+                }
                 break;
+            }
             case R.id.action_share:
                 break;
             case R.id.action_module_submenu:
