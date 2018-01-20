@@ -78,4 +78,7 @@
     <string name="metar">m</string>
     <string name="zero">0</string>
     <string name="_0_m">0 m</string>
+    <string name="distance_zero">0 m</string>
+    <string name="elevation_zero">0 m</string>
+    <string name="calorie_zero">0</string>
 </resources>

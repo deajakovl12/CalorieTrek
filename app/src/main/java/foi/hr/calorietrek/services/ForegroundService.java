@@ -29,6 +29,12 @@ import foi.hr.calorietrek.location.Altitude;
 import foi.hr.calorietrek.location.FusedLocationProvider;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
+
+/*
+This class is used as a foreground service in CalorieTrek application. This service turns on when user starts new training. When turned on, training continues to run in background without interruption.
+After start, timer starts ticking, location starts giving updates and calories are being calculated. When user stops training, service gathers final data, removes callbacks on runnables and sends locationProvider
+signal do stop giving location updates.
+*/
 public class ForegroundService extends Service {
 
     private Handler trainingHandler = new Handler();
@@ -46,6 +52,7 @@ public class ForegroundService extends Service {
     private Location currentLocation = null;
     private float distance = 0;
     private double elevationGain=0;
+    private double elevationGainBarometer=0;
     private double oldAltitude =55555;
     private double currentAltitude=55555;
     private double calories = 0;
@@ -125,6 +132,8 @@ public class ForegroundService extends Service {
             elevationGain = 0;
             calories = 0;
 
+            instance.insertLocation(trainingID,currentLocation,cargoWeight);
+
             stopTimer = true;
             stopForeground(true);
             stopSelf();
@@ -139,7 +148,15 @@ public class ForegroundService extends Service {
             updateTime = pausedTime + timeInMilliseconds;
             intent.putExtra("timeInMilliseconds", updateTime);
             intent.putExtra("distanceInMeters",distance);
-            if(altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable()&&oldAltitude!=55555 &&currentAltitude!=55555)intent.putExtra("elevationGainInMeters",currentAltitude-oldAltitude);
+            if(altitude.isPressureSensorAvailable() && altitude.isAltitudeAvailable() && oldAltitude != 55555 && currentAltitude != 55555)
+            {
+                double tempGain = currentAltitude-oldAltitude;
+                if(tempGain > 0.0)
+                {
+                    elevationGainBarometer += tempGain;
+                }
+                intent.putExtra("elevationGainInMeters",elevationGainBarometer);
+            }
             else intent.putExtra("elevationGainInMeters",elevationGain);
             intent.putExtra("calories", calories);
             sendBroadcast(intent);
@@ -162,7 +179,11 @@ public class ForegroundService extends Service {
             if(CalorieCalculus.isLocationAccurateEnough(oldLocation,currentLocation,cargoWeight)) {
                 instance.insertLocation(trainingID,oldLocation,cargoWeight);
                 distance+=CalorieCalculus.calculateDistance(oldLocation,currentLocation);
-                elevationGain = CalorieCalculus.calculateElevationGain(currentLocation,oldLocation);
+                double elevGain = CalorieCalculus.calculateElevationGain(currentLocation,oldLocation);
+                if(elevGain > 0.0)
+                {
+                    elevationGain += elevGain;
+                }
                 calories+=CalorieCalculus.calculateCalories(currentLocation,oldLocation,userWeight,cargoWeight);
             }
             locationRunnable=this;
