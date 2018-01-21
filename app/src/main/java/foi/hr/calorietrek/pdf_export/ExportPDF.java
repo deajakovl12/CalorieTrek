@@ -113,10 +113,10 @@ public class ExportPDF {
 
     private static void addContent(Document document, ArrayList<TrainingModel> allTrainings) throws DocumentException  {
         //temporary trainings for testing
-        allTrainings.add(new TrainingModel("1.1.2011.", "prvo", null, 0));
-        allTrainings.add(new TrainingModel("1.2.2012.", "drugo", null, 0));
-        allTrainings.add(new TrainingModel("1.3.2013.", "trece", null, 0));
-        allTrainings.add(new TrainingModel("1.4.2014.", "cetvrto", null, 0));
+        allTrainings.add(new TrainingModel(1,"1.1.2011.", "prvo", null, 0));
+        allTrainings.add(new TrainingModel(2,"1.2.2012.", "drugo", null, 0));
+        allTrainings.add(new TrainingModel(3,"1.3.2013.", "trece", null, 0));
+        allTrainings.add(new TrainingModel(4,"1.4.2014.", "cetvrto", null, 0));
         //temporary trainings for testing
 
         boolean goToNewPage = false;

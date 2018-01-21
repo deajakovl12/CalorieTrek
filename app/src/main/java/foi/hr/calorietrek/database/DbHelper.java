@@ -163,16 +163,17 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
     public TrainingModel returnLatestTraining(int userID) {
-        TrainingModel result = new TrainingModel("", "", new ArrayList<TrainingLocationInfo>(),0);
+        TrainingModel result = new TrainingModel(0,"", "", new ArrayList<TrainingLocationInfo>(),0);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryTraining = "SELECT id_training,weight_training FROM training WHERE fk_user = '" + userID + "' ORDER BY id_training DESC LIMIT 1";
+        String queryTraining = "SELECT id_training,weight_training,training_name FROM training WHERE fk_user = '" + userID + "' ORDER BY id_training DESC LIMIT 1";
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
             int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
-            result = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
+            String trainingName = cursor.getString(cursor.getColumnIndex("training_name"));
+            result = new TrainingModel(trainingID, returnTrainingDate(trainingID) ,returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
         }
 
         cursor.close();
@@ -190,7 +191,7 @@ public class DbHelper extends SQLiteOpenHelper{
         while (cursor.moveToNext()){
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
             int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
-            TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
+            TrainingModel training = new TrainingModel(trainingID,returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
             result.add(training);
         }
 
@@ -354,8 +355,16 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL(query);
         return true;
     }
+    */
 
+    public boolean updateTrainingName(int trainingID, String trainingName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE training SET training_name = '" + trainingName + "' WHERE id_training = '" + trainingID + "'";
+        db.execSQL(query);
+        return true;
+    }
 
+/*
     public long insertTraining(int fkUser, double dateTime, String trainingName, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
