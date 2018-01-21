@@ -124,7 +124,7 @@ public class ForegroundService extends Service {
             }
             if(altitude!=null)altitude.onPause();
             if(currentLocation!=null)instance.insertLocation(trainingID,currentLocation,cargoWeight);
-            if(altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
+            if(altitude!=null && altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
             else {instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
             currentLocation=null;
             oldLocation=null;

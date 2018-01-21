@@ -1,7 +1,7 @@
 package foi.hr.calorietrek.model;
 import android.location.Location;
 import java.util.ArrayList;
-
+/* Model class for training. */
 public class TrainingModel {
     private String date;
     private String name;

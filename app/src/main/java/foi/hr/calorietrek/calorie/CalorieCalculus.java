@@ -8,6 +8,7 @@ import static java.lang.Math.abs;
 
 /**
  * Created by marko on 11-Jan-18.
+ * This class is used for calculating calories. For calculating calories, we need to calculate traveled distance and elevation gain which is also calculated in this class.
  */
 
 public final class CalorieCalculus {

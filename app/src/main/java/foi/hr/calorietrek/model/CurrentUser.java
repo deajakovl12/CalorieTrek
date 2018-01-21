@@ -1,7 +1,7 @@
 package foi.hr.calorietrek.model;
 
 import javax.inject.Inject;
-
+/* Model class for current user. */
 public class CurrentUser {
     public static String personName;
     public static String personEmail;
