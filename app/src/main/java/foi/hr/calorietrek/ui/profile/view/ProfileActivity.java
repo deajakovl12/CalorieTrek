@@ -46,6 +46,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
+import foi.hr.calorietrek.all_trainings.AllTrainings;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.UserModel;
@@ -112,8 +113,8 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
     @OnClick(R.id.btnAllTrainings)
     public void onClickAllTrainings()
     {
-        Intent intent = new Intent(ProfileActivity.this, FinishedTraining.class);
-        intent.putExtra("ALL_TRAININGS", "true");
+        Intent intent = new Intent(ProfileActivity.this, AllTrainings.class);
+        //intent.putExtra("ALL_TRAININGS", "true");
         startActivity(intent);
     }
 
