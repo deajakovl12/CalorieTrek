@@ -3,6 +3,9 @@ package foi.hr.calorietrek.ui.finished_training;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +15,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.view.View;
 import android.widget.Toast;
+
+import com.google.android.gms.plus.PlusShare;
 
 import java.util.ArrayList;
 
@@ -107,6 +113,27 @@ public class FinishedTraining extends AppCompatActivity {
                 break;
             case R.id.action_module_submenu:
                 break;
+            case R.id.action_share_google:
+                boolean isAppInstalled = appInstalledOrNot("com.google.android.apps.plus");
+                if(isAppInstalled) {
+                    View v1 = getWindow().getDecorView().getRootView().findViewById(android.R.id.content);
+                    v1.setDrawingCacheEnabled(true);
+                    Bitmap bitmap = v1.getDrawingCache();
+                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "graf", "trening");
+                    v1.setDrawingCacheEnabled(false);
+
+                    PlusShare.Builder share = new PlusShare.Builder(this);
+                    share.setText("My CalorieTrek Training!");
+                    share.addStream(Uri.parse(path));
+                    share.setType("image/jpg");
+                    startActivity(share.getIntent());
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Google+ app not installed!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+
             default:
                 navManager.selectNavigationItem(item);
         }
@@ -128,5 +155,14 @@ public class FinishedTraining extends AppCompatActivity {
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_STORAGE);
         }
+    }
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        return false;
     }
 }

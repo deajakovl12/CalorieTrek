@@ -17,6 +17,8 @@ import foi.hr.calorietrek.constants.Constants;
 
 /**
  * Created by marko on 14-Nov-17.
+ * Class that is used to get GPS locations from all possible providers(GPS, mobile network, Wi-Fi). When new location is received it is checked if it is better than the last one received.
+ * To determine if locationa is better than the last one received it is using location time(newer, older), accuracy and provider.
  */
 
 public class FusedLocationProvider {

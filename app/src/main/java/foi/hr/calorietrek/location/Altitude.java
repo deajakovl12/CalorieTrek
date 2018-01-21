@@ -11,6 +11,7 @@ import static android.content.ContentValues.TAG;
 
 /**
  * Created by marko on 10-Dec-17.
+ * Class that implements sensor event listener so it can register to new changes in pressure sensor. After initialization of this class it is possible to find out current altitude from pressure sensor readings.
  */
 
 public class Altitude implements SensorEventListener{

@@ -81,4 +81,6 @@
     <string name="distance_zero">0 m</string>
     <string name="elevation_zero">0 m</string>
     <string name="calorie_zero">0</string>
+    <string name="share_fb">Facebook</string>
+    <string name="share_google">Google+</string>
 </resources>
