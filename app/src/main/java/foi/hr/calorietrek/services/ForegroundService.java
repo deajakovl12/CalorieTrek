@@ -123,6 +123,11 @@ public class ForegroundService extends Service {
                 fusedLocationProvider.stopLocationUpdates();
             }
             if(altitude!=null)altitude.onPause();
+            if(currentLocation!=null)instance.insertLocation(trainingID,currentLocation,cargoWeight);
+            if(altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
+            else {instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
+            currentLocation=null;
+            oldLocation=null;
             timeInMilliseconds = 0L;
             startTime = 0L;
             pausedTime = 0L;
@@ -131,9 +136,6 @@ public class ForegroundService extends Service {
             distance = 0;
             elevationGain = 0;
             calories = 0;
-
-            instance.insertLocation(trainingID,currentLocation,cargoWeight);
-
             stopTimer = true;
             stopForeground(true);
             stopSelf();
@@ -168,8 +170,10 @@ public class ForegroundService extends Service {
 
     private Runnable updateLocation = new Runnable() {
         public void run() {
-            oldLocation = currentLocation;
-            currentLocation = fusedLocationProvider.GetLocation();
+            if(fusedLocationProvider.GetLocation()!=null && fusedLocationProvider.GetLocation().getAltitude()!=0) {
+                oldLocation = currentLocation;
+                currentLocation = fusedLocationProvider.GetLocation();
+            }
             if(currentLocation!=null&&altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable())
             {
                 currentLocation.setAltitude(altitude.getAltitude());
