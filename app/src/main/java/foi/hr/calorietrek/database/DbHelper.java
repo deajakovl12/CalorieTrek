@@ -20,7 +20,7 @@ public class DbHelper extends SQLiteOpenHelper{
     private static DbHelper sInstance;
 
     public static final String DATABASE_NAME = "CalorieTrek.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     public static final String TABLE_USER = "user";
     public static final String COL_ID_USER = "id_user";
     public static final String COL_EMAIL = "email";
@@ -33,6 +33,11 @@ public class DbHelper extends SQLiteOpenHelper{
     public static final String COL_DATE = "date";
     public static final String COL_TRAINING_NAME = "training_name";
     public static final String COL_TRAINING_WEIGHT = "weight_training";
+    public static final String COL_TRAINING_KCAL = "kcal_spent";
+    public static final String COL_TRAINING_DISTANCE = "distance";
+    public static final String COL_TRAINING_TIME = "time";
+    public static final String COL_TRAINING_ELEVATION = "elevation";
+
 
     public static final String TABLE_LOCATION = "locations";
     public static final String COL_ID_LOCATION = "id_location";
@@ -67,6 +72,10 @@ public class DbHelper extends SQLiteOpenHelper{
                 COL_DATE + " VARCHAR(19), "+
                 COL_TRAINING_NAME + " TEXT,"+
                 COL_TRAINING_WEIGHT + " INTEGER NOT NULL,"+
+                COL_TRAINING_KCAL + " REAL ,"+
+                COL_TRAINING_DISTANCE + " REAL ,"+
+                COL_TRAINING_ELEVATION + " REAL ,"+
+                COL_TRAINING_TIME+ " INTEGER ,"+
                 "FOREIGN KEY ("+COL_FK_USER+") REFERENCES "+TABLE_USER+"("+COL_ID_USER+"));");
         db.execSQL("CREATE TABLE " + TABLE_LOCATION + "(" +
                 COL_ID_LOCATION + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -223,6 +232,62 @@ public class DbHelper extends SQLiteOpenHelper{
         return result;
     }
 
+    public double returnTrainingDistance(int trainingID){
+        double result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT "+COL_TRAINING_DISTANCE+" FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+    public double returnTrainingElevationGain(int trainingID){
+        double result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT "+COL_TRAINING_ELEVATION+" FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+    public int returnTrainingTime(int trainingID){
+        int result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT "+COL_TRAINING_ELEVATION+" FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getInt(cursor.getColumnIndex("training_name"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
+    public double returnTrainingKcal(int trainingID){
+        double result=0;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryTraining = "SELECT "+COL_TRAINING_KCAL+" FROM training WHERE id_training = '" + trainingID + "'";
+        Cursor cursor = db.rawQuery(queryTraining, null);
+
+        if (cursor.moveToFirst()){
+            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+        }
+
+        cursor.close();
+        db.close();
+        return result;
+    }
     public String returnTrainingDate(int trainingID){
         String result = "";
 
@@ -270,7 +335,18 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL(query);
         return true;
     }
-
+    public boolean updateTraining(long idTraining, double elevationGain, double distance, double kcal, long time){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query1 = "UPDATE "+TABLE_TRAINING+" SET "+COL_TRAINING_ELEVATION +" = '" + elevationGain + "' WHERE "+COL_ID_TRAINING+" = '" + idTraining + "'";
+        String query2 = "UPDATE "+TABLE_TRAINING+" SET "+COL_TRAINING_DISTANCE +" = '" + distance + "' WHERE "+COL_ID_TRAINING+" = '" + idTraining + "'";
+        String query3 = "UPDATE "+TABLE_TRAINING+" SET "+COL_TRAINING_KCAL +" = '" + kcal + "' WHERE "+COL_ID_TRAINING+" = '" + idTraining + "'";
+        String query4 = "UPDATE "+TABLE_TRAINING+" SET "+COL_TRAINING_TIME +" = '" + time + "' WHERE "+COL_ID_TRAINING+" = '" + idTraining + "'";
+        db.execSQL(query1);
+        db.execSQL(query2);
+        db.execSQL(query3);
+        db.execSQL(query4);
+        return true;
+    }
     /*
     public boolean updateEmail(String nameSurname, String email){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -306,7 +382,6 @@ public class DbHelper extends SQLiteOpenHelper{
     public long insertTraining(int fkUser, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-
         values.put(COL_FK_USER, fkUser);
         values.put(COL_TRAINING_WEIGHT,weight);
         return db.insert(TABLE_TRAINING, null, values);
