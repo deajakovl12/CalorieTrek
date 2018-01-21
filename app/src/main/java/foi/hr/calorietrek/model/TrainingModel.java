@@ -9,13 +9,16 @@ public class TrainingModel {
     private int userWeight;
     private ArrayList<TrainingLocationInfo> locations;
 
-    public TrainingModel(String date, String name, ArrayList<TrainingLocationInfo> locations, int userWeight )
+    public TrainingModel(int id, String date, String name, ArrayList<TrainingLocationInfo> locations, int userWeight )
     {
         this.date = date;
         this.name = name;
         this.locations = locations;
         this.userWeight = userWeight;
+        this.id = id;
     }
+
+    public int getTrainingID() { return this.id; }
 
     public String getDate() { return this.date; }
 

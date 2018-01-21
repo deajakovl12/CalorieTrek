@@ -108,6 +108,7 @@ public class ExportPDF {
     private static void addContent(Document document, ArrayList<TrainingModel> allTrainings) throws DocumentException  {
 
         int trainingPerPageCount = 0;
+
         for(TrainingModel training : allTrainings)
         {
             addTraining(document, training);
