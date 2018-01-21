@@ -62,11 +62,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
 
-    String personEmail="";
-    String personName;
-    @BindView(R.id.login_button) LoginButton loginButton;
+    String personEmail = "";
+    String personName = "";
 
-    public  @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
+    public @BindView(R.id.login_button) LoginButton loginButton; //Facebook
+    public @BindView(R.id.btn_sign_in) SignInButton btnSignIn; //Google
 
     LoginControllerImpl loginController = null;
     UserModel userModel = null;
@@ -82,12 +82,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        instance = DbHelper.getInstance(this);
 
         loginController = new LoginControllerImpl();
         GoogleSignInOptions gso = loginController.GmailLogin(this);
         mGoogleApiClient = GetGoogleApiClient(gso);
 
-        instance = DbHelper.getInstance(this);
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -104,7 +104,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
+    }
 
+    private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
+    {
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        return mGoogleApiClient;
+    }
+
+    @OnClick(R.id.login_button)
+    public void FacebookLogin(){
         FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -122,10 +136,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                                 try {
                                     personEmail = object.getString("email");
+                                    /*
                                     DbHelper instance = DbHelper.getInstance(getApplicationContext());
                                     instance.updateEmail(personName,personEmail);
                                     instance.close();
-                                    Log.v("personEmail", personEmail);
+                                    */
+                                    Log.wtf("FACEBOOK EMAIL: ", personEmail);
                                 }
                                 catch (JSONException e){
                                     Log.e("CalorieTrek", "unexpected JSON exception", e);
@@ -153,18 +169,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         loginButton.registerCallback(callbackManager, callback);
 
-
-    }
-
-    private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
-    {
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        return mGoogleApiClient;
     }
 
     @OnClick(R.id.btn_sign_in)
