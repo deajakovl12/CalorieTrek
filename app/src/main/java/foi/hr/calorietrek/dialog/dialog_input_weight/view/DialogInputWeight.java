@@ -23,6 +23,7 @@ import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
+/* Custom dialog which is asking user for body mass and cargo mass. */
 public class DialogInputWeight extends AppCompatDialogFragment implements IDialogInputWeight {
 
     public EditText inputWeight;

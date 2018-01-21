@@ -56,6 +56,10 @@ import com.facebook.GraphResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+/*
+Login activity which start after splashscreen. User is provided with two login options: Google login and facebook login.
+Facebook login needs internet connection, google does not if the user has log in at least once.
+*/
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ILoginView {
 
     private CallbackManager callbackManager;
@@ -147,13 +151,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onError(FacebookException e) {
             }
         };
-        loginButton.setReadPermissions(Arrays.asList(
-                "public_profile", "email"));
-
-
+        loginButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         loginButton.registerCallback(callbackManager, callback);
-
-
     }
 
     private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
@@ -252,7 +251,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         setSharedPreferences(accountData.getDisplayName(),accountData.getEmail(),personPhoto);
-        CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
         if (userExist){
             sendData.putExtra("userExist", true);
@@ -310,31 +308,34 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private void nextActivity(Profile profile){
+    private void nextActivity(Profile profile)
+    {
         String personPhoto;
 
-        if(profile != null){
+        if(profile != null)
+        {
             boolean userExist = DbUser(profile.getName(),personEmail);
             personName=profile.getName();
-            if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
+            if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null)
+            {
                 personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
             }
-            else{
+            else
+            {
                 personPhoto = "noImage";
             }
 
-            //userModel = new UserModel(profile.getName(), "", personPhoto);
             userModel = new UserModel(profile.getName(), personEmail, personPhoto);
             Intent main = new Intent(LoginActivity.this, TrainingActivity.class);
 
-            if (userExist){
+            if (userExist)
+            {
                 main.putExtra("userExist", true);
             }
-            else{
+            else
+            {
                 main.putExtra("userExist", false);
             }
-
-            CurrentUser loggedUser = new CurrentUser(profile.getName(),personEmail, personPhoto);
 
             main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             main.putExtra("name", profile.getFirstName());
@@ -346,15 +347,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             startActivity(main);
         }
     }
-    public void setSharedPreferences(String name, String email, String photoUrl){
+
+    public void setSharedPreferences(String name, String email, String photoUrl)
+    {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("personName", name);
         editor.putString("personEmail", email);
         editor.putString("personPhotoUrl", photoUrl);
         editor.apply();
-        Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
     }
-
 }
 

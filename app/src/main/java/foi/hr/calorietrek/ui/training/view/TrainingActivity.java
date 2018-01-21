@@ -42,6 +42,10 @@ import foi.hr.calorietrek.services.ForegroundService;
 import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 
+/*
+Activity class which shows the training screen. This class interacts with user inputs. Training can be started which starts foreground service, paused which is pausing all data updates
+and stopped which stops data updates.
+ */
 public class TrainingActivity extends AppCompatActivity implements DialogInputWeight.DialogInputWeightListener{
 
     private boolean training = false;

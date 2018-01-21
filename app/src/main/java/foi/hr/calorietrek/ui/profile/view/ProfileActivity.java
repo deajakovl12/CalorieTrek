@@ -178,12 +178,10 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
 
 
         shareDialog = new ShareDialog(this);
-        String fbname,fbsurname,fbimageUrl,fbemail;
+        String fbimageUrl;
 
         if(getIntent().hasExtra("name") && getIntent().hasExtra("surname")) {
             Bundle inBundle = getIntent().getExtras();
-            fbname = inBundle.get("name").toString();
-            fbsurname = inBundle.get("surname").toString();
             fbimageUrl = inBundle.get("imageUrl").toString();
 
             if(getIntent().hasExtra("userModel")) {
@@ -212,25 +210,22 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         initToolbar();
     }
 
-    // Prebaciti u controller
     public void getAccount(){
-        //changed
-        if(getIntent().hasExtra("userModel")) {
+        if(getIntent().hasExtra("userModel"))
+        {
             UserModel userModel = getIntent().getParcelableExtra("userModel");
 
             CurrentUser.personName = userModel.getPersonName();
             personEmail = userModel.getPersonEmail();
             personPhotoUrl = userModel.getPersonPhotoUrl();
 
-            //CurrentUser loggedUser = new CurrentUser(personName, personEmail, personPhotoUrl);
-            name.setText(CurrentUser.personName);
-
-        }
-        else{
             name.setText(CurrentUser.personName);
         }
+        else
+            {
+            name.setText(CurrentUser.personName);
+        }
 
-        //-changed
         if (CurrentUser.profilePic != "noImage") {
             Glide.with(getApplicationContext()).load(CurrentUser.profilePic)
                     .thumbnail(0.5f)
@@ -248,7 +243,6 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
                 .build();
     }
 
-    // Prebaciti u controller
     public void LogOut()
     {
         Auth.GoogleSignInApi.signOut(googleClient).setResultCallback(
@@ -306,8 +300,5 @@ public class ProfileActivity extends AppCompatActivity implements GoogleApiClien
         protected void onPostExecute(Bitmap result){
             bmImage.setImageBitmap(result);
         }
-
     }
-
-
 }

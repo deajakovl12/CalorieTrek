@@ -10,6 +10,7 @@ import foi.hr.calorietrek.ui.login.view.LoginActivity;
 
 /**
  * Created by Andrea on 29.10.2017..
+ * Activity class used for splash screen.
  */
 
 public class SplashActivity extends AppCompatActivity {
