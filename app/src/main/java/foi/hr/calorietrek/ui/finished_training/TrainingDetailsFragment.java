@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
@@ -52,6 +53,8 @@ import foi.hr.calorietrek.model.UserModel;
 import foi.hr.calorietrek.module_navigation.NavigationItem;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class TrainingDetailsFragment extends Fragment implements NavigationItem {
     private String name = "Details Fragment";
@@ -109,9 +112,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                             oldLocation = loc.getLocation();
                             startTime = loc.getTime();
                             counter++;
-
                         }
-
                         double altitude = CalorieCalculus.calculateAltitude(loc.getLocation());
                         float altitudeFloat = (float) altitude;
 
@@ -148,7 +149,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
         dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
         dataSet.setColor(Color.rgb(226, 116, 7));
         dataSet.setCircleColor(Color.rgb(226, 116, 7));
-        dataSet.setCircleColorHole(Color.rgb(226, 116, 7));
+        dataSet.setCircleRadius(1);
         LineData lineData = new LineData(dataSet);
         lineData.setValueTextColor(Color.rgb(255, 255, 255));
         //lineData.setDrawValues(false);
@@ -167,7 +168,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
         legend.setTextColor(Color.rgb(255, 255, 255));
         legend.setForm(Legend.LegendForm.CIRCLE);
         legend.setPosition(Legend.LegendPosition.ABOVE_CHART_RIGHT);
-
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -198,6 +198,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     {
         Intent intent = new Intent(getContext(), TrainingActivity.class );
         startActivity(intent);
+        Toast.makeText(getApplicationContext(), "Training name updated", Toast.LENGTH_SHORT).show();
     }
 
     @Override

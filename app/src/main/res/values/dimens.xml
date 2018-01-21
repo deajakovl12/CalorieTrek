@@ -71,6 +71,8 @@
     <dimen name="axis_description_size">10sp</dimen>
     <dimen name="txt_chart_info">18sp</dimen>
     <dimen name="margin_charts">15dp</dimen>
+    <dimen name="frame">1dp</dimen>
+    <dimen name="corners">5dp</dimen>
 
 
 </resources>

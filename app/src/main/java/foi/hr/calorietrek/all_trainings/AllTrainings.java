@@ -85,7 +85,12 @@ public class AllTrainings extends AppCompatActivity {
 
         if(!allTrainings.isEmpty()) {
             for (TrainingModel data : allTrainings) {
-                if(data.getName()!="") trainingName = data.getName();
+                if(data.getName()!="") {
+                    trainingName = data.getName();
+                }
+                        else{
+                    trainingName = "Training name";
+                };
                 List<BarEntry> entriesBar = new ArrayList<>();
                 List<Entry> entries = new ArrayList<>();
                 if (data.getLocations().size() > 1) {
@@ -145,7 +150,7 @@ public class AllTrainings extends AppCompatActivity {
         dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
         dataSet.setColor(Color.rgb(226, 116, 7));
         dataSet.setCircleColor(Color.rgb(226, 116, 7));
-        dataSet.setCircleColorHole(Color.rgb(226, 116, 7));
+        dataSet.setCircleRadius(1);
         LineData lineData = new LineData(dataSet);
         lineData.setValueTextColor(Color.rgb(255, 255, 255));
         //lineData.setDrawValues(false);

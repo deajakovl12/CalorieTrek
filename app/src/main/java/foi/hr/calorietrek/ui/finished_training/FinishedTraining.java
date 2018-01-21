@@ -1,21 +1,24 @@
 package foi.hr.calorietrek.ui.finished_training;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.plus.PlusShare;
@@ -36,6 +39,7 @@ import foi.hr.calorietrek.pdf_export.ExportPDF;
 public class FinishedTraining extends AppCompatActivity {
 
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
+    public @BindView(R.id.myEditText) EditText editText;
     private NavigationManager navManager;
     private DbHelper instance;
     public ExportPDF exportPDF;
@@ -60,17 +64,35 @@ public class FinishedTraining extends AppCompatActivity {
         allTrainings = new ArrayList<TrainingModel>();
         storagePermission = checkStoragePermission();
 
-        boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
-        isAllTrainings = false;
-        if(isAllTrainings)
-        {
-            allTrainings = instance.returnAllTrainings(instance.getUserID(CurrentUser.personEmail));
-        }
-        else
-        {
-            allTrainings.add(instance.returnLatestTraining(instance.getUserID(CurrentUser.personEmail)));
-        }
+        allTrainings.add(instance.returnLatestTraining(instance.getUserID(CurrentUser.personEmail)));
+
+        editText.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        TrainingModel training = allTrainings.get(0);
+                        String name = editText.getText().toString();
+                        instance.updateTrainingName(training.getTrainingID(), name);
+                    }
+                }
+        );
+
     }
+
+    private View.OnFocusChangeListener myEditTextFocus =  new View.OnFocusChangeListener() {
+        public void onFocusChange(View view, boolean gainFocus) {
+            //onFocus
+            if (gainFocus) {
+                TrainingModel training = allTrainings.get(0);
+                String name = editText.getText().toString();
+                instance.updateTrainingName(training.getTrainingID(), name);
+                Toast.makeText(getApplicationContext(), "Training name updated", Toast.LENGTH_SHORT).show();
+            }
+        };
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,6 +159,7 @@ public class FinishedTraining extends AppCompatActivity {
             default:
                 navManager.selectNavigationItem(item);
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -165,4 +188,22 @@ public class FinishedTraining extends AppCompatActivity {
         }
         return false;
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View view = getCurrentFocus();
+            if (view != null && view instanceof EditText) {
+                Rect r = new Rect();
+                view.getGlobalVisibleRect(r);
+                int rawX = (int)ev.getRawX();
+                int rawY = (int)ev.getRawY();
+                if (!r.contains(rawX, rawY)) {
+                    view.clearFocus();
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
 }
