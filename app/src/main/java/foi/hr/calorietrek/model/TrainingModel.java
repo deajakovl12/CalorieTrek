@@ -3,6 +3,7 @@ import android.location.Location;
 import java.util.ArrayList;
 
 public class TrainingModel {
+    private int id;
     private String date;
     private String name;
     private int userWeight;
@@ -21,6 +22,10 @@ public class TrainingModel {
     public String getName() { return this.name; }
 
     public int getUserWeight() { return this.userWeight; }
+
+    public void setID(int id) { this.id = id; }
+
+    public int getID() { return this.id; }
 
     public ArrayList<TrainingLocationInfo> getLocations() { return this.locations; }
 }

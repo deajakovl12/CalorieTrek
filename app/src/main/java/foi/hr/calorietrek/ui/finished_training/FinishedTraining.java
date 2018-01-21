@@ -98,7 +98,7 @@ public class FinishedTraining extends AppCompatActivity {
                 {
                     if(storagePermission)
                     {
-                        exportPDF.writePDF(allTrainings);
+                        exportPDF.writePDF(instance.returnAllTrainings(instance.getUserID(CurrentUser.personEmail)));
                         Toast.makeText(getApplicationContext(), R.string.pdf_export_finished, Toast.LENGTH_SHORT).show();
                     }
                     else

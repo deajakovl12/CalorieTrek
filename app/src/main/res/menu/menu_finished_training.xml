@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_pdf"
-        android:icon="@drawable/ic_list"
+        android:icon="@drawable/ic_pdf"
         android:title="@string/action_pdf"
         app:showAsAction="always" />
 

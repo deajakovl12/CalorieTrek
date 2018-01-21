@@ -191,6 +191,7 @@ public class DbHelper extends SQLiteOpenHelper{
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
             int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
             TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
+            training.setID(trainingID);
             result.add(training);
         }
 
@@ -224,7 +225,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
-            result = cursor.getInt(cursor.getColumnIndex("training_name"));
+            result = cursor.getInt(cursor.getColumnIndex("weight_training"));
         }
 
         cursor.close();
@@ -239,7 +240,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
-            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+            result = cursor.getDouble(cursor.getColumnIndex("distance"));
         }
 
         cursor.close();
@@ -253,7 +254,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
-            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+            result = cursor.getDouble(cursor.getColumnIndex("elevation"));
         }
 
         cursor.close();
@@ -263,11 +264,11 @@ public class DbHelper extends SQLiteOpenHelper{
     public int returnTrainingTime(int trainingID){
         int result=0;
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryTraining = "SELECT "+COL_TRAINING_ELEVATION+" FROM training WHERE id_training = '" + trainingID + "'";
+        String queryTraining = "SELECT "+COL_TRAINING_TIME+" FROM training WHERE id_training = '" + trainingID + "'";
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
-            result = cursor.getInt(cursor.getColumnIndex("training_name"));
+            result = cursor.getInt(cursor.getColumnIndex("time"));
         }
 
         cursor.close();
@@ -281,7 +282,7 @@ public class DbHelper extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(queryTraining, null);
 
         if (cursor.moveToFirst()){
-            result = cursor.getDouble(cursor.getColumnIndex("training_name"));
+            result = cursor.getDouble(cursor.getColumnIndex("kcal_spent"));
         }
 
         cursor.close();
