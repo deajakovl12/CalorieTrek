@@ -2,6 +2,7 @@ package foi.hr.calorietrek.constants;
 
 /**
  * Created by juras on 2017-11-30.
+ * This class is used for global constant variables. It is used for clean and organized use of constants in CalorieTrek.
  */
 
 public class Constants {

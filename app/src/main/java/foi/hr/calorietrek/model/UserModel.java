@@ -3,6 +3,7 @@ package foi.hr.calorietrek.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/* Model class for user. */
 public class UserModel implements Parcelable {
     private String personName;
     private String personEmail;

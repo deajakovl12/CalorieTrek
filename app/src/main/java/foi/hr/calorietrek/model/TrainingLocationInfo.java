@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by marko on 17-Jan-18.
+ * Model class for training location.
  */
 
 public class TrainingLocationInfo {

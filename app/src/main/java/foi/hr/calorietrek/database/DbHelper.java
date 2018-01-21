@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
 
+/*
+Database class used for communication between CalorieTrek and SQLite database.
+ */
 public class DbHelper extends SQLiteOpenHelper{
     private static DbHelper sInstance;
 

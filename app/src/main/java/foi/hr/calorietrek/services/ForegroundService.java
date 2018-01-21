@@ -62,6 +62,7 @@ public class ForegroundService extends Service {
     private long trainingID;
     DbHelper instance;
     Altitude altitude;
+
     @Override
     public void onCreate()
     {
