@@ -1,6 +1,9 @@
 package foi.hr.calorietrek.ui.finished_training;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -31,6 +34,8 @@ public class FinishedTraining extends AppCompatActivity {
     private DbHelper instance;
     public ExportPDF exportPDF;
     public ArrayList<TrainingModel> allTrainings;
+    private boolean storagePermission = false;
+    public int MY_PERMISSIONS_REQUEST_STORAGE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,7 @@ public class FinishedTraining extends AppCompatActivity {
         instance = DbHelper.getInstance(this);
         exportPDF = new ExportPDF(this.getApplicationContext());
         allTrainings = new ArrayList<TrainingModel>();
+        storagePermission = checkStoragePermission();
 
         boolean isAllTrainings = Boolean.parseBoolean(getIntent().getStringExtra("ALL_TRAININGS"));
         isAllTrainings = false;
@@ -84,7 +90,16 @@ public class FinishedTraining extends AppCompatActivity {
         switch(itemId) {
             case R.id.action_pdf: {
                 {
-                    exportPDF.writePDF(allTrainings);
+                    if(storagePermission)
+                    {
+                        exportPDF.writePDF(allTrainings);
+                        Toast.makeText(getApplicationContext(), R.string.pdf_export_finished, Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        askStoragePermission();
+                        storagePermission = checkStoragePermission();
+                    }
                 }
                 break;
             }
@@ -96,5 +111,22 @@ public class FinishedTraining extends AppCompatActivity {
                 navManager.selectNavigationItem(item);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean checkStoragePermission() {
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast toast = Toast.makeText(this, "The application needs permission for writing files on your storage.", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public void askStoragePermission() {
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_STORAGE);
+        }
     }
 }
