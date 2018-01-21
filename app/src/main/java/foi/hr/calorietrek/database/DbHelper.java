@@ -102,7 +102,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
     public boolean existingUser(String nameSurname, String email){
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT * FROM user WHERE name_surname = '" + nameSurname + "'";
+        String query = "SELECT * FROM user WHERE email = '" + email + "'";
         Cursor cursor = db.rawQuery(query, null);
 
         if (cursor.getCount() <= 0){
@@ -270,12 +270,15 @@ public class DbHelper extends SQLiteOpenHelper{
         db.execSQL(query);
         return true;
     }
+
+    /*
     public boolean updateEmail(String nameSurname, String email){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE user SET email = '" + email + "' WHERE name_surname = '" + nameSurname + "'";
         db.execSQL(query);
         return true;
     }
+
 
     public long insertTraining(int fkUser, double dateTime, String trainingName, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -298,6 +301,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
         return db.insert(TABLE_TRAINING, null, values);
     }
+    */
 
     public long insertTraining(int fkUser, int weight){
         SQLiteDatabase db = this.getWritableDatabase();
