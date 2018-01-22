@@ -21,4 +21,6 @@
     <integer name="pdf_empty_line_number_after_date">1</integer>
     <integer name="pdf_empty_line_number_after_description">1</integer>
     <integer name="pdf_empty_line_number_table">1</integer>
+
+    <integer name="pdf_trainings_per_page">3</integer>
 </resources>
