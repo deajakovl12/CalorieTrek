@@ -79,7 +79,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     int counter = 0;
     long startTime;
     long finishTime;
-    float elevation;
+    float elevation = 0;
     boolean showChart = false;
 
     @Nullable
@@ -138,7 +138,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         double tempGain = altitude-oldAltitude;
                         if(oldAltitude!=-5555 && tempGain > 0.0)
                         {
-                            elevation += tempGain;
+                            elevation += (float)tempGain;
                         }
                         oldAltitude=altitude;
                         entries.add(new Entry(distanceFloat + oldDistance, elevation));

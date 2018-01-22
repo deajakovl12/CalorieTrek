@@ -60,7 +60,7 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
     int counter = 0;
     long startTime;
     long finishTime;
-    float elevation;
+    float elevation = 0;
     boolean showChart = false;
 
     @Nullable

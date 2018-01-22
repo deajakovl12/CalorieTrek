@@ -61,7 +61,7 @@ public class AllTrainings extends AppCompatActivity {
     int counter = 0;
     long startTime;
     long finishTime;
-    float elevation;
+    float elevation = 0;
     boolean showChart = false;
     String trainingName = "Training name";
 
@@ -119,7 +119,7 @@ public class AllTrainings extends AppCompatActivity {
                         double tempGain = altitude-oldAltitude;
                         if(oldAltitude!=-5555 && tempGain > 0.0)
                         {
-                            elevation += tempGain;
+                            elevation += (float)tempGain;
                         }
                         oldAltitude=altitude;
                         entries.add(new Entry(distanceFloat + oldDistance, elevation));
@@ -130,6 +130,7 @@ public class AllTrainings extends AppCompatActivity {
                     oldDistance = 0;
                     sumCalories = 0;
                     counter = 0;
+                    elevation = 0;
                 }
             }
         }
