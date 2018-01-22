@@ -58,6 +58,9 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity android:name=".all_trainings.AllTrainings"></activity>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider287766131743318"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

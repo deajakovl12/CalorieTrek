@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,6 +22,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.plus.PlusShare;
 
 import java.util.ArrayList;
@@ -46,7 +52,8 @@ public class FinishedTraining extends AppCompatActivity {
     public ArrayList<TrainingModel> allTrainings;
     private boolean storagePermission = false;
     public int MY_PERMISSIONS_REQUEST_STORAGE = 101;
-
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +63,8 @@ public class FinishedTraining extends AppCompatActivity {
         toolbarDetails.setTitle("");
         toolbarDetails.inflateMenu(R.menu.menu_finished_training);
         setSupportActionBar(toolbarDetails);
-
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
         navManager = NavigationManager.getInstance();
         navManager.setDependencies(this, toolbarDetails);
         instance = DbHelper.getInstance(this);
@@ -135,9 +143,31 @@ public class FinishedTraining extends AppCompatActivity {
                 break;
             case R.id.action_module_submenu:
                 break;
+            case R.id.action_share_fb:
+            {
+                View v1 = getWindow().getDecorView().getRootView().findViewById(android.R.id.content);
+                v1.setDrawingCacheEnabled(true);
+                Bitmap image = v1.getDrawingCache();
+                SharePhoto photo = new SharePhoto.Builder()
+                        .setBitmap(image)
+                        .setCaption("My training by CalorieTrek")
+                        .build();
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(photo)
+                        .build();
+                if (shareDialog.canShow(content,ShareDialog.Mode.NATIVE)) {
+                    shareDialog.show(content, ShareDialog.Mode.NATIVE);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Facebook app is not installed!", Toast.LENGTH_SHORT).show();
+                }
+                v1.setDrawingCacheEnabled(false);
+                Log.e("onOptionsItemSelected: ", AccessToken.getCurrentAccessToken().getPermissions().toString());
+
+            }
+            break;
             case R.id.action_share_google:
-                boolean isAppInstalled = appInstalledOrNot("com.google.android.apps.plus");
-                if(isAppInstalled) {
+                try{
                     View v1 = getWindow().getDecorView().getRootView().findViewById(android.R.id.content);
                     v1.setDrawingCacheEnabled(true);
                     Bitmap bitmap = v1.getDrawingCache();
@@ -150,7 +180,7 @@ public class FinishedTraining extends AppCompatActivity {
                     share.setType("image/jpg");
                     startActivity(share.getIntent());
                 }
-                else{
+                catch (Exception e){
                     Toast.makeText(getApplicationContext(), "Google+ app not installed!", Toast.LENGTH_SHORT).show();
                 }
                 break;
