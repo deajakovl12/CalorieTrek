@@ -106,6 +106,12 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     private void addDataForChart() {
         List<BarEntry> entriesBar = new ArrayList<>();
         List<Entry> entries = new ArrayList<>();
+        oldDistance=0;
+        sumCalories=0;
+        counter=0;
+        startTime=0;
+        finishTime=0;
+        elevation=0;
         double oldAltitude=-5555;
         if(!allTrainings.isEmpty()) {
             for (TrainingModel data : allTrainings) {
@@ -125,7 +131,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         float caloriesFloat = (float) calories;
 
                         entriesBar.add(new BarEntry(distanceFloat + oldDistance, caloriesFloat));
-                        entries.add(new Entry(distanceFloat + oldDistance, altitudeFloat));
                         oldLocation = loc.getLocation();
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
@@ -136,6 +141,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                             elevation += tempGain;
                         }
                         oldAltitude=altitude;
+                        entries.add(new Entry(distanceFloat + oldDistance, elevation));
                     }
                     setChart(entriesBar, entries);
                     showChart = true;

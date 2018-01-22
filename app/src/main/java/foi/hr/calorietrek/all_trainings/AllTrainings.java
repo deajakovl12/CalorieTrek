@@ -93,6 +93,7 @@ public class AllTrainings extends AppCompatActivity {
                 };
                 List<BarEntry> entriesBar = new ArrayList<>();
                 List<Entry> entries = new ArrayList<>();
+                double oldAltitude=-5555;
                 if (data.getLocations().size() > 1) {
                     for (TrainingLocationInfo loc : data.getLocations()) {
                         if (counter == 0) {
@@ -111,12 +112,17 @@ public class AllTrainings extends AppCompatActivity {
                         float caloriesFloat = (float) calories;
 
                         entriesBar.add(new BarEntry(distanceFloat + oldDistance, caloriesFloat));
-                        entries.add(new Entry(distanceFloat + oldDistance, altitudeFloat));
                         oldLocation = loc.getLocation();
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
                         finishTime = loc.getTime();
-                        elevation = altitudeFloat;
+                        double tempGain = altitude-oldAltitude;
+                        if(oldAltitude!=-5555 && tempGain > 0.0)
+                        {
+                            elevation += tempGain;
+                        }
+                        oldAltitude=altitude;
+                        entries.add(new Entry(distanceFloat + oldDistance, elevation));
                     }
                     CombinedChart chart = new CombinedChart(getApplicationContext());
                     setChart(entriesBar, entries, chart);
