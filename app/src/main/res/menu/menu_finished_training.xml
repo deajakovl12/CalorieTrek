@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditText xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/searchfield"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inputType="textFilter">
+    </EditText>
+
+    <item
+        android:id="@+id/action_pdf"
+        android:icon="@drawable/ic_pdf"
+        android:title="@string/action_pdf"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
+        android:title="@string/action_share"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/action_share_fb"
+                app:showAsAction="always"
+                android:title="@string/share_fb"
+                app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
+
+            <item
+                android:id="@+id/action_share_google"
+                app:showAsAction="always"
+                android:title="@string/share_google"
+                app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
+
+        </menu>
+    </item>
+
+    <item android:id="@+id/action_module_submenu"
+        android:icon="@drawable/ic_more_vert"
+        android:title="@string/action_details"
+        app:showAsAction="always" >
+
+        <menu android:id="@+id/module_submenu">
+
+        </menu>
+    </item>
+
+</menu>

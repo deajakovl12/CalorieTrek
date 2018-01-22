@@ -3,6 +3,8 @@ package foi.hr.calorietrek.ui.login.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,16 +56,21 @@ import com.facebook.GraphResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+/*
+Login activity which start after splashscreen. User is provided with two login options: Google login and facebook login.
+Facebook login needs internet connection, google does not if the user has log in at least once.
+*/
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ILoginView {
 
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
 
-    String personEmail="";
-    @BindView(R.id.login_button) LoginButton loginButton;
+    String personEmail = "";
+    String personName = "";
 
-    public  @BindView(R.id.btn_sign_in) SignInButton btnSignIn;
+    public @BindView(R.id.login_button) LoginButton loginButton; //Facebook
+    public @BindView(R.id.btn_sign_in) SignInButton btnSignIn; //Google
 
     LoginControllerImpl loginController = null;
     UserModel userModel = null;
@@ -79,12 +86,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        instance = DbHelper.getInstance(this);
 
         loginController = new LoginControllerImpl();
         GoogleSignInOptions gso = loginController.GmailLogin(this);
         mGoogleApiClient = GetGoogleApiClient(gso);
 
-        instance = DbHelper.getInstance(this);
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -101,7 +108,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
+    }
 
+    private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
+    {
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        return mGoogleApiClient;
+    }
+
+    @OnClick(R.id.login_button)
+    public void FacebookLogin(){
         FacebookCallback<LoginResult> callback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -119,7 +140,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                                 try {
                                     personEmail = object.getString("email");
-                                    String birthday = object.getString("birthday");
+                                    /*
+                                    DbHelper instance = DbHelper.getInstance(getApplicationContext());
+                                    instance.updateEmail(personName,personEmail);
+                                    instance.close();
+                                    */
+                                    Log.wtf("FACEBOOK EMAIL: ", personEmail);
                                 }
                                 catch (JSONException e){
                                     Log.e("CalorieTrek", "unexpected JSON exception", e);
@@ -128,11 +154,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         });
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "email,birthday");
+                parameters.putString("fields", "email");
                 request.setParameters(parameters);
                 request.executeAsync();
-
-
             }
 
             @Override
@@ -143,24 +167,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onError(FacebookException e) {
             }
         };
-        loginButton.setReadPermissions(Arrays.asList(
-                "public_profile", "email"));
+        //loginButton.setReadPermissions(Arrays.asList(
+        //        "public_profile", "email"));
+        loginButton.setReadPermissions("public_profile,email,publish_actions");
 
 
         loginButton.registerCallback(callbackManager, callback);
 
-
-    }
-
-    private GoogleApiClient GetGoogleApiClient(GoogleSignInOptions gso)
-    {
-        GoogleApiClient mGoogleApiClient = new GoogleApiClient
-                .Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-        return mGoogleApiClient;
     }
 
     @OnClick(R.id.btn_sign_in)
@@ -237,7 +250,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         GoogleSignInAccount accountData = result.getSignInAccount();
         String personPhoto;
 
-        boolean userExist = DbUser(accountData.getDisplayName());
+        boolean userExist = DbUser(accountData.getDisplayName(),accountData.getEmail());
 
         if (accountData.getPhotoUrl() != null){
             personPhoto = accountData.getPhotoUrl().toString();
@@ -247,6 +260,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
         userModel = new UserModel(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
+        setSharedPreferences(accountData.getDisplayName(),accountData.getEmail(),personPhoto);
         CurrentUser loggedUser = new CurrentUser(accountData.getDisplayName(), accountData.getEmail(), personPhoto);
         Intent sendData = new Intent(LoginActivity.this, TrainingActivity.class);
         if (userExist){
@@ -266,10 +280,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    public boolean DbUser(String nameSurname){
+    public boolean DbUser(String nameSurname, String email){
         boolean exist = false;
 
-        boolean isInserted = instance.existingUser(nameSurname);
+        boolean isInserted = instance.existingUser(nameSurname, email);
         if (isInserted == true){
             Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
         }
@@ -309,8 +323,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         String personPhoto;
 
         if(profile != null){
-            boolean userExist = DbUser(profile.getName());
-
+            boolean userExist = DbUser(profile.getName(),personEmail);
+            personName=profile.getName();
             if ( profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString() != null){
                 personPhoto = profile.getProfilePictureUri(Constants.PHOTOPARAMETERS.PHOTO_WIDTH,Constants.PHOTOPARAMETERS.PHOTO_HEIGHT).toString();
             }
@@ -337,11 +351,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             main.putExtra("imageUrl", personPhoto);
             main.putExtra("email", personEmail);
             main.putExtra("userModel", userModel);
-
+            setSharedPreferences(profile.getFirstName()+" "+profile.getLastName(),personEmail,personPhoto);
             startActivity(main);
         }
     }
-
+    public void setSharedPreferences(String name, String email, String photoUrl){
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("personName", name);
+        editor.putString("personEmail", email);
+        editor.putString("personPhotoUrl", photoUrl);
+        editor.apply();
+        Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
+    }
 
 }
 

@@ -13,7 +13,7 @@ import android.view.View;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
-
+/* Custom dialog which appears at welcoming screen, after login. */
 public class DialogWelcome extends AppCompatDialogFragment {
 
     @Override
