@@ -162,7 +162,7 @@ public class FinishedTraining extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Facebook app is not installed!", Toast.LENGTH_SHORT).show();
                 }
                 v1.setDrawingCacheEnabled(false);
-                Log.e("onOptionsItemSelected: ", AccessToken.getCurrentAccessToken().getPermissions().toString());
+                //Log.e("onOptionsItemSelected: ", AccessToken.getCurrentAccessToken().getPermissions().toString());
 
             }
             break;

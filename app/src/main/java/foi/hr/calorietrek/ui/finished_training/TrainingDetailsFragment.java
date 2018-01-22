@@ -92,7 +92,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
         ButterKnife.bind(this, view);
 
         addDataForChart();
-
         txtKcal.setText(String.format("%.1f", sumCalories));
         txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(finishTime-startTime),
                TimeUnit.MILLISECONDS.toMinutes(finishTime-startTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(finishTime-startTime)),
@@ -107,7 +106,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     private void addDataForChart() {
         List<BarEntry> entriesBar = new ArrayList<>();
         List<Entry> entries = new ArrayList<>();
-
+        double oldAltitude=-5555;
         if(!allTrainings.isEmpty()) {
             for (TrainingModel data : allTrainings) {
                 if (data.getLocations().size() > 1) {
@@ -119,7 +118,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         }
                         double altitude = CalorieCalculus.calculateAltitude(loc.getLocation());
                         float altitudeFloat = (float) altitude;
-
                         double distance = CalorieCalculus.calculateDistance(oldLocation, loc.getLocation());
                         float distanceFloat = (float) distance;
 
@@ -132,7 +130,12 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
                         finishTime = loc.getTime();
-                        elevation = altitudeFloat;
+                        double tempGain = altitude-oldAltitude;
+                        if(oldAltitude!=-5555 && tempGain > 0.0)
+                        {
+                            elevation += tempGain;
+                        }
+                        oldAltitude=altitude;
                     }
                     setChart(entriesBar, entries);
                     showChart = true;

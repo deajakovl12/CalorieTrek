@@ -366,6 +366,12 @@ public class DbHelper extends SQLiteOpenHelper{
         return true;
     }
 
+    public boolean updateTrainingDate(long trainingID, String date){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE "+ TABLE_TRAINING+" SET "+COL_DATE +" = '" + date + "' WHERE "+COL_ID_TRAINING+" = '" + trainingID + "'";
+        db.execSQL(query);
+        return true;
+    }
 /*
     public long insertTraining(int fkUser, double dateTime, String trainingName, int weight){
         SQLiteDatabase db = this.getWritableDatabase();

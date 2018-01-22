@@ -158,7 +158,7 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setAxisMinimum(0);
         chart.setTouchEnabled(false);
-        chart.saveToGallery("new Line chart", 85);
+        //chart.saveToGallery("new Line chart", 85);
         chart.getDescription().setEnabled(false);
         chart.setSaveEnabled(true);
 
