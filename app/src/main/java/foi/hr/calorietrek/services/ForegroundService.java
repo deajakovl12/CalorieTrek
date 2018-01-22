@@ -21,6 +21,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.calorie.CalorieCalculus;
 import foi.hr.calorietrek.constants.Constants;
@@ -103,6 +107,9 @@ public class ForegroundService extends Service {
             instance = DbHelper.getInstance(getApplicationContext());
             userID = instance.getUserID(personEmail);
             trainingID = instance.insertTraining(userID,userWeight);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.mm.yyyy. HH:mm", Locale.getDefault());
+            Date date = new Date();
+            instance.updateTrainingDate(trainingID, simpleDateFormat.format(date));
 
 
         } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
@@ -125,7 +132,7 @@ public class ForegroundService extends Service {
             if(altitude!=null)altitude.onPause();
             if(currentLocation!=null)instance.insertLocation(trainingID,currentLocation,cargoWeight);
             if(altitude!=null && altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
-            else {instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
+            else if(instance!=null&&currentLocation!=null){instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
             currentLocation=null;
             oldLocation=null;
             timeInMilliseconds = 0L;
