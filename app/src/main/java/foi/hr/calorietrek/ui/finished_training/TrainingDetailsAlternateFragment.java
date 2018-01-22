@@ -70,7 +70,6 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
 
         View view = inflater.inflate(R.layout.training_details_alternate_fragment, container, false);
         ButterKnife.bind(this, view);
-
         addDataForChart();
 
         txtKcal.setText(String.format("%.1f", sumCalories));
@@ -86,7 +85,14 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
     }
 
     private void addDataForChart() {
+        oldDistance=0;
+        sumCalories=0;
+        counter=0;
+        startTime=0;
+        finishTime=0;
+        elevation=0;
         List<Entry> entries = new ArrayList<Entry>();
+        double oldAltitude=-5555;
         if(!allTrainings.isEmpty()) {
             for (TrainingModel data : allTrainings) {
                 if (data.getLocations().size() > 1) {
@@ -111,7 +117,12 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
                         finishTime = loc.getTime();
-                        elevation = altitudeFloat;
+                        double tempGain = altitude-oldAltitude;
+                        if(oldAltitude!=-5555 && tempGain > 0.0)
+                        {
+                            elevation += tempGain;
+                        }
+                        oldAltitude=altitude;
                     }
                     setChart(entries);
                     showChart = true;
