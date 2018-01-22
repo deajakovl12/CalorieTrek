@@ -4,7 +4,7 @@ import android.content.Context;
 
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
-
+/* Controller for DialogInputWeight */
 public class DialogInputController implements IDialogInputControler{
 
     public DbHelper Instance;
