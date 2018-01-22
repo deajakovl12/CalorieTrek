@@ -63,7 +63,7 @@ import com.facebook.share.widget.ShareDialog;
 import org.w3c.dom.Text;
 
 import java.io.InputStream;
-
+/* Class activity for profile. On profile user can go to view all finished training, input body weight or log out. */
 public class ProfileActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, IProfileView {
 
     private GoogleApiClient googleClient;

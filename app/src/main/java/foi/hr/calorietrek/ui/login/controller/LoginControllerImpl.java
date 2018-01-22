@@ -8,7 +8,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-
+/* Controller class used for login */
 public class LoginControllerImpl extends FragmentActivity implements ILoginController, GoogleApiClient.OnConnectionFailedListener {
 
     @Override

@@ -56,6 +56,10 @@ import com.facebook.GraphResponse;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+/*
+Login activity which start after splashscreen. User is provided with two login options: Google login and facebook login.
+Facebook login needs internet connection, google does not if the user has log in at least once.
+*/
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, ILoginView {
 
     private CallbackManager callbackManager;
