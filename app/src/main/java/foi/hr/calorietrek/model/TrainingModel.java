@@ -26,6 +26,10 @@ public class TrainingModel {
 
     public int getUserWeight() { return this.userWeight; }
 
+    public void setID(int id) { this.id = id; }
+
+    public int getID() { return this.id; }
+
     public ArrayList<TrainingLocationInfo> getLocations() { return this.locations; }
 }
 

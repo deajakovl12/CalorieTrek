@@ -3,44 +3,34 @@ package foi.hr.calorietrek.pdf_export;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.text.style.BackgroundColorSpan;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
-import com.bumptech.glide.request.target.ImageViewTargetFactory;
-import com.itextpdf.text.Anchor;
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chapter;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.List;
-import com.itextpdf.text.ListItem;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Section;
-import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfString;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import foi.hr.calorietrek.R;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
-import foi.hr.calorietrek.ui.login.view.LoginActivity;
 
 public class ExportPDF {
+    private static DbHelper instance;
     private static Context context;
     private static File file;
 
@@ -52,6 +42,7 @@ public class ExportPDF {
     public ExportPDF(Context context)
     {
         this.context = context;
+        instance = DbHelper.getInstance(context);
         file = new File(context.getString(R.string.pdf_save_path));
         if(!file.exists())
         {
@@ -68,9 +59,12 @@ public class ExportPDF {
             document.open();
             addMetaData(document);
             addTitlePage(document);
-            addContent(document, new ArrayList<TrainingModel>());
+            addContent(document, allTrainings);
             document.close();
-        } catch (Exception e) {
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -112,31 +106,23 @@ public class ExportPDF {
     }
 
     private static void addContent(Document document, ArrayList<TrainingModel> allTrainings) throws DocumentException  {
-        //temporary trainings for testing
-        allTrainings.add(new TrainingModel(1,"1.1.2011.", "prvo", null, 0));
-        allTrainings.add(new TrainingModel(2,"1.2.2012.", "drugo", null, 0));
-        allTrainings.add(new TrainingModel(3,"1.3.2013.", "trece", null, 0));
-        allTrainings.add(new TrainingModel(4,"1.4.2014.", "cetvrto", null, 0));
-        //temporary trainings for testing
 
-        boolean goToNewPage = false;
+        int trainingPerPageCount = 0;
+
         for(TrainingModel training : allTrainings)
         {
-            addTraining(document, training, goToNewPage);
-            if(goToNewPage)
+            addTraining(document, training);
+            trainingPerPageCount++;
+            if(trainingPerPageCount == 4)
             {
                 document.newPage();
-                goToNewPage = false;
-            }
-            else
-            {
-                goToNewPage = true;
+                trainingPerPageCount = 0;
             }
         }
 
     }
 
-    private static void addTraining(Document document, TrainingModel training, boolean secondTrainingOnPage) throws DocumentException  {
+    private static void addTraining(Document document, TrainingModel training) throws DocumentException  {
         Paragraph trainingItem = new Paragraph();
 
         trainingItem.add(new Paragraph(context.getString(R.string.pdf_training_name), boldNormalFont));
@@ -146,20 +132,11 @@ public class ExportPDF {
         trainingItem.add(new Paragraph(training.getDate(), normalFont));
 
         trainingItem.add(new Paragraph(context.getString(R.string.pdf_training_stats), boldNormalFont));
-        if(!secondTrainingOnPage)
-        {
-            Paragraph graph = returnImageParagraph(R.drawable.cklogo, context.getResources().getInteger(R.integer.pdf_graph_length),
-                                                                      context.getResources().getInteger(R.integer.pdf_graph_length));
-            trainingItem.add(graph);
-        }
-        else
-        {
-            Paragraph graph = returnImageParagraph(R.drawable.cklogo, context.getResources().getInteger(R.integer.pdf_graph_length),
-                                                                      context.getResources().getInteger(R.integer.pdf_graph_length));
-            trainingItem.add(graph);
-        }
+        addEmptyLine(trainingItem, context.getResources().getInteger(R.integer.pdf_empty_line_number_table));
 
         addTrainingTable(trainingItem, training);
+        addEmptyLine(trainingItem, context.getResources().getInteger(R.integer.pdf_empty_line_number_table));
+
         document.add(trainingItem);
     }
 
@@ -173,13 +150,13 @@ public class ExportPDF {
 
         //data
         addCellToTable(table, context.getString(R.string.pdf_table_Kcal), null);
-        addCellToTable(table, "vr. kalorija (placeholder)", null);
+        addCellToTable(table, String.valueOf(instance.returnTrainingKcal(training.getID())), null);
         addCellToTable(table, context.getString(R.string.pdf_table_time), null);
-        addCellToTable(table, "vr. vremena (placeholder)", null);
+        addCellToTable(table, returnFormatedTime(instance.returnTrainingTime(training.getID())), null);
         addCellToTable(table, context.getString(R.string.pdf_table_distance), null);
-        addCellToTable(table, "vr. udaljenosti (placeholder)", null);
+        addCellToTable(table, String.valueOf(instance.returnTrainingDistance(training.getID())) + "m", null);
         addCellToTable(table, context.getString(R.string.pdf_table_elevationGain), null);
-        addCellToTable(table, "vr. visine (placeholder)", null);
+        addCellToTable(table, String.valueOf(instance.returnTrainingElevationGain(training.getID())) + "m", null);
 
         paragraph.add(table);
     }
@@ -263,5 +240,16 @@ public class ExportPDF {
         titleFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_title), Font.BOLD);
         normalFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_normal), Font.NORMAL);
         boldNormalFont = new Font(Font.FontFamily.TIMES_ROMAN, context.getResources().getInteger(R.integer.pdf_font_size_normalBold), Font.BOLD);
+    }
+
+    private static String returnFormatedTime(int time) {
+        int seconds = time / 1000;
+        int minutes = seconds / 60;
+        int leftoverSeconds = seconds % 60;
+        int hours = minutes / 60;
+        String sHours = (hours < 10) ? "0" + String.valueOf(hours) : String.valueOf(hours);
+        String sMinutes = (minutes < 10) ? "0" + String.valueOf(minutes) : String.valueOf(minutes);
+        String sSeconds = (leftoverSeconds < 10) ? "0" + String.valueOf(leftoverSeconds) : String.valueOf(leftoverSeconds);
+        return sHours + ":" + sMinutes + ":" + sSeconds;
     }
 }

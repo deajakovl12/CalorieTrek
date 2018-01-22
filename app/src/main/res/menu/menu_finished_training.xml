@@ -11,6 +11,8 @@
 
     <item
         android:id="@+id/action_pdf"
+        android:icon="@drawable/ic_pdf"
+        android:title="@string/action_pdf"
         android:icon="@drawable/ic_logout"
         android:title="@string/pdf_export"
         app:showAsAction="always" />
