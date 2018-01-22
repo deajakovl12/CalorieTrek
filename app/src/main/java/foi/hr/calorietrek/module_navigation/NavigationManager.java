@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 import foi.hr.calorietrek.R;
 
+/*
+Class used to manage modules (adding modules, selecting modules).
+ */
 public class NavigationManager {
 
     private static NavigationManager instance;

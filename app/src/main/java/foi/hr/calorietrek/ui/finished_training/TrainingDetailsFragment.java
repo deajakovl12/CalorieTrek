@@ -56,8 +56,12 @@ import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+/*
+Fragment/module used to display training details, has a column graph.
+ */
+
 public class TrainingDetailsFragment extends Fragment implements NavigationItem {
-    private String name = "Details Fragment";
+    private String name = "Column View";
     private ArrayList<TrainingModel> allTrainings;
 
     public @BindView(R.id.chart) CombinedChart chart;

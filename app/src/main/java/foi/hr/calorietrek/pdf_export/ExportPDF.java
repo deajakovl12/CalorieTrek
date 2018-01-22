@@ -29,6 +29,9 @@ import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
 
+/*
+Class used to create a PDF document with training details.
+ */
 public class ExportPDF {
     private static DbHelper instance;
     private static Context context;
@@ -113,7 +116,7 @@ public class ExportPDF {
         {
             addTraining(document, training);
             trainingPerPageCount++;
-            if(trainingPerPageCount == 4)
+            if(trainingPerPageCount == context.getResources().getInteger(R.integer.pdf_trainings_per_page))
             {
                 document.newPage();
                 trainingPerPageCount = 0;

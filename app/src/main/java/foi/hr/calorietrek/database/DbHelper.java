@@ -193,8 +193,7 @@ public class DbHelper extends SQLiteOpenHelper{
         while (cursor.moveToNext()){
             int trainingID = cursor.getInt(cursor.getColumnIndex("id_training"));
             int userWeight = cursor.getInt(cursor.getColumnIndex("weight_training"));
-            TrainingModel training = new TrainingModel(returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID),userWeight);
-            training.setID(trainingID);
+            TrainingModel training = new TrainingModel(trainingID, returnTrainingDate(trainingID), returnTrainingName(trainingID), returnTrainingLocations(trainingID), userWeight);
             result.add(training);
         }
 

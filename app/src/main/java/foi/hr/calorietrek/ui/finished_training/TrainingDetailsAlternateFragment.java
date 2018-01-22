@@ -37,8 +37,12 @@ import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
+/*
+Fragment/module used to display training details, has a linear graph.
+ */
+
 public class TrainingDetailsAlternateFragment extends Fragment implements NavigationItem {
-    private String name = "Alternate Details Fragment";
+    private String name = "Linear View";
     private ArrayList<TrainingModel> allTrainings;
 
     public @BindView(R.id.chartLinear) LineChart chart;
