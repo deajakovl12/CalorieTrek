@@ -56,7 +56,6 @@ public class ForegroundService extends Service {
     private Location currentLocation = null;
     private float distance = 0;
     private double elevationGain=0;
-    private double elevationGainBarometer=0;
     private double oldAltitude =55555;
     private double currentAltitude=55555;
     private double calories = 0;
@@ -107,7 +106,7 @@ public class ForegroundService extends Service {
             instance = DbHelper.getInstance(getApplicationContext());
             userID = instance.getUserID(personEmail);
             trainingID = instance.insertTraining(userID,userWeight);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.mm.yyyy. HH:mm", Locale.getDefault());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.getDefault());
             Date date = new Date();
             instance.updateTrainingDate(trainingID, simpleDateFormat.format(date));
 
@@ -131,8 +130,9 @@ public class ForegroundService extends Service {
             }
             if(altitude!=null)altitude.onPause();
             if(currentLocation!=null)instance.insertLocation(trainingID,currentLocation,cargoWeight);
-            if(altitude!=null && altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
-            else if(instance!=null&&currentLocation!=null){instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
+            //if(altitude!=null && altitude.isPressureSensorAvailable()){instance.updateTraining(trainingID,elevationGainBarometer,distance,calories, updateTime);}
+            //else
+            if(instance!=null){instance.updateTraining(trainingID,elevationGain,distance,calories, updateTime);}
             currentLocation=null;
             oldLocation=null;
             timeInMilliseconds = 0L;
@@ -157,16 +157,7 @@ public class ForegroundService extends Service {
             updateTime = pausedTime + timeInMilliseconds;
             intent.putExtra("timeInMilliseconds", updateTime);
             intent.putExtra("distanceInMeters",distance);
-            if(altitude.isPressureSensorAvailable() && altitude.isAltitudeAvailable() && oldAltitude != 55555 && currentAltitude != 55555)
-            {
-                double tempGain = currentAltitude-oldAltitude;
-                if(tempGain > 0.0)
-                {
-                    elevationGainBarometer += tempGain;
-                }
-                intent.putExtra("elevationGainInMeters",elevationGainBarometer);
-            }
-            else intent.putExtra("elevationGainInMeters",elevationGain);
+            intent.putExtra("elevationGainInMeters",elevationGain);
             intent.putExtra("calories", calories);
             sendBroadcast(intent);
             if (!stopTimer) {
@@ -183,19 +174,21 @@ public class ForegroundService extends Service {
             }
             if(currentLocation!=null&&altitude.isPressureSensorAvailable()&&altitude.isAltitudeAvailable())
             {
+                Log.e( "imHere: ",""+altitude.getAltitude());
                 currentLocation.setAltitude(altitude.getAltitude());
                 oldAltitude=currentAltitude;
                 currentAltitude=altitude.getAltitude();
             }
             if(CalorieCalculus.isLocationAccurateEnough(oldLocation,currentLocation,cargoWeight)) {
-                instance.insertLocation(trainingID,oldLocation,cargoWeight);
-                distance+=CalorieCalculus.calculateDistance(oldLocation,currentLocation);
-                double elevGain = CalorieCalculus.calculateElevationGain(currentLocation,oldLocation);
-                if(elevGain > 0.0)
-                {
-                    elevationGain += elevGain;
+                if(oldLocation.getLatitude()!=currentLocation.getLatitude()||oldLocation.getLongitude()!=currentLocation.getLongitude()) {
+                    instance.insertLocation(trainingID, oldLocation, cargoWeight);
+                    distance += CalorieCalculus.calculateDistance(oldLocation, currentLocation);
+                    double elevGain = CalorieCalculus.calculateElevationGain(currentLocation, oldLocation);
+                    if (elevGain > 0.0) {
+                        elevationGain += elevGain;
+                    }
+                    calories += CalorieCalculus.calculateCalories(currentLocation, oldLocation, userWeight, cargoWeight);
                 }
-                calories+=CalorieCalculus.calculateCalories(currentLocation,oldLocation,userWeight,cargoWeight);
             }
             locationRunnable=this;
             loadData();
