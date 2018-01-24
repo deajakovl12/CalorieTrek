@@ -112,6 +112,7 @@ public class AllTrainings extends AppCompatActivity {
                         float caloriesFloat = (float) calories;
 
                         entriesBar.add(new BarEntry(distanceFloat + oldDistance, caloriesFloat));
+                        entries.add(new Entry(distanceFloat + oldDistance, altitudeFloat));
                         oldLocation = loc.getLocation();
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
@@ -122,7 +123,6 @@ public class AllTrainings extends AppCompatActivity {
                             elevation += (float)tempGain;
                         }
                         oldAltitude=altitude;
-                        entries.add(new Entry(distanceFloat + oldDistance, elevation));
                     }
                     CombinedChart chart = new CombinedChart(getApplicationContext());
                     setChart(entriesBar, entries, chart);
