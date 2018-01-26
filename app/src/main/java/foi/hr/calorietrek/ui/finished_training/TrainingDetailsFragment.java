@@ -46,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.calorie.CalorieCalculus;
+import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
@@ -79,23 +80,24 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     int counter = 0;
     long startTime;
     long finishTime;
+    long duration = 0;
     float elevation = 0;
     boolean showChart = false;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        DbHelper instance = DbHelper.getInstance(getActivity());
         allTrainings = ((FinishedTraining) this.getActivity()).allTrainings;
-
+        duration = instance.returnTrainingTime(allTrainings.get(allTrainings.size()-1).getTrainingID());
         View view = inflater.inflate(R.layout.training_details_fragment, container, false);
         ButterKnife.bind(this, view);
 
         addDataForChart();
         txtKcal.setText(String.format("%.1f", sumCalories));
-        txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(finishTime-startTime),
-               TimeUnit.MILLISECONDS.toMinutes(finishTime-startTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(finishTime-startTime)),
-               TimeUnit.MILLISECONDS.toSeconds(finishTime-startTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(finishTime-startTime))) );
+        txtTime.setText(String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(duration),
+               TimeUnit.MILLISECONDS.toMinutes(duration) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration)),
+               TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration))) );
         txtDistance.setText(String.format("%.2f", oldDistance)+"m");
         txtElevation.setText(String.format("%.2f", elevation)+"m");
 
@@ -131,6 +133,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                         float caloriesFloat = (float) calories;
 
                         entriesBar.add(new BarEntry(distanceFloat + oldDistance, caloriesFloat));
+                        entries.add(new Entry(distanceFloat + oldDistance, altitudeFloat));
                         oldLocation = loc.getLocation();
                         oldDistance += distanceFloat;
                         sumCalories += caloriesFloat;
@@ -141,7 +144,6 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
                             elevation += (float)tempGain;
                         }
                         oldAltitude=altitude;
-                        entries.add(new Entry(distanceFloat + oldDistance, elevation));
                     }
                     setChart(entriesBar, entries);
                     showChart = true;
@@ -209,7 +211,7 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     @OnClick(R.id.btnHome)
     public void onClickBtnHome()
     {
-        Intent intent = new Intent(getContext(), TrainingActivity.class );
+        Intent intent = new Intent(getActivity(), TrainingActivity.class );
         startActivity(intent);
         Toast.makeText(getApplicationContext(), "Training name updated", Toast.LENGTH_SHORT).show();
     }
