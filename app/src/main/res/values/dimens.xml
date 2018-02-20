@@ -73,6 +73,12 @@
     <dimen name="margin_charts">15dp</dimen>
     <dimen name="frame">1dp</dimen>
     <dimen name="corners">5dp</dimen>
+    <dimen name="img_stop_right_margin">74dp</dimen>
+    <dimen name="img_resume_right_margin">77dp</dimen>
+    <dimen name="img_pause_right_margin">75dp</dimen>
+    <dimen name="img_top_margin">11dp</dimen>
+    <dimen name="img_stop_top_margin">12dp</dimen>
+    <dimen name="img_elevation">5dp</dimen>
 
 
 </resources>

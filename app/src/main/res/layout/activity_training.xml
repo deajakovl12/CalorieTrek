@@ -150,24 +150,61 @@
             </RelativeLayout>
         </LinearLayout>
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnTrain"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_button_green"
+                android:layout_marginBottom="@dimen/margin_bottom_elements"
+                android:text="S T A R T" />
 
-        <Button
-            android:id="@+id/btnTrain"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_button_green"
-            android:layout_marginBottom="@dimen/margin_bottom_elements"
-            android:text="S T A R T" />
+            <ImageView
+                android:id="@+id/imgPause"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/img_pause_right_margin"
+                android:layout_marginTop="@dimen/img_top_margin"
+                android:elevation="@dimen/img_elevation"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_pause" />
 
-        <Button
-            android:id="@+id/btnStop"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_light_blue_button"
-            android:layout_marginBottom="@dimen/margin_bottom_elements"
-            android:text="S T O P" />
+            <ImageView
+                android:id="@+id/imgResume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/img_resume_right_margin"
+                android:layout_marginTop="@dimen/img_top_margin"
+                android:elevation="@dimen/img_elevation"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_resume" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnStop"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_bottom_elements"
+                android:background="@drawable/bg_dark_blue_button"
+                android:text="S T O P" />
+
+            <ImageView
+                android:id="@+id/imgStop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/img_stop_right_margin"
+                android:layout_marginTop="@dimen/img_stop_top_margin"
+                android:elevation="@dimen/img_elevation"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_stop" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

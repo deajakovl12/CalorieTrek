@@ -19,7 +19,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +67,9 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     public @BindView(R.id.txtElevation) TextView txtElevation;
     public @BindView(R.id.btnStop) Button btnStop;
     public @BindView(R.id.txtKcal) TextView txtKcal;
+    public @BindView(R.id.imgPause) ImageView imgPause;
+    public @BindView(R.id.imgResume) ImageView imgResume;
+    public @BindView(R.id.imgStop) ImageView imgStop;
 
     UserModel userModel;
     BroadcastReceiver broadcastReceiver = null;
@@ -108,6 +113,9 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     public void startMeasuring()
     {
+        btnTrain.setBackground(getResources().getDrawable(R.drawable.bg_light_blue_button));
+        imgPause.setVisibility(View.VISIBLE);
+        imgStop.setVisibility(View.VISIBLE);
         loadData();
         Intent startIntent = new Intent(TrainingActivity.this, ForegroundService.class);
         startIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
@@ -178,7 +186,11 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     private void Pause()
     {
+        btnTrain.setBackground(getResources().getDrawable(R.drawable.bg_button_green));
         btnTrain.setText(getString(R.string.resume_training));
+        imgPause.setVisibility(View.INVISIBLE);
+        imgResume.setVisibility(View.VISIBLE);
+
         timer = false;
         Intent pauseIntent = new Intent(TrainingActivity.this, ForegroundService.class);
         pauseIntent.setAction(Constants.ACTION.PAUSE_ACTION);
@@ -187,8 +199,12 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
 
     private void Resume()
     {
+        btnTrain.setBackground(getResources().getDrawable(R.drawable.bg_light_blue_button));
         btnTrain.setText(getString(R.string.pause_training));
         btnStop.setVisibility(btnStop.VISIBLE);
+        imgPause.setVisibility(View.VISIBLE);
+        imgResume.setVisibility(View.INVISIBLE);
+
         timer = true;
         Intent playIntent = new Intent(TrainingActivity.this, ForegroundService.class);
         playIntent.setAction(Constants.ACTION.PLAY_ACTION);
@@ -264,6 +280,9 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     {
         btnTrain.setText(getString(R.string.start_training));
         btnStop.setVisibility(btnStop.INVISIBLE);
+        imgPause.setVisibility(View.INVISIBLE);
+        imgStop.setVisibility(View.INVISIBLE);
+        imgResume.setVisibility(View.INVISIBLE);
         txtTime.setText(getString(R.string.time_format_zero));
         txtDistance.setText(getString(R.string.distance_zero));
         txtElevation.setText(getString(R.string.elevation_zero));
