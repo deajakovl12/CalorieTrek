@@ -53,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtCargoProgress"
+        android:max="@string/max_cargoweight"
         android:progress="@string/current_cargo"/>
 
 </RelativeLayout>

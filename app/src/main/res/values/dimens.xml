@@ -80,5 +80,16 @@
     <dimen name="img_stop_top_margin">12dp</dimen>
     <dimen name="img_elevation">5dp</dimen>
 
+    <dimen name="relative_layout_width_login">500dp</dimen>
+    <dimen name="relative_layout_height_login">50dp</dimen>
+    <dimen name="relative_layout_margin_bottom_fb">15dp</dimen>
+    <dimen name="login_text">18sp</dimen>
+    <dimen name="btn_fb_left_margin">17dp</dimen>
+    <dimen name="btn_fb_right_margin">17dp</dimen>
+    <dimen name="btn_fb_top_margin">3dp</dimen>
+    <dimen name="btn_fb_bottom_margin">3dp</dimen>
+    <dimen name="btn_google_left_margin">15dp</dimen>
+    <dimen name="btn_google_right_margin">15dp</dimen>
+
 
 </resources>

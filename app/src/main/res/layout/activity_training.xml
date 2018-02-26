@@ -36,7 +36,8 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/bg_oval_with_gradient"
                 android:layout_below="@+id/txtKcal"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:id="@+id/imageView3" />
 
             <TextView
                 android:id="@+id/txtKcal"
@@ -49,6 +50,17 @@
                 android:textColor="@color/white"
                 android:textSize="36sp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btnimg_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="14dp"
+                android:layout_marginTop="9dp"
+                app:srcCompat="@drawable/ic_profile" />
+
         </RelativeLayout>
 
         <TextView
@@ -87,14 +99,16 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/bg_blue_button_with_gradient"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:id="@+id/imageView" />
 
                 <TextView
                     android:id="@+id/txtDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_marginTop="9dp"
                     android:gravity="center"
                     android:text="0 m"
                     android:textAlignment="center"
@@ -103,12 +117,13 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorSmallText"
+                    android:layout_below="@+id/txtDistance"
+                    android:layout_centerHorizontal="true"
                     android:text="@string/distance"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+                    android:textColor="@color/colorSmallText" />
 
 
             </RelativeLayout>
@@ -121,16 +136,18 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/bg_blue_button_with_gradient"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"/>
+                    android:src="@drawable/bg_blue_button_with_gradient"
+                    android:id="@+id/imageView2" />
 
                 <TextView
                     android:id="@+id/txtElevation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_marginTop="8dp"
                     android:gravity="center"
                     android:text="0 m"
                     android:textAlignment="center"
@@ -142,10 +159,10 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorSmallText"
+                    android:layout_below="@+id/txtElevation"
+                    android:layout_centerHorizontal="true"
                     android:text="Elevation gain"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+                    android:textColor="@color/colorSmallText" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -228,6 +245,7 @@
                 android:textSize="@dimen/training_text"
                 android:textStyle="bold"/>
         </LinearLayout>
+
         <SeekBar
             android:id="@+id/sbCargoWeight"
             android:layout_width="match_parent"

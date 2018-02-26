@@ -1,17 +1,10 @@
-package foi.hr.calorietrek.all_trainings;
+package foi.hr.calorietrek.ui.all_trainings;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Layout;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,7 +33,6 @@ import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
-import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 /*

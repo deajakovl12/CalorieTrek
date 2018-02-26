@@ -21,35 +21,100 @@
         android:weightSum="1">
 
         <TextView
-            android:layout_gravity="center"
             android:id="@+id/txtPrijava"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"
             android:text="@string/login_with"
             android:textColor="@color/white"
-            android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"
+            android:textSize="18sp"
             tools:layout_editor_absoluteX="@dimen/txt_prijava_x"
             tools:layout_editor_absoluteY="@dimen/txt_prijava_y" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/btn_sign_in"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/btn_sign_in_margin_bottom"
-            android:color="@color/transparent"
-            />
+        <RelativeLayout
+            android:layout_width="@dimen/relative_layout_width_login"
+            android:layout_height="@dimen/relative_layout_height_login"
+            android:layout_marginBottom="@dimen/relative_layout_margin_bottom_fb" >
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:layout_margin="@dimen/btn_fb_margin"
-            android:paddingTop="@dimen/btn_fb_padding_top"
-            android:paddingBottom="@dimen/btn_fb_padding_bottom"
-            android:background="@drawable/bg_button_facebook"
-            />
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="@dimen/btn_fb_left_margin"
+                android:layout_marginRight="@dimen/btn_fb_right_margin"
+                android:layout_marginTop="@dimen/btn_fb_top_margin"
+                android:layout_marginBottom="@dimen/btn_fb_bottom_margin" />
+
+            <ImageView
+                android:id="@+id/img_facebook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/bg_button_facebook" />
+
+            <TextView
+                android:id="@+id/text_facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/facebook"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="@dimen/login_text"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/relative_layout_width_login"
+            android:layout_height="@dimen/relative_layout_height_login" >
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/btn_sign_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:color="@color/transparent"
+                android:layout_marginRight="@dimen/btn_google_left_margin"
+                android:layout_marginLeft="@dimen/btn_google_right_margin" >
+
+            </com.google.android.gms.common.SignInButton>
+
+            <ImageView
+                android:id="@+id/img_google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/bg_button_google" />
+
+            <TextView
+                android:id="@+id/text_google"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/google"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textColor="@color/cardview_light_background"
+                android:textSize="@dimen/login_text"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>
