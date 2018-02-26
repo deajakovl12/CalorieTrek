@@ -1,5 +1,8 @@
 package foi.hr.calorietrek.ui.finished_training;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -38,7 +41,6 @@ import foi.hr.calorietrek.R;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingModel;
-import foi.hr.calorietrek.module_navigation.NavigationManager;
 import foi.hr.calorietrek.pdf_export.ExportPDF;
 
 
@@ -46,7 +48,6 @@ public class FinishedTraining extends AppCompatActivity {
 
     public @BindView(R.id.toolbarDetails) Toolbar toolbarDetails;
     public @BindView(R.id.myEditText) EditText editText;
-    private NavigationManager navManager;
     private DbHelper instance;
     public ExportPDF exportPDF;
     public ArrayList<TrainingModel> allTrainings;
@@ -65,8 +66,6 @@ public class FinishedTraining extends AppCompatActivity {
         setSupportActionBar(toolbarDetails);
         callbackManager = CallbackManager.Factory.create();
         shareDialog = new ShareDialog(this);
-        navManager = NavigationManager.getInstance();
-        navManager.setDependencies(this, toolbarDetails);
         instance = DbHelper.getInstance(this);
         exportPDF = new ExportPDF(this.getApplicationContext());
         allTrainings = new ArrayList<TrainingModel>();
@@ -107,15 +106,8 @@ public class FinishedTraining extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_finished_training, menu);
 
-        //modules are added here
-        navManager.addItem(new TrainingDetailsFragment());
-        navManager.addItem(new TrainingDetailsAlternateFragment());
-
-        //loading the default(first) fragment
-        SubMenu submenu = toolbarDetails.getMenu().getItem(2).getSubMenu();
-        if(submenu.size() > 0) {
-            navManager.selectNavigationItem(submenu.getItem(0));
-        }
+        //load whatever fragment you want
+        displayFragment(new TrainingDetailsFragment());
 
         return true;
     }
@@ -140,8 +132,6 @@ public class FinishedTraining extends AppCompatActivity {
                 break;
             }
             case R.id.action_share:
-                break;
-            case R.id.action_module_submenu:
                 break;
             case R.id.action_share_fb:
             {
@@ -187,7 +177,7 @@ public class FinishedTraining extends AppCompatActivity {
 
 
             default:
-                navManager.selectNavigationItem(item);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -234,6 +224,15 @@ public class FinishedTraining extends AppCompatActivity {
             }
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    private void displayFragment(Fragment fragment) {
+        FragmentManager fragmentManager = this.getFragmentManager();
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
     }
 
 }

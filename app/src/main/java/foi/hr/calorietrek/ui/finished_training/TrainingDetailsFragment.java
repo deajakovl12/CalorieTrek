@@ -51,7 +51,6 @@ import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
 import foi.hr.calorietrek.model.UserModel;
-import foi.hr.calorietrek.module_navigation.NavigationItem;
 import foi.hr.calorietrek.ui.profile.view.ProfileActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
@@ -61,8 +60,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 Fragment/module used to display training details, has a column graph.
  */
 
-public class TrainingDetailsFragment extends Fragment implements NavigationItem {
-    private String name = "Column View";
+public class TrainingDetailsFragment extends Fragment {
     private ArrayList<TrainingModel> allTrainings;
 
     public @BindView(R.id.chart) CombinedChart chart;
@@ -219,15 +217,5 @@ public class TrainingDetailsFragment extends Fragment implements NavigationItem 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public String getItemName() {
-        return name;
-    }
-
-    @Override
-    public android.app.Fragment getFragment() {
-        return this;
     }
 }

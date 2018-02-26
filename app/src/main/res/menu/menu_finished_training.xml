@@ -37,14 +37,4 @@
         </menu>
     </item>
 
-    <item android:id="@+id/action_module_submenu"
-        android:icon="@drawable/ic_more_vert"
-        android:title="@string/action_details"
-        app:showAsAction="always" >
-
-        <menu android:id="@+id/module_submenu">
-
-        </menu>
-    </item>
-
 </menu>

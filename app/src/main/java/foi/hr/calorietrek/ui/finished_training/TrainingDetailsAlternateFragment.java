@@ -33,7 +33,6 @@ import foi.hr.calorietrek.calorie.CalorieCalculus;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.TrainingLocationInfo;
 import foi.hr.calorietrek.model.TrainingModel;
-import foi.hr.calorietrek.module_navigation.NavigationItem;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -42,8 +41,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 Fragment/module used to display training details, has a linear graph.
  */
 
-public class TrainingDetailsAlternateFragment extends Fragment implements NavigationItem {
-    private String name = "Linear View";
+public class TrainingDetailsAlternateFragment extends Fragment {
     private ArrayList<TrainingModel> allTrainings;
 
     public @BindView(R.id.chartLinear) LineChart chart;
@@ -192,15 +190,5 @@ public class TrainingDetailsAlternateFragment extends Fragment implements Naviga
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public String getItemName() {
-        return name;
-    }
-
-    @Override
-    public android.app.Fragment getFragment() {
-        return this;
     }
 }
