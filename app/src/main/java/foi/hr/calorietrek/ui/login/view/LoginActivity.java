@@ -167,11 +167,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onError(FacebookException e) {
             }
         };
-        //loginButton.setReadPermissions(Arrays.asList(
-        //        "public_profile", "email"));
         loginButton.setReadPermissions("public_profile,email,publish_actions");
-
-
         loginButton.registerCallback(callbackManager, callback);
 
     }
@@ -284,14 +280,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         boolean exist = false;
 
         boolean isInserted = instance.existingUser(nameSurname, email);
-        if (isInserted == true){
-            Toast.makeText(LoginActivity.this, R.string.new_user_inserted, Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(LoginActivity.this, R.string.existing_user, Toast.LENGTH_LONG).show();
+        if (isInserted == false){
             exist = true;
         }
-
         return exist;
     }
     @Override
@@ -300,7 +291,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         //Facebook login
         Profile profile = Profile.getCurrentProfile();
         nextActivity(profile);
-
     }
 
     @Override
@@ -310,10 +300,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         nextActivity(profile);
     }
 
-
     protected void onStop() {
         super.onStop();
-
         accessTokenTracker.stopTracking();
         profileTracker.stopTracking();
     }
@@ -332,7 +320,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 personPhoto = "noImage";
             }
 
-            //userModel = new UserModel(profile.getName(), "", personPhoto);
             userModel = new UserModel(profile.getName(), personEmail, personPhoto);
             Intent main = new Intent(LoginActivity.this, TrainingActivity.class);
 
@@ -362,8 +349,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         editor.putString("personEmail", email);
         editor.putString("personPhotoUrl", photoUrl);
         editor.apply();
-        Log.e("tusamPA1",sharedPref.getString("personName","not Available"));
     }
-
 }
 

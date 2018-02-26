@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/img_bg"
-    tools:context="foi.hr.calorietrek.all_trainings.AllTrainings">
+    tools:context=".ui.all_trainings.AllTrainings">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

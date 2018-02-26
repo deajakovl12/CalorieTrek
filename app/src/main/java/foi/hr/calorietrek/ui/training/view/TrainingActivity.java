@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     private boolean timer = false;
     private boolean locationPermission=false;
     private int minCargo = 0;
-    private int maxCargo = 100;
+    private int maxCargo = 40;
     public int currentCargo = 20;
     private int weight = 0;
     public int MY_PERMISSIONS_REQUEST_LOCATION=101;
@@ -70,6 +71,7 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
     public @BindView(R.id.imgPause) ImageView imgPause;
     public @BindView(R.id.imgResume) ImageView imgResume;
     public @BindView(R.id.imgStop) ImageView imgStop;
+    public @BindView(R.id.btnimg_profile) ImageView btnimg_profile;
 
     UserModel userModel;
     BroadcastReceiver broadcastReceiver = null;
@@ -92,12 +94,22 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         userModel = new UserModel(sharedPref.getString("personName",null),sharedPref.getString("personEmail",null),sharedPref.getString("personPhotoUrl",null));
         ButterKnife.bind(this);
+        btnimg_profile.setOnClickListener(imgButtonHandler);
         locationPermission = checkLocationPermissions();
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         seekbarCargoProgress();
         btnStop.setVisibility(btnStop.INVISIBLE);
     }
+
+    View.OnClickListener imgButtonHandler = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(TrainingActivity.this, ProfileActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            startActivity(intent);
+        }
+    };
 
     private void loadWeight()
     {
@@ -148,23 +160,6 @@ public class TrainingActivity extends AppCompatActivity implements DialogInputWe
         registerReceiver(broadcastReceiver, new IntentFilter(Constants.ACTION.BROADCAST_ACTION));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menubar_training, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_profile){
-            Intent intent = new Intent(TrainingActivity.this, ProfileActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);
-            //Toast.makeText(TrainingActivity.this, "PROFIL!", Toast.LENGTH_LONG).show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
     private void turnOnLocation(){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.gps_dialog_title));

@@ -1,34 +1,23 @@
 package foi.hr.calorietrek.ui.profile.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInstaller;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.media.MediaCas;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,21 +35,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import foi.hr.calorietrek.R;
-import foi.hr.calorietrek.all_trainings.AllTrainings;
+import foi.hr.calorietrek.ui.all_trainings.AllTrainings;
 import foi.hr.calorietrek.database.DbHelper;
 import foi.hr.calorietrek.model.CurrentUser;
 import foi.hr.calorietrek.model.UserModel;
-import foi.hr.calorietrek.ui.finished_training.FinishedTraining;
 import foi.hr.calorietrek.ui.login.view.LoginActivity;
 import foi.hr.calorietrek.ui.training.view.TrainingActivity;
 
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 /* Class activity for profile. On profile user can go to view all finished training, input body weight or log out. */
